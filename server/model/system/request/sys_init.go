@@ -2,7 +2,7 @@ package request
 
 import (
 	"fmt"
-	"github.com/flipped-aurora/gin-vue-admin/server/config"
+	"github/jizi19911101/gin-vue-admin/server/config"
 )
 
 type InitDB struct {

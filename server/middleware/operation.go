@@ -2,15 +2,15 @@ package middleware
 
 import (
 	"bytes"
-	"github.com/flipped-aurora/gin-vue-admin/server/utils"
+	"github/jizi19911101/gin-vue-admin/server/utils"
 	"io/ioutil"
 	"net/http"
 	"strconv"
 	"time"
 
-	"github.com/flipped-aurora/gin-vue-admin/server/global"
-	"github.com/flipped-aurora/gin-vue-admin/server/model/system"
-	"github.com/flipped-aurora/gin-vue-admin/server/service"
+	"github/jizi19911101/gin-vue-admin/server/global"
+	"github/jizi19911101/gin-vue-admin/server/model/system"
+	"github/jizi19911101/gin-vue-admin/server/service"
 	"github.com/gin-gonic/gin"
 	"go.uber.org/zap"
 )

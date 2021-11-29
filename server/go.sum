@@ -85,7 +85,7 @@ github.com/envoyproxy/go-control-plane v0.9.9-0.20201210154907-fd9021fe5dad/go.m
 github.com/envoyproxy/protoc-gen-validate v0.1.0/go.mod h1:iSmxcyjqTsJpI2R4NaDN7+kN2VEUnK/pcBlmesArF7c=
 github.com/fastly/go-utils v0.0.0-20180712184237-d95a45783239/go.mod h1:Gdwt2ce0yfBxPvZrHkprdPPTTS3N5rwmLE8T22KBXlw=
 github.com/fatih/color v1.7.0/go.mod h1:Zm6kSWBoL9eyXnKyktHP6abPY2pDugNf5KwzbycvMj4=
-github.com/flipped-aurora/gin-vue-admin/server v0.0.0-20210823151324-f5410430faf0/go.mod h1:ksHCxOjTTQDk1Y1MrptfG6e9+s3rDJzQXkIZBHl8sws=
+github/jizi19911101/gin-vue-admin/server v0.0.0-20210823151324-f5410430faf0/go.mod h1:ksHCxOjTTQDk1Y1MrptfG6e9+s3rDJzQXkIZBHl8sws=
 github.com/flipped-aurora/gva-plugins v0.0.0-20210828060501-fc8b729b9a4a h1:GEU1KU8lvWWwvHNTXaoVxonsp8t120oFQnlpAtGqKpM=
 github.com/flipped-aurora/gva-plugins v0.0.0-20210828060501-fc8b729b9a4a/go.mod h1:/DpDUj/vphN4x3UaTDhTvT6aZaCasfKOGbMgPabwGv0=
 github.com/flipped-aurora/ws v1.0.2 h1:oEUz7sgrbPENvgli7Q4QpC0NIEbJucgR4yjcDMg/AjY=

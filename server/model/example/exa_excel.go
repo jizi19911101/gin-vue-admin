@@ -1,6 +1,6 @@
 package example
 
-import "github.com/flipped-aurora/gin-vue-admin/server/model/system"
+import "github/jizi19911101/gin-vue-admin/server/model/system"
 
 type ExcelInfo struct {
 	FileName string               `json:"fileName"` // 文件名

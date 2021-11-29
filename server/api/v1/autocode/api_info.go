@@ -2,16 +2,16 @@ package autocode
 
 import (
 	"encoding/json"
-	"fmt"
-	"github.com/flipped-aurora/gin-vue-admin/server/global"
-	"github.com/flipped-aurora/gin-vue-admin/server/model/autocode"
-	autocodeReq "github.com/flipped-aurora/gin-vue-admin/server/model/autocode/request"
-	"github.com/flipped-aurora/gin-vue-admin/server/model/common/request"
-	apiInfoReq "github.com/flipped-aurora/gin-vue-admin/server/model/apiInfo/request"
-	"github.com/flipped-aurora/gin-vue-admin/server/model/common/response"
-	"github.com/flipped-aurora/gin-vue-admin/server/service"
 	"github.com/gin-gonic/gin"
+	"github/jizi19911101/gin-vue-admin/server/global"
+	apiInfoReq "github/jizi19911101/gin-vue-admin/server/model/apiInfo/request"
+	"github/jizi19911101/gin-vue-admin/server/model/autocode"
+	autocodeReq "github/jizi19911101/gin-vue-admin/server/model/autocode/request"
+	"github/jizi19911101/gin-vue-admin/server/model/common/request"
+	"github/jizi19911101/gin-vue-admin/server/model/common/response"
+	"github/jizi19911101/gin-vue-admin/server/service"
 	"go.uber.org/zap"
+	"strings"
 )
 
 type ApiInfoApi struct {
@@ -30,10 +30,16 @@ var apiInfoService = service.ServiceGroupApp.AutoCodeServiceGroup.ApiInfoService
 // @Success 200 {string} string "{"success":true,"data":{},"msg":"获取成功"}"
 // @Router /apiInfo/createApiInfo [post]
 func (apiInfoApi *ApiInfoApi) CreateApiInfo(c *gin.Context) {
-	var apiInfo autocode.ApiInfo
-	var req_apiInfo request.ApiInfo
-	_ = c.ShouldBindJSON(&req_apiInfo)
-    fmt.Println("90909", req_apiInfo)
+	var reqApiInfo apiInfoReq.ApiInfo
+	_ = c.ShouldBindJSON(&reqApiInfo)
+	apiInfo := autocode.ApiInfo{
+		Name: reqApiInfo.Name,
+		Url: reqApiInfo.Url,
+		Method: reqApiInfo.Method,
+		Project: reqApiInfo.Project,
+		Module: reqApiInfo.Module,
+		Params: strings.Join(reqApiInfo.Params,","),
+	}
 	//s2 := strings.Join(s1,",")
 	if err := apiInfoService.CreateApiInfo(apiInfo); err != nil {
         global.GVA_LOG.Error("创建失败!", zap.Error(err))

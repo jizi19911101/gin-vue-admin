@@ -1,7 +1,7 @@
 package utils
 
 import (
-	"github.com/flipped-aurora/gin-vue-admin/server/global"
+	"github/jizi19911101/gin-vue-admin/server/global"
 	"github.com/natefinch/lumberjack"
 	"go.uber.org/zap/zapcore"
 	"os"

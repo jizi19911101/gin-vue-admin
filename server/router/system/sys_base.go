@@ -1,7 +1,7 @@
 package system
 
 import (
-	v1 "github.com/flipped-aurora/gin-vue-admin/server/api/v1"
+	v1 "github/jizi19911101/gin-vue-admin/server/api/v1"
 	"github.com/gin-gonic/gin"
 )
 

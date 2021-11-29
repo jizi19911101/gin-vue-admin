@@ -1,13 +1,13 @@
 package system
 
 import (
-	"github.com/flipped-aurora/gin-vue-admin/server/global"
-	"github.com/flipped-aurora/gin-vue-admin/server/model/common/request"
-	"github.com/flipped-aurora/gin-vue-admin/server/model/common/response"
-	"github.com/flipped-aurora/gin-vue-admin/server/model/system"
-	systemReq "github.com/flipped-aurora/gin-vue-admin/server/model/system/request"
-	systemRes "github.com/flipped-aurora/gin-vue-admin/server/model/system/response"
-	"github.com/flipped-aurora/gin-vue-admin/server/utils"
+	"github/jizi19911101/gin-vue-admin/server/global"
+	"github/jizi19911101/gin-vue-admin/server/model/common/request"
+	"github/jizi19911101/gin-vue-admin/server/model/common/response"
+	"github/jizi19911101/gin-vue-admin/server/model/system"
+	systemReq "github/jizi19911101/gin-vue-admin/server/model/system/request"
+	systemRes "github/jizi19911101/gin-vue-admin/server/model/system/response"
+	"github/jizi19911101/gin-vue-admin/server/utils"
 	"strconv"
 
 	"github.com/gin-gonic/gin"
