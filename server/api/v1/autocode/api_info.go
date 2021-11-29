@@ -2,10 +2,12 @@ package autocode
 
 import (
 	"encoding/json"
+	"fmt"
 	"github.com/flipped-aurora/gin-vue-admin/server/global"
 	"github.com/flipped-aurora/gin-vue-admin/server/model/autocode"
 	autocodeReq "github.com/flipped-aurora/gin-vue-admin/server/model/autocode/request"
 	"github.com/flipped-aurora/gin-vue-admin/server/model/common/request"
+	apiInfoReq "github.com/flipped-aurora/gin-vue-admin/server/model/apiInfo/request"
 	"github.com/flipped-aurora/gin-vue-admin/server/model/common/response"
 	"github.com/flipped-aurora/gin-vue-admin/server/service"
 	"github.com/gin-gonic/gin"
@@ -29,7 +31,10 @@ var apiInfoService = service.ServiceGroupApp.AutoCodeServiceGroup.ApiInfoService
 // @Router /apiInfo/createApiInfo [post]
 func (apiInfoApi *ApiInfoApi) CreateApiInfo(c *gin.Context) {
 	var apiInfo autocode.ApiInfo
-	_ = c.ShouldBindJSON(&apiInfo)
+	var req_apiInfo request.ApiInfo
+	_ = c.ShouldBindJSON(&req_apiInfo)
+    fmt.Println("90909", req_apiInfo)
+	//s2 := strings.Join(s1,",")
 	if err := apiInfoService.CreateApiInfo(apiInfo); err != nil {
         global.GVA_LOG.Error("创建失败!", zap.Error(err))
 		response.FailWithMessage("创建失败", c)
