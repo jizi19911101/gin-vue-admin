@@ -2,8 +2,8 @@ package system
 
 import (
 	"fmt"
-	"github/jizi19911101/gin-vue-admin/server/global"
-	"github/jizi19911101/gin-vue-admin/server/model/system"
+	"github.com/jizi19911101/gin-vue-admin/server/global"
+	"github.com/jizi19911101/gin-vue-admin/server/model/system"
 	"github.com/pkg/errors"
 	"strings"
 )

@@ -1,10 +1,10 @@
 package system
 
 import (
-	"github/jizi19911101/gin-vue-admin/server/global"
-	"github/jizi19911101/gin-vue-admin/server/model/common/request"
-	"github/jizi19911101/gin-vue-admin/server/model/system"
-	systemReq "github/jizi19911101/gin-vue-admin/server/model/system/request"
+	"github.com/jizi19911101/gin-vue-admin/server/global"
+	"github.com/jizi19911101/gin-vue-admin/server/model/common/request"
+	"github.com/jizi19911101/gin-vue-admin/server/model/system"
+	systemReq "github.com/jizi19911101/gin-vue-admin/server/model/system/request"
 )
 
 //@author: [granty1](https://github.com/granty1)

@@ -5,8 +5,8 @@ import (
 	"os"
 	"time"
 
-	"github/jizi19911101/gin-vue-admin/server/global"
-	"github/jizi19911101/gin-vue-admin/server/utils"
+	"github.com/jizi19911101/gin-vue-admin/server/global"
+	"github.com/jizi19911101/gin-vue-admin/server/utils"
 	"go.uber.org/zap"
 	"go.uber.org/zap/zapcore"
 )

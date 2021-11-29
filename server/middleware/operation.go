@@ -2,15 +2,15 @@ package middleware
 
 import (
 	"bytes"
-	"github/jizi19911101/gin-vue-admin/server/utils"
+	"github.com/jizi19911101/gin-vue-admin/server/utils"
 	"io/ioutil"
 	"net/http"
 	"strconv"
 	"time"
 
-	"github/jizi19911101/gin-vue-admin/server/global"
-	"github/jizi19911101/gin-vue-admin/server/model/system"
-	"github/jizi19911101/gin-vue-admin/server/service"
+	"github.com/jizi19911101/gin-vue-admin/server/global"
+	"github.com/jizi19911101/gin-vue-admin/server/model/system"
+	"github.com/jizi19911101/gin-vue-admin/server/service"
 	"github.com/gin-gonic/gin"
 	"go.uber.org/zap"
 )

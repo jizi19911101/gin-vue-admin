@@ -1,10 +1,10 @@
 package api
 
 import (
-	"github/jizi19911101/gin-vue-admin/server/global"
-	"github/jizi19911101/gin-vue-admin/server/model/common/response"
-	email_response "github/jizi19911101/gin-vue-admin/server/plugin/email/model/response"
-	"github/jizi19911101/gin-vue-admin/server/plugin/email/service"
+	"github.com/jizi19911101/gin-vue-admin/server/global"
+	"github.com/jizi19911101/gin-vue-admin/server/model/common/response"
+	email_response "github.com/jizi19911101/gin-vue-admin/server/plugin/email/model/response"
+	"github.com/jizi19911101/gin-vue-admin/server/plugin/email/service"
 	"github.com/gin-gonic/gin"
 	"go.uber.org/zap"
 )

@@ -1,8 +1,8 @@
 package initialize
 
 import (
-	"github/jizi19911101/gin-vue-admin/server/global"
-	"github/jizi19911101/gin-vue-admin/server/initialize/internal"
+	"github.com/jizi19911101/gin-vue-admin/server/global"
+	"github.com/jizi19911101/gin-vue-admin/server/initialize/internal"
 	"gorm.io/driver/mysql"
 	"gorm.io/gorm"
 )

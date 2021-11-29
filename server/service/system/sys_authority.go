@@ -4,10 +4,10 @@ import (
 	"errors"
 	"strconv"
 
-	"github/jizi19911101/gin-vue-admin/server/global"
-	"github/jizi19911101/gin-vue-admin/server/model/common/request"
-	"github/jizi19911101/gin-vue-admin/server/model/system"
-	"github/jizi19911101/gin-vue-admin/server/model/system/response"
+	"github.com/jizi19911101/gin-vue-admin/server/global"
+	"github.com/jizi19911101/gin-vue-admin/server/model/common/request"
+	"github.com/jizi19911101/gin-vue-admin/server/model/system"
+	"github.com/jizi19911101/gin-vue-admin/server/model/system/response"
 	"gorm.io/gorm"
 )
 

@@ -3,7 +3,7 @@ package upload
 import (
 	"mime/multipart"
 
-	"github/jizi19911101/gin-vue-admin/server/global"
+	"github.com/jizi19911101/gin-vue-admin/server/global"
 )
 
 //@author: [ccfish86](https://github.com/ccfish86)

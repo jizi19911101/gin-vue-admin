@@ -1,6 +1,6 @@
 package request
 
-import "github/jizi19911101/gin-vue-admin/server/global"
+import "github.com/jizi19911101/gin-vue-admin/server/global"
 
 type ApiInfo struct {
 	global.GVA_MODEL

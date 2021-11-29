@@ -1,14 +1,14 @@
 package global
 
 import (
-	"github/jizi19911101/gin-vue-admin/server/utils/timer"
+	"github.com/jizi19911101/gin-vue-admin/server/utils/timer"
 	"github.com/songzhibin97/gkit/cache/local_cache"
 
 	"golang.org/x/sync/singleflight"
 
 	"go.uber.org/zap"
 
-	"github/jizi19911101/gin-vue-admin/server/config"
+	"github.com/jizi19911101/gin-vue-admin/server/config"
 
 	"github.com/go-redis/redis/v8"
 	"github.com/spf13/viper"

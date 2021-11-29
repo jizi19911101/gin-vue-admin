@@ -4,10 +4,10 @@ import (
 	"database/sql"
 	"fmt"
 	adapter "github.com/casbin/gorm-adapter/v3"
-	"github/jizi19911101/gin-vue-admin/server/global"
-	"github/jizi19911101/gin-vue-admin/server/model/example"
-	"github/jizi19911101/gin-vue-admin/server/model/system"
-	"github/jizi19911101/gin-vue-admin/server/model/system/request"
+	"github.com/jizi19911101/gin-vue-admin/server/global"
+	"github.com/jizi19911101/gin-vue-admin/server/model/example"
+	"github.com/jizi19911101/gin-vue-admin/server/model/system"
+	"github.com/jizi19911101/gin-vue-admin/server/model/system/request"
 )
 
 type InitDBService struct{}

@@ -1,11 +1,11 @@
 package example
 
 import (
-	"github/jizi19911101/gin-vue-admin/server/global"
-	"github/jizi19911101/gin-vue-admin/server/model/common/request"
-	"github/jizi19911101/gin-vue-admin/server/model/example"
-	"github/jizi19911101/gin-vue-admin/server/model/system"
-	systemService "github/jizi19911101/gin-vue-admin/server/service/system"
+	"github.com/jizi19911101/gin-vue-admin/server/global"
+	"github.com/jizi19911101/gin-vue-admin/server/model/common/request"
+	"github.com/jizi19911101/gin-vue-admin/server/model/example"
+	"github.com/jizi19911101/gin-vue-admin/server/model/system"
+	systemService "github.com/jizi19911101/gin-vue-admin/server/service/system"
 )
 
 type CustomerService struct {

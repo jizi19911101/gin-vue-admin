@@ -1,12 +1,12 @@
 package autocode
 
 import (
-	"github/jizi19911101/gin-vue-admin/server/global"
-    "github/jizi19911101/gin-vue-admin/server/model/autocode"
-    "github/jizi19911101/gin-vue-admin/server/model/common/request"
-    autocodeReq "github/jizi19911101/gin-vue-admin/server/model/autocode/request"
-    "github/jizi19911101/gin-vue-admin/server/model/common/response"
-    "github/jizi19911101/gin-vue-admin/server/service"
+	"github.com/jizi19911101/gin-vue-admin/server/global"
+    "github.com/jizi19911101/gin-vue-admin/server/model/autocode"
+    "github.com/jizi19911101/gin-vue-admin/server/model/common/request"
+    autocodeReq "github.com/jizi19911101/gin-vue-admin/server/model/autocode/request"
+    "github.com/jizi19911101/gin-vue-admin/server/model/common/response"
+    "github.com/jizi19911101/gin-vue-admin/server/service"
     "github.com/gin-gonic/gin"
     "go.uber.org/zap"
 )

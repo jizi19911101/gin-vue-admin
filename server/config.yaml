@@ -90,7 +90,7 @@ tencent-cos:
   secret-id: xxxxxxxx
   secret-key: xxxxxxxx
   base-url: https://gin.vue.admin
-  path-prefix: github/jizi19911101/gin-vue-admin/server
+  path-prefix: github.com/jizi19911101/gin-vue-admin/server
 timer:
   start: true
   spec: '@daily'
@@ -104,7 +104,7 @@ timer:
 zap:
   level: info
   format: console
-  prefix: '[github/jizi19911101/gin-vue-admin/server]'
+  prefix: '[github.com/jizi19911101/gin-vue-admin/server]'
   director: log
   showLine: true
   encode-level: LowercaseColorLevelEncoder

@@ -1,9 +1,9 @@
 package system
 
 import (
-	"github/jizi19911101/gin-vue-admin/server/global"
-	"github/jizi19911101/gin-vue-admin/server/model/common/response"
-	systemRes "github/jizi19911101/gin-vue-admin/server/model/system/response"
+	"github.com/jizi19911101/gin-vue-admin/server/global"
+	"github.com/jizi19911101/gin-vue-admin/server/model/common/response"
+	systemRes "github.com/jizi19911101/gin-vue-admin/server/model/system/response"
 	"github.com/gin-gonic/gin"
 	"github.com/mojocn/base64Captcha"
 	"go.uber.org/zap"

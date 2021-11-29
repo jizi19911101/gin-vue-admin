@@ -1,9 +1,9 @@
 package v1
 
 import (
-	"github/jizi19911101/gin-vue-admin/server/api/v1/autocode"
-	"github/jizi19911101/gin-vue-admin/server/api/v1/example"
-	"github/jizi19911101/gin-vue-admin/server/api/v1/system"
+	"github.com/jizi19911101/gin-vue-admin/server/api/v1/autocode"
+	"github.com/jizi19911101/gin-vue-admin/server/api/v1/example"
+	"github.com/jizi19911101/gin-vue-admin/server/api/v1/system"
 )
 
 type ApiGroup struct {

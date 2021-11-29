@@ -3,8 +3,8 @@ package system
 import (
 	"errors"
 
-	"github/jizi19911101/gin-vue-admin/server/global"
-	"github/jizi19911101/gin-vue-admin/server/model/system"
+	"github.com/jizi19911101/gin-vue-admin/server/global"
+	"github.com/jizi19911101/gin-vue-admin/server/model/system"
 	"gorm.io/gorm"
 )
 

@@ -1,9 +1,9 @@
 package autocode
 
 import (
-	"github/jizi19911101/gin-vue-admin/server/global"
-	"github/jizi19911101/gin-vue-admin/server/model/autocode"
-	"github/jizi19911101/gin-vue-admin/server/model/autocode/request"
+	"github.com/jizi19911101/gin-vue-admin/server/global"
+	"github.com/jizi19911101/gin-vue-admin/server/model/autocode"
+	"github.com/jizi19911101/gin-vue-admin/server/model/autocode/request"
 )
 
 type AutoCodeExampleService struct {

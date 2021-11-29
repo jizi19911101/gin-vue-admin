@@ -1,4 +1,4 @@
-module github/jizi19911101/gin-vue-admin/server
+module github.com/jizi19911101/gin-vue-admin/server
 
 go 1.16
 

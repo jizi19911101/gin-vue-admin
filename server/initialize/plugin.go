@@ -1,11 +1,11 @@
 package initialize
 
 import (
-	"github/jizi19911101/gin-vue-admin/server/global"
+	"github.com/jizi19911101/gin-vue-admin/server/global"
 	email "github.com/flipped-aurora/gva-plugins/email" // 在线仓库模式go
-	//"github/jizi19911101/gin-vue-admin/server/plugin/email" // 本地插件仓库地址模式
-	"github/jizi19911101/gin-vue-admin/server/plugin/example_plugin"
-	"github/jizi19911101/gin-vue-admin/server/utils/plugin"
+	//"github.com/jizi19911101/gin-vue-admin/server/plugin/email" // 本地插件仓库地址模式
+	"github.com/jizi19911101/gin-vue-admin/server/plugin/example_plugin"
+	"github.com/jizi19911101/gin-vue-admin/server/utils/plugin"
 	"github.com/gin-gonic/gin"
 )
 

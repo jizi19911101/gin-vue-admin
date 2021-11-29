@@ -1,8 +1,8 @@
 package email
 
 import (
-	"github/jizi19911101/gin-vue-admin/server/plugin/email/global"
-	"github/jizi19911101/gin-vue-admin/server/plugin/email/router"
+	"github.com/jizi19911101/gin-vue-admin/server/plugin/email/global"
+	"github.com/jizi19911101/gin-vue-admin/server/plugin/email/router"
 	"github.com/gin-gonic/gin"
 )
 

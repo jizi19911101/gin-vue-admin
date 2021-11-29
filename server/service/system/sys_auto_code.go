@@ -11,9 +11,9 @@ import (
 	"strings"
 	"text/template"
 
-	"github/jizi19911101/gin-vue-admin/server/global"
-	"github/jizi19911101/gin-vue-admin/server/model/system"
-	"github/jizi19911101/gin-vue-admin/server/utils"
+	"github.com/jizi19911101/gin-vue-admin/server/global"
+	"github.com/jizi19911101/gin-vue-admin/server/model/system"
+	"github.com/jizi19911101/gin-vue-admin/server/utils"
 
 	"gorm.io/gorm"
 )

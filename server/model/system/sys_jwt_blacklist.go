@@ -1,7 +1,7 @@
 package system
 
 import (
-	"github/jizi19911101/gin-vue-admin/server/global"
+	"github.com/jizi19911101/gin-vue-admin/server/global"
 )
 
 type JwtBlacklist struct {

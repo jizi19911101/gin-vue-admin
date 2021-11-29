@@ -1,10 +1,10 @@
 package system
 
 import (
-	"github/jizi19911101/gin-vue-admin/server/config"
-	"github/jizi19911101/gin-vue-admin/server/global"
-	"github/jizi19911101/gin-vue-admin/server/model/system"
-	"github/jizi19911101/gin-vue-admin/server/utils"
+	"github.com/jizi19911101/gin-vue-admin/server/config"
+	"github.com/jizi19911101/gin-vue-admin/server/global"
+	"github.com/jizi19911101/gin-vue-admin/server/model/system"
+	"github.com/jizi19911101/gin-vue-admin/server/utils"
 	"go.uber.org/zap"
 )
 

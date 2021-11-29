@@ -2,7 +2,7 @@ package request
 
 import (
 	"fmt"
-	"github/jizi19911101/gin-vue-admin/server/config"
+	"github.com/jizi19911101/gin-vue-admin/server/config"
 )
 
 type InitDB struct {

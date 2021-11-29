@@ -7,7 +7,7 @@ import (
 	"mime/multipart"
 	"time"
 
-	"github/jizi19911101/gin-vue-admin/server/global"
+	"github.com/jizi19911101/gin-vue-admin/server/global"
 	"github.com/qiniu/api.v7/v7/auth/qbox"
 	"github.com/qiniu/api.v7/v7/storage"
 	"go.uber.org/zap"

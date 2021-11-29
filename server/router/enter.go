@@ -1,9 +1,9 @@
 package router
 
 import (
-	"github/jizi19911101/gin-vue-admin/server/router/autocode"
-	"github/jizi19911101/gin-vue-admin/server/router/example"
-	"github/jizi19911101/gin-vue-admin/server/router/system"
+	"github.com/jizi19911101/gin-vue-admin/server/router/autocode"
+	"github.com/jizi19911101/gin-vue-admin/server/router/example"
+	"github.com/jizi19911101/gin-vue-admin/server/router/system"
 )
 
 type RouterGroup struct {

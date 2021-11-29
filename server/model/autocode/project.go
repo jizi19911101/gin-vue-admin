@@ -2,7 +2,7 @@
 package autocode
 
 import (
-	"github/jizi19911101/gin-vue-admin/server/global"
+	"github.com/jizi19911101/gin-vue-admin/server/global"
 )
 
 // Project 结构体

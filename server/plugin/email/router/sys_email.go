@@ -1,8 +1,8 @@
 package router
 
 import (
-	"github/jizi19911101/gin-vue-admin/server/middleware"
-	"github/jizi19911101/gin-vue-admin/server/plugin/email/api"
+	"github.com/jizi19911101/gin-vue-admin/server/middleware"
+	"github.com/jizi19911101/gin-vue-admin/server/plugin/email/api"
 	"github.com/gin-gonic/gin"
 )
 

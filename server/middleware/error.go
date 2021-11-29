@@ -8,7 +8,7 @@ import (
 	"runtime/debug"
 	"strings"
 
-	"github/jizi19911101/gin-vue-admin/server/global"
+	"github.com/jizi19911101/gin-vue-admin/server/global"
 	"github.com/gin-gonic/gin"
 	"go.uber.org/zap"
 )

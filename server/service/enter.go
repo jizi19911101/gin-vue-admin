@@ -1,9 +1,9 @@
 package service
 
 import (
-	"github/jizi19911101/gin-vue-admin/server/service/autocode"
-	"github/jizi19911101/gin-vue-admin/server/service/example"
-	"github/jizi19911101/gin-vue-admin/server/service/system"
+	"github.com/jizi19911101/gin-vue-admin/server/service/autocode"
+	"github.com/jizi19911101/gin-vue-admin/server/service/example"
+	"github.com/jizi19911101/gin-vue-admin/server/service/system"
 )
 
 type ServiceGroup struct {
