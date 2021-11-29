@@ -29,6 +29,7 @@ export const getApiList = (data) => {
 // @Success 200 {string} json "{"success":true,"data":{},"msg":"获取成功"}"
 // @Router /api/createApi [post]
 export const createApi = (data) => {
+  data.params = String(data.params)
   return service({
     url: '/api/createApi',
     method: 'post',
