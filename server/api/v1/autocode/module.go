@@ -1,6 +1,7 @@
 package autocode
 
 import (
+	"fmt"
 	"github.com/jizi19911101/gin-vue-admin/server/global"
     "github.com/jizi19911101/gin-vue-admin/server/model/autocode"
     "github.com/jizi19911101/gin-vue-admin/server/model/common/request"
@@ -89,6 +90,7 @@ func (moduleApi *ModuleApi) DeleteModuleByIds(c *gin.Context) {
 func (moduleApi *ModuleApi) UpdateModule(c *gin.Context) {
 	var module autocode.Module
 	_ = c.ShouldBindJSON(&module)
+	fmt.Println("12122module", module)
 	if err := moduleService.UpdateModule(module); err != nil {
         global.GVA_LOG.Error("更新失败!", zap.Error(err))
 		response.FailWithMessage("更新失败", c)

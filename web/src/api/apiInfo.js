@@ -9,7 +9,7 @@ import service from '@/utils/request'
 // @Success 200 {string} string "{"success":true,"data":{},"msg":"获取成功"}"
 // @Router /apiInfo/createApiInfo [post]
 export const createApiInfo = (data) => {
-  data.params = JSON.stringify(data.params)
+  // data.params = JSON.stringify(data.params)
   return service({
     url: '/apiInfo/createApiInfo',
     method: 'post',

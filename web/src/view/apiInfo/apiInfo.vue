@@ -81,31 +81,29 @@
           <!-- <el-input v-model="formData.method" clearable placeholder="请输入" /> -->
           <!-- <el-form-item label="下拉选择" prop="field102"> -->
             <el-select v-model="formData.method" placeholder="请下拉选择" clearable :style="{width: '100%'}">
-              <el-option v-for="(item, index) in methodOptions" :key="index" :label="item.label"
-                :value="item.value" :disabled="item.disabled"></el-option>
+              <el-option v-for="(item, index) in methodOptions" :key="index" :label="item"
+                :value="item" ></el-option>
             </el-select>
         </el-form-item>
         <el-form-item label="请求url:">
           <el-input v-model="formData.url" clearable placeholder="请输入" />
         </el-form-item>
-        <!-- <el-form-item label="请求参数:"> -->
-          <!-- <el-input v-model="formData.params" clearable placeholder="请输入" /> -->
             请求参数：
           <el-form-item
-            v-for="(param, index) in formData.params"
+            v-for="(item, index) in formData.params"
             :label="'参数' + index + ':'"
-            :key="param.key"
-            :prop="'params.' + index + '.value'"
+            :key="index"
+            :prop="formData.params[index]"
             :rules="{
               required: true, message: '参数不能为空', trigger: 'blur'
             }"
           >
-            <el-input v-model="param.value" :style="{width: '80%'}"></el-input><el-button size="small" @click.prevent="removeDomain(param)"  :style="{width: '20%'}" icon="el-icon-delete" type="info"></el-button>
+            <el-input v-model="formData.params[index]" :style="{width: '80%'}"></el-input><el-button size="small" @click.prevent="removeDomain(index)"  :style="{width: '20%'}" icon="el-icon-delete" type="info"></el-button>
           </el-form-item>
+          
           <el-form-item>
           <el-button @click="addDomain" size="small" :style="{float: 'right', width: '20%'}" type="primary">新增参数</el-button>
           </el-form-item>
-        <!-- </el-form-item> -->
         <el-form-item label="所属项目:">
           <el-input v-model="formData.project" clearable placeholder="请输入" :style="{width: '100%'}"/>
         </el-form-item>
@@ -147,9 +145,9 @@ export default {
         name: '',
         method: '',
         url: '',
-        params: [{
-          value: '',
-        }],
+        params: [
+          '',
+        ],
         project: '',
         module: '',
       },
@@ -160,19 +158,7 @@ export default {
           trigger: 'change'
         }],
       },
-      methodOptions: [{
-        "label": "get",
-        "value": "get"
-      }, {
-        "label": "post",
-        "value": "post"
-      }, {
-        "label": "put",
-        "value": "put"
-      }, {
-        "label": "delete",
-        "value": "delete"
-      }],
+      methodOptions: ["get", "post", "delete", "put"],
     }
     
   },
@@ -201,17 +187,17 @@ export default {
         this.deleteApiInfo(row)
       })
     },
-      removeDomain(item) {
-        var index = this.formData.params.indexOf(item)
-        if (index !== -1) {
-          this.formData.params.splice(index, 1)
-        }
+      // removeDomain(item) {
+      //   var index = this.formData.params.indexOf(item)
+      //   if (index !== -1) {
+      //     this.formData.params.splice(index, 1)
+      //   }
+      // },
+      removeDomain(index) {
+        this.formData.params.splice(index, 1)
       },
       addDomain() {
-        this.formData.params.push({
-          value: '',
-          key: Date.now()
-        });
+        this.formData.params.push('');
       },
     async onDelete() {
       const ids = []
@@ -253,9 +239,7 @@ export default {
         name: '',
         method: '',
         url: '',
-        params: [{
-          value: '',
-        }],
+        params: [''],
         project: '',
         module: '',
       }
