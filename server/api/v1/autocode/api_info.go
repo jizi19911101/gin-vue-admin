@@ -2,6 +2,7 @@ package autocode
 
 import (
 	"encoding/json"
+	"fmt"
 	"github.com/gin-gonic/gin"
 	"github.com/jizi19911101/gin-vue-admin/server/global"
 	apiInfoReq "github.com/jizi19911101/gin-vue-admin/server/model/apiInfo/request"
@@ -142,6 +143,7 @@ func (apiInfoApi *ApiInfoApi) GetApiInfoList(c *gin.Context) {
 	var pageInfo autocodeReq.ApiInfoSearch
 	_ = c.ShouldBindQuery(&pageInfo)
 	if err, list, total := apiInfoService.GetApiInfoInfoList(pageInfo); err != nil {
+		fmt.Println(err,"4325435435643")
 	    global.GVA_LOG.Error("获取失败!", zap.Error(err))
         response.FailWithMessage("获取失败", c)
     } else {
@@ -158,11 +160,15 @@ func (apiInfoApi *ApiInfoApi) GetApiInfoList(c *gin.Context) {
 				Module:api.Module,
 			}
 			if err := json.Unmarshal([]byte(apiList[i].Params), &resApiInfo.Params);err!=nil{
+				fmt.Println(err,"errr12121212121212")
 				response.FailWithMessage("param 解析失败", c)
 			}
+			//if err := strings.Split(apiList[i].Params, ",");err != nil{
+			//	response.FailWithMessage("param 解析失败", c)
+			//}
 			resApiInfoList = append(resApiInfoList, resApiInfo)
 		}
-
+        fmt.Println("8989898989898")
         response.OkWithDetailed(response.PageResult{
             List:     resApiInfoList,
             Total:    total,
