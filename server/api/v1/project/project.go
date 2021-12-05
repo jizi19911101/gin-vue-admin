@@ -1,21 +1,20 @@
-package autocode
+package project
 
 import (
+	"github.com/gin-gonic/gin"
 	"github.com/jizi19911101/gin-vue-admin/server/global"
-    "github.com/jizi19911101/gin-vue-admin/server/model/autocode"
-    "github.com/jizi19911101/gin-vue-admin/server/model/common/request"
-    autocodeReq "github.com/jizi19911101/gin-vue-admin/server/model/autocode/request"
-    "github.com/jizi19911101/gin-vue-admin/server/model/common/response"
-    "github.com/jizi19911101/gin-vue-admin/server/service"
-    "github.com/gin-gonic/gin"
-    "go.uber.org/zap"
+	"github.com/jizi19911101/gin-vue-admin/server/model/autocode"
+	autocodeReq "github.com/jizi19911101/gin-vue-admin/server/model/autocode/request"
+	"github.com/jizi19911101/gin-vue-admin/server/model/common/request"
+	"github.com/jizi19911101/gin-vue-admin/server/model/common/response"
+	"github.com/jizi19911101/gin-vue-admin/server/service"
+	"go.uber.org/zap"
 )
 
 type ProjectApi struct {
 }
 
 var projectService = service.ServiceGroupApp.AutoCodeServiceGroup.ProjectService
-
 
 // CreateProject 创建Project
 // @Tags Project
@@ -30,7 +29,7 @@ func (projectApi *ProjectApi) CreateProject(c *gin.Context) {
 	var project autocode.Project
 	_ = c.ShouldBindJSON(&project)
 	if err := projectService.CreateProject(project); err != nil {
-        global.GVA_LOG.Error("创建失败!", zap.Error(err))
+		global.GVA_LOG.Error("创建失败!", zap.Error(err))
 		response.FailWithMessage("创建失败", c)
 	} else {
 		response.OkWithMessage("创建成功", c)
@@ -50,7 +49,7 @@ func (projectApi *ProjectApi) DeleteProject(c *gin.Context) {
 	var project autocode.Project
 	_ = c.ShouldBindJSON(&project)
 	if err := projectService.DeleteProject(project); err != nil {
-        global.GVA_LOG.Error("删除失败!", zap.Error(err))
+		global.GVA_LOG.Error("删除失败!", zap.Error(err))
 		response.FailWithMessage("删除失败", c)
 	} else {
 		response.OkWithMessage("删除成功", c)
@@ -68,9 +67,9 @@ func (projectApi *ProjectApi) DeleteProject(c *gin.Context) {
 // @Router /project/deleteProjectByIds [delete]
 func (projectApi *ProjectApi) DeleteProjectByIds(c *gin.Context) {
 	var IDS request.IdsReq
-    _ = c.ShouldBindJSON(&IDS)
+	_ = c.ShouldBindJSON(&IDS)
 	if err := projectService.DeleteProjectByIds(IDS); err != nil {
-        global.GVA_LOG.Error("批量删除失败!", zap.Error(err))
+		global.GVA_LOG.Error("批量删除失败!", zap.Error(err))
 		response.FailWithMessage("批量删除失败", c)
 	} else {
 		response.OkWithMessage("批量删除成功", c)
@@ -90,7 +89,7 @@ func (projectApi *ProjectApi) UpdateProject(c *gin.Context) {
 	var project autocode.Project
 	_ = c.ShouldBindJSON(&project)
 	if err := projectService.UpdateProject(project); err != nil {
-        global.GVA_LOG.Error("更新失败!", zap.Error(err))
+		global.GVA_LOG.Error("更新失败!", zap.Error(err))
 		response.FailWithMessage("更新失败", c)
 	} else {
 		response.OkWithMessage("更新成功", c)
@@ -110,7 +109,7 @@ func (projectApi *ProjectApi) FindProject(c *gin.Context) {
 	var project autocode.Project
 	_ = c.ShouldBindQuery(&project)
 	if err, reproject := projectService.GetProject(project.ID); err != nil {
-        global.GVA_LOG.Error("查询失败!", zap.Error(err))
+		global.GVA_LOG.Error("查询失败!", zap.Error(err))
 		response.FailWithMessage("查询失败", c)
 	} else {
 		response.OkWithData(gin.H{"reproject": reproject}, c)
@@ -130,14 +129,14 @@ func (projectApi *ProjectApi) GetProjectList(c *gin.Context) {
 	var pageInfo autocodeReq.ProjectSearch
 	_ = c.ShouldBindQuery(&pageInfo)
 	if err, list, total := projectService.GetProjectInfoList(pageInfo); err != nil {
-	    global.GVA_LOG.Error("获取失败!", zap.Error(err))
-        response.FailWithMessage("获取失败", c)
-    } else {
-        response.OkWithDetailed(response.PageResult{
-            List:     list,
-            Total:    total,
-            Page:     pageInfo.Page,
-            PageSize: pageInfo.PageSize,
-        }, "获取成功", c)
-    }
+		global.GVA_LOG.Error("获取失败!", zap.Error(err))
+		response.FailWithMessage("获取失败", c)
+	} else {
+		response.OkWithDetailed(response.PageResult{
+			List:     list,
+			Total:    total,
+			Page:     pageInfo.Page,
+			PageSize: pageInfo.PageSize,
+		}, "获取成功", c)
+	}
 }

@@ -1,22 +1,22 @@
-package autocode
+package api_test
 
 import (
 	"fmt"
+
+	"github.com/gin-gonic/gin"
 	"github.com/jizi19911101/gin-vue-admin/server/global"
-    "github.com/jizi19911101/gin-vue-admin/server/model/autocode"
-    "github.com/jizi19911101/gin-vue-admin/server/model/common/request"
-    autocodeReq "github.com/jizi19911101/gin-vue-admin/server/model/autocode/request"
-    "github.com/jizi19911101/gin-vue-admin/server/model/common/response"
-    "github.com/jizi19911101/gin-vue-admin/server/service"
-    "github.com/gin-gonic/gin"
-    "go.uber.org/zap"
+	"github.com/jizi19911101/gin-vue-admin/server/model/autocode"
+	autocodeReq "github.com/jizi19911101/gin-vue-admin/server/model/autocode/request"
+	"github.com/jizi19911101/gin-vue-admin/server/model/common/request"
+	"github.com/jizi19911101/gin-vue-admin/server/model/common/response"
+	"github.com/jizi19911101/gin-vue-admin/server/service"
+	"go.uber.org/zap"
 )
 
 type ModuleApi struct {
 }
 
 var moduleService = service.ServiceGroupApp.AutoCodeServiceGroup.ModuleService
-
 
 // CreateModule 创建Module
 // @Tags Module
@@ -31,7 +31,7 @@ func (moduleApi *ModuleApi) CreateModule(c *gin.Context) {
 	var module autocode.Module
 	_ = c.ShouldBindJSON(&module)
 	if err := moduleService.CreateModule(module); err != nil {
-        global.GVA_LOG.Error("创建失败!", zap.Error(err))
+		global.GVA_LOG.Error("创建失败!", zap.Error(err))
 		response.FailWithMessage("创建失败", c)
 	} else {
 		response.OkWithMessage("创建成功", c)
@@ -51,7 +51,7 @@ func (moduleApi *ModuleApi) DeleteModule(c *gin.Context) {
 	var module autocode.Module
 	_ = c.ShouldBindJSON(&module)
 	if err := moduleService.DeleteModule(module); err != nil {
-        global.GVA_LOG.Error("删除失败!", zap.Error(err))
+		global.GVA_LOG.Error("删除失败!", zap.Error(err))
 		response.FailWithMessage("删除失败", c)
 	} else {
 		response.OkWithMessage("删除成功", c)
@@ -69,9 +69,9 @@ func (moduleApi *ModuleApi) DeleteModule(c *gin.Context) {
 // @Router /module/deleteModuleByIds [delete]
 func (moduleApi *ModuleApi) DeleteModuleByIds(c *gin.Context) {
 	var IDS request.IdsReq
-    _ = c.ShouldBindJSON(&IDS)
+	_ = c.ShouldBindJSON(&IDS)
 	if err := moduleService.DeleteModuleByIds(IDS); err != nil {
-        global.GVA_LOG.Error("批量删除失败!", zap.Error(err))
+		global.GVA_LOG.Error("批量删除失败!", zap.Error(err))
 		response.FailWithMessage("批量删除失败", c)
 	} else {
 		response.OkWithMessage("批量删除成功", c)
@@ -92,7 +92,7 @@ func (moduleApi *ModuleApi) UpdateModule(c *gin.Context) {
 	_ = c.ShouldBindJSON(&module)
 	fmt.Println("12122module", module)
 	if err := moduleService.UpdateModule(module); err != nil {
-        global.GVA_LOG.Error("更新失败!", zap.Error(err))
+		global.GVA_LOG.Error("更新失败!", zap.Error(err))
 		response.FailWithMessage("更新失败", c)
 	} else {
 		response.OkWithMessage("更新成功", c)
@@ -112,7 +112,7 @@ func (moduleApi *ModuleApi) FindModule(c *gin.Context) {
 	var module autocode.Module
 	_ = c.ShouldBindQuery(&module)
 	if err, remodule := moduleService.GetModule(module.ID); err != nil {
-        global.GVA_LOG.Error("查询失败!", zap.Error(err))
+		global.GVA_LOG.Error("查询失败!", zap.Error(err))
 		response.FailWithMessage("查询失败", c)
 	} else {
 		response.OkWithData(gin.H{"remodule": remodule}, c)
@@ -132,14 +132,14 @@ func (moduleApi *ModuleApi) GetModuleList(c *gin.Context) {
 	var pageInfo autocodeReq.ModuleSearch
 	_ = c.ShouldBindQuery(&pageInfo)
 	if err, list, total := moduleService.GetModuleInfoList(pageInfo); err != nil {
-	    global.GVA_LOG.Error("获取失败!", zap.Error(err))
-        response.FailWithMessage("获取失败", c)
-    } else {
-        response.OkWithDetailed(response.PageResult{
-            List:     list,
-            Total:    total,
-            Page:     pageInfo.Page,
-            PageSize: pageInfo.PageSize,
-        }, "获取成功", c)
-    }
+		global.GVA_LOG.Error("获取失败!", zap.Error(err))
+		response.FailWithMessage("获取失败", c)
+	} else {
+		response.OkWithDetailed(response.PageResult{
+			List:     list,
+			Total:    total,
+			Page:     pageInfo.Page,
+			PageSize: pageInfo.PageSize,
+		}, "获取成功", c)
+	}
 }

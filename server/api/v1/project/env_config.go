@@ -1,21 +1,20 @@
-package autocode
+package project
 
 import (
+	"github.com/gin-gonic/gin"
 	"github.com/jizi19911101/gin-vue-admin/server/global"
-    "github.com/jizi19911101/gin-vue-admin/server/model/autocode"
-    "github.com/jizi19911101/gin-vue-admin/server/model/common/request"
-    autocodeReq "github.com/jizi19911101/gin-vue-admin/server/model/autocode/request"
-    "github.com/jizi19911101/gin-vue-admin/server/model/common/response"
-    "github.com/jizi19911101/gin-vue-admin/server/service"
-    "github.com/gin-gonic/gin"
-    "go.uber.org/zap"
+	"github.com/jizi19911101/gin-vue-admin/server/model/autocode"
+	autocodeReq "github.com/jizi19911101/gin-vue-admin/server/model/autocode/request"
+	"github.com/jizi19911101/gin-vue-admin/server/model/common/request"
+	"github.com/jizi19911101/gin-vue-admin/server/model/common/response"
+	"github.com/jizi19911101/gin-vue-admin/server/service"
+	"go.uber.org/zap"
 )
 
 type EnvConfigApi struct {
 }
 
 var envConfigService = service.ServiceGroupApp.AutoCodeServiceGroup.EnvConfigService
-
 
 // CreateEnvConfig 创建EnvConfig
 // @Tags EnvConfig
@@ -30,7 +29,7 @@ func (envConfigApi *EnvConfigApi) CreateEnvConfig(c *gin.Context) {
 	var envConfig autocode.EnvConfig
 	_ = c.ShouldBindJSON(&envConfig)
 	if err := envConfigService.CreateEnvConfig(envConfig); err != nil {
-        global.GVA_LOG.Error("创建失败!", zap.Error(err))
+		global.GVA_LOG.Error("创建失败!", zap.Error(err))
 		response.FailWithMessage("创建失败", c)
 	} else {
 		response.OkWithMessage("创建成功", c)
@@ -50,7 +49,7 @@ func (envConfigApi *EnvConfigApi) DeleteEnvConfig(c *gin.Context) {
 	var envConfig autocode.EnvConfig
 	_ = c.ShouldBindJSON(&envConfig)
 	if err := envConfigService.DeleteEnvConfig(envConfig); err != nil {
-        global.GVA_LOG.Error("删除失败!", zap.Error(err))
+		global.GVA_LOG.Error("删除失败!", zap.Error(err))
 		response.FailWithMessage("删除失败", c)
 	} else {
 		response.OkWithMessage("删除成功", c)
@@ -68,9 +67,9 @@ func (envConfigApi *EnvConfigApi) DeleteEnvConfig(c *gin.Context) {
 // @Router /envConfig/deleteEnvConfigByIds [delete]
 func (envConfigApi *EnvConfigApi) DeleteEnvConfigByIds(c *gin.Context) {
 	var IDS request.IdsReq
-    _ = c.ShouldBindJSON(&IDS)
+	_ = c.ShouldBindJSON(&IDS)
 	if err := envConfigService.DeleteEnvConfigByIds(IDS); err != nil {
-        global.GVA_LOG.Error("批量删除失败!", zap.Error(err))
+		global.GVA_LOG.Error("批量删除失败!", zap.Error(err))
 		response.FailWithMessage("批量删除失败", c)
 	} else {
 		response.OkWithMessage("批量删除成功", c)
@@ -90,7 +89,7 @@ func (envConfigApi *EnvConfigApi) UpdateEnvConfig(c *gin.Context) {
 	var envConfig autocode.EnvConfig
 	_ = c.ShouldBindJSON(&envConfig)
 	if err := envConfigService.UpdateEnvConfig(envConfig); err != nil {
-        global.GVA_LOG.Error("更新失败!", zap.Error(err))
+		global.GVA_LOG.Error("更新失败!", zap.Error(err))
 		response.FailWithMessage("更新失败", c)
 	} else {
 		response.OkWithMessage("更新成功", c)
@@ -110,7 +109,7 @@ func (envConfigApi *EnvConfigApi) FindEnvConfig(c *gin.Context) {
 	var envConfig autocode.EnvConfig
 	_ = c.ShouldBindQuery(&envConfig)
 	if err, reenvConfig := envConfigService.GetEnvConfig(envConfig.ID); err != nil {
-        global.GVA_LOG.Error("查询失败!", zap.Error(err))
+		global.GVA_LOG.Error("查询失败!", zap.Error(err))
 		response.FailWithMessage("查询失败", c)
 	} else {
 		response.OkWithData(gin.H{"reenvConfig": reenvConfig}, c)
@@ -130,14 +129,14 @@ func (envConfigApi *EnvConfigApi) GetEnvConfigList(c *gin.Context) {
 	var pageInfo autocodeReq.EnvConfigSearch
 	_ = c.ShouldBindQuery(&pageInfo)
 	if err, list, total := envConfigService.GetEnvConfigInfoList(pageInfo); err != nil {
-	    global.GVA_LOG.Error("获取失败!", zap.Error(err))
-        response.FailWithMessage("获取失败", c)
-    } else {
-        response.OkWithDetailed(response.PageResult{
-            List:     list,
-            Total:    total,
-            Page:     pageInfo.Page,
-            PageSize: pageInfo.PageSize,
-        }, "获取成功", c)
-    }
+		global.GVA_LOG.Error("获取失败!", zap.Error(err))
+		response.FailWithMessage("获取失败", c)
+	} else {
+		response.OkWithDetailed(response.PageResult{
+			List:     list,
+			Total:    total,
+			Page:     pageInfo.Page,
+			PageSize: pageInfo.PageSize,
+		}, "获取成功", c)
+	}
 }
