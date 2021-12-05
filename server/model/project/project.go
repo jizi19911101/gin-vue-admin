@@ -9,7 +9,7 @@ import (
 // 如果含有time.Time 请自行import time包
 type Project struct {
 	global.GVA_MODEL
-	Name string `json:"name" form:"name" gorm:"column:name;comment:项目名称"`
+	Name string `json:"name" form:"name" gorm:"column:name;comment:项目名称" validate:"required"`
 }
 
 // TableName Project 表名

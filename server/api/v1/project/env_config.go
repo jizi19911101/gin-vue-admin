@@ -28,6 +28,11 @@ var envConfigService = service.ServiceGroupApp.AutoCodeServiceGroup.EnvConfigSer
 func (envConfigApi *EnvConfigApi) CreateEnvConfig(c *gin.Context) {
 	var envConfig project.EnvConfig
 	_ = c.ShouldBindJSON(&envConfig)
+	if err := global.Validate.Struct(envConfig); err != nil {
+		global.GVA_LOG.Error("参数缺失", zap.Error(err))
+		response.FailWithMessage("参数缺失", c)
+		return
+	}
 	if err := envConfigService.CreateEnvConfig(envConfig); err != nil {
 		global.GVA_LOG.Error("创建失败!", zap.Error(err))
 		response.FailWithMessage("创建失败", c)
@@ -88,6 +93,11 @@ func (envConfigApi *EnvConfigApi) DeleteEnvConfigByIds(c *gin.Context) {
 func (envConfigApi *EnvConfigApi) UpdateEnvConfig(c *gin.Context) {
 	var envConfig project.EnvConfig
 	_ = c.ShouldBindJSON(&envConfig)
+	if err := global.Validate.Struct(envConfig); err != nil {
+		global.GVA_LOG.Error("参数缺失", zap.Error(err))
+		response.FailWithMessage("参数缺失", c)
+		return
+	}
 	if err := envConfigService.UpdateEnvConfig(envConfig); err != nil {
 		global.GVA_LOG.Error("更新失败!", zap.Error(err))
 		response.FailWithMessage("更新失败", c)

@@ -28,6 +28,11 @@ var projectService = service.ServiceGroupApp.AutoCodeServiceGroup.ProjectService
 func (projectApi *ProjectApi) CreateProject(c *gin.Context) {
 	var project project2.Project
 	_ = c.ShouldBindJSON(&project)
+	if err := global.Validate.Struct(project); err != nil {
+		global.GVA_LOG.Error("参数缺失", zap.Error(err))
+		response.FailWithMessage("参数缺失", c)
+		return
+	}
 	if err := projectService.CreateProject(project); err != nil {
 		global.GVA_LOG.Error("创建失败!", zap.Error(err))
 		response.FailWithMessage("创建失败", c)
@@ -88,6 +93,11 @@ func (projectApi *ProjectApi) DeleteProjectByIds(c *gin.Context) {
 func (projectApi *ProjectApi) UpdateProject(c *gin.Context) {
 	var project project2.Project
 	_ = c.ShouldBindJSON(&project)
+	if err := global.Validate.Struct(project); err != nil {
+		global.GVA_LOG.Error("参数缺失", zap.Error(err))
+		response.FailWithMessage("参数缺失", c)
+		return
+	}
 	if err := projectService.UpdateProject(project); err != nil {
 		global.GVA_LOG.Error("更新失败!", zap.Error(err))
 		response.FailWithMessage("更新失败", c)

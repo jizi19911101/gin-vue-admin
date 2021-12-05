@@ -30,6 +30,7 @@ func (moduleApi *ModuleApi) CreateModule(c *gin.Context) {
 	var module api_test.Module
 	_ = c.ShouldBindJSON(&module)
 	if err := global.Validate.Struct(module); err != nil {
+		global.GVA_LOG.Error("参数缺失", zap.Error(err))
 		response.FailWithMessage("参数缺失", c)
 		return
 	}
@@ -94,6 +95,7 @@ func (moduleApi *ModuleApi) UpdateModule(c *gin.Context) {
 	var module api_test.Module
 	_ = c.ShouldBindJSON(&module)
 	if err := global.Validate.Struct(module); err != nil {
+		global.GVA_LOG.Error("参数缺失", zap.Error(err))
 		response.FailWithMessage("参数缺失", c)
 		return
 	}
