@@ -1,8 +1,6 @@
 package api_test
 
 import (
-	"fmt"
-
 	"github.com/jizi19911101/gin-vue-admin/server/model/api_test"
 
 	"github.com/gin-gonic/gin"
@@ -31,6 +29,10 @@ var moduleService = service.ServiceGroupApp.AutoCodeServiceGroup.ModuleService
 func (moduleApi *ModuleApi) CreateModule(c *gin.Context) {
 	var module api_test.Module
 	_ = c.ShouldBindJSON(&module)
+	if err := global.Validate.Struct(module); err != nil {
+		response.FailWithMessage("参数缺失", c)
+		return
+	}
 	if err := moduleService.CreateModule(module); err != nil {
 		global.GVA_LOG.Error("创建失败!", zap.Error(err))
 		response.FailWithMessage("创建失败", c)
@@ -91,7 +93,10 @@ func (moduleApi *ModuleApi) DeleteModuleByIds(c *gin.Context) {
 func (moduleApi *ModuleApi) UpdateModule(c *gin.Context) {
 	var module api_test.Module
 	_ = c.ShouldBindJSON(&module)
-	fmt.Println("12122module", module)
+	if err := global.Validate.Struct(module); err != nil {
+		response.FailWithMessage("参数缺失", c)
+		return
+	}
 	if err := moduleService.UpdateModule(module); err != nil {
 		global.GVA_LOG.Error("更新失败!", zap.Error(err))
 		response.FailWithMessage("更新失败", c)
