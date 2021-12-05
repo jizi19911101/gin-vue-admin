@@ -1,6 +1,7 @@
 package global
 
 import (
+	"github.com/go-playground/validator/v10"
 	"github.com/jizi19911101/gin-vue-admin/server/utils/timer"
 	"github.com/songzhibin97/gkit/cache/local_cache"
 
@@ -26,4 +27,5 @@ var (
 	GVA_Concurrency_Control             = &singleflight.Group{}
 
 	BlackCache local_cache.Cache
+	Validate   *validator.Validate = validator.New()
 )

@@ -34,6 +34,12 @@ var apiInfoService = service.ServiceGroupApp.AutoCodeServiceGroup.ApiInfoService
 func (apiInfoApi *ApiInfoApi) CreateApiInfo(c *gin.Context) {
 	var apiInfoRequest apiInfoReq.ApiInfoRequest
 	_ = c.ShouldBindJSON(&apiInfoRequest)
+	//global.Validate = validator.New()
+	if err := global.Validate.Struct(&apiInfoRequest); err != nil {
+		global.GVA_LOG.Error("参数缺失!", zap.Error(err))
+		response.FailWithMessage("参数缺失", c)
+		return
+	}
 	apiInfo := apiInfoApi.transferRequest(apiInfoRequest)
 	if err := apiInfoService.CreateApiInfo(apiInfo); err != nil {
 		global.GVA_LOG.Error("创建失败!", zap.Error(err))
@@ -96,6 +102,11 @@ func (apiInfoApi *ApiInfoApi) UpdateApiInfo(c *gin.Context) {
 	//var apiInfo autocode.ApiInfo
 	var apiInfoRequest apiInfoReq.ApiInfoRequest
 	_ = c.ShouldBindJSON(&apiInfoRequest)
+	if err := global.Validate.Struct(&apiInfoRequest); err != nil {
+		global.GVA_LOG.Error("参数缺失!", zap.Error(err))
+		response.FailWithMessage("参数缺失", c)
+		return
+	}
 	apiInfo := apiInfoApi.transferRequest(apiInfoRequest)
 	if err := apiInfoService.UpdateApiInfo(apiInfo); err != nil {
 		global.GVA_LOG.Error("更新失败!", zap.Error(err))
