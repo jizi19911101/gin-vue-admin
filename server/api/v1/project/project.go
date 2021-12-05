@@ -3,10 +3,10 @@ package project
 import (
 	"github.com/gin-gonic/gin"
 	"github.com/jizi19911101/gin-vue-admin/server/global"
-	"github.com/jizi19911101/gin-vue-admin/server/model/autocode"
 	autocodeReq "github.com/jizi19911101/gin-vue-admin/server/model/autocode/request"
 	"github.com/jizi19911101/gin-vue-admin/server/model/common/request"
 	"github.com/jizi19911101/gin-vue-admin/server/model/common/response"
+	project2 "github.com/jizi19911101/gin-vue-admin/server/model/project"
 	"github.com/jizi19911101/gin-vue-admin/server/service"
 	"go.uber.org/zap"
 )
@@ -26,7 +26,7 @@ var projectService = service.ServiceGroupApp.AutoCodeServiceGroup.ProjectService
 // @Success 200 {string} string "{"success":true,"data":{},"msg":"获取成功"}"
 // @Router /project/createProject [post]
 func (projectApi *ProjectApi) CreateProject(c *gin.Context) {
-	var project autocode.Project
+	var project project2.Project
 	_ = c.ShouldBindJSON(&project)
 	if err := projectService.CreateProject(project); err != nil {
 		global.GVA_LOG.Error("创建失败!", zap.Error(err))
@@ -46,7 +46,7 @@ func (projectApi *ProjectApi) CreateProject(c *gin.Context) {
 // @Success 200 {string} string "{"success":true,"data":{},"msg":"删除成功"}"
 // @Router /project/deleteProject [delete]
 func (projectApi *ProjectApi) DeleteProject(c *gin.Context) {
-	var project autocode.Project
+	var project project2.Project
 	_ = c.ShouldBindJSON(&project)
 	if err := projectService.DeleteProject(project); err != nil {
 		global.GVA_LOG.Error("删除失败!", zap.Error(err))
@@ -86,7 +86,7 @@ func (projectApi *ProjectApi) DeleteProjectByIds(c *gin.Context) {
 // @Success 200 {string} string "{"success":true,"data":{},"msg":"更新成功"}"
 // @Router /project/updateProject [put]
 func (projectApi *ProjectApi) UpdateProject(c *gin.Context) {
-	var project autocode.Project
+	var project project2.Project
 	_ = c.ShouldBindJSON(&project)
 	if err := projectService.UpdateProject(project); err != nil {
 		global.GVA_LOG.Error("更新失败!", zap.Error(err))
@@ -106,7 +106,7 @@ func (projectApi *ProjectApi) UpdateProject(c *gin.Context) {
 // @Success 200 {string} string "{"success":true,"data":{},"msg":"查询成功"}"
 // @Router /project/findProject [get]
 func (projectApi *ProjectApi) FindProject(c *gin.Context) {
-	var project autocode.Project
+	var project project2.Project
 	_ = c.ShouldBindQuery(&project)
 	if err, reproject := projectService.GetProject(project.ID); err != nil {
 		global.GVA_LOG.Error("查询失败!", zap.Error(err))

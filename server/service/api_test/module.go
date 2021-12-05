@@ -2,7 +2,7 @@ package api_test
 
 import (
 	"github.com/jizi19911101/gin-vue-admin/server/global"
-	"github.com/jizi19911101/gin-vue-admin/server/model/autocode"
+	"github.com/jizi19911101/gin-vue-admin/server/model/api_test"
 	autoCodeReq "github.com/jizi19911101/gin-vue-admin/server/model/autocode/request"
 	"github.com/jizi19911101/gin-vue-admin/server/model/common/request"
 )
@@ -12,14 +12,14 @@ type ModuleService struct {
 
 // CreateModule 创建Module记录
 // Author [piexlmax](https://github.com/piexlmax)
-func (moduleService *ModuleService) CreateModule(module autocode.Module) (err error) {
+func (moduleService *ModuleService) CreateModule(module api_test.Module) (err error) {
 	err = global.GVA_DB.Create(&module).Error
 	return err
 }
 
 // DeleteModule 删除Module记录
 // Author [piexlmax](https://github.com/piexlmax)
-func (moduleService *ModuleService) DeleteModule(module autocode.Module) (err error) {
+func (moduleService *ModuleService) DeleteModule(module api_test.Module) (err error) {
 	err = global.GVA_DB.Delete(&module).Error
 	return err
 }
@@ -27,20 +27,20 @@ func (moduleService *ModuleService) DeleteModule(module autocode.Module) (err er
 // DeleteModuleByIds 批量删除Module记录
 // Author [piexlmax](https://github.com/piexlmax)
 func (moduleService *ModuleService) DeleteModuleByIds(ids request.IdsReq) (err error) {
-	err = global.GVA_DB.Delete(&[]autocode.Module{}, "id in ?", ids.Ids).Error
+	err = global.GVA_DB.Delete(&[]api_test.Module{}, "id in ?", ids.Ids).Error
 	return err
 }
 
 // UpdateModule 更新Module记录
 // Author [piexlmax](https://github.com/piexlmax)
-func (moduleService *ModuleService) UpdateModule(module autocode.Module) (err error) {
+func (moduleService *ModuleService) UpdateModule(module api_test.Module) (err error) {
 	err = global.GVA_DB.Save(&module).Error
 	return err
 }
 
 // GetModule 根据id获取Module记录
 // Author [piexlmax](https://github.com/piexlmax)
-func (moduleService *ModuleService) GetModule(id uint) (err error, module autocode.Module) {
+func (moduleService *ModuleService) GetModule(id uint) (err error, module api_test.Module) {
 	err = global.GVA_DB.Where("id = ?", id).First(&module).Error
 	return
 }
@@ -51,8 +51,8 @@ func (moduleService *ModuleService) GetModuleInfoList(info autoCodeReq.ModuleSea
 	limit := info.PageSize
 	offset := info.PageSize * (info.Page - 1)
 	// 创建db
-	db := global.GVA_DB.Model(&autocode.Module{})
-	var modules []autocode.Module
+	db := global.GVA_DB.Model(&api_test.Module{})
+	var modules []api_test.Module
 	// 如果有条件搜索 下方会自动创建搜索语句
 	if info.Name != "" {
 		db = db.Where("name LIKE ?", "%"+info.Name+"%")

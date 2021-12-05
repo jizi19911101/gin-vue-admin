@@ -1,7 +1,7 @@
-package request
+package response
 
-type ApiInfoRequest struct {
-	ID      string   `json:"ID"`
+type ApiInfoReSponse struct {
+	ID      uint     `json:"ID"`
 	Name    string   `json:"name"`
 	Method  string   `json:"method"`
 	Url     string   `json:"url"`

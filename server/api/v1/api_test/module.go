@@ -3,9 +3,10 @@ package api_test
 import (
 	"fmt"
 
+	"github.com/jizi19911101/gin-vue-admin/server/model/api_test"
+
 	"github.com/gin-gonic/gin"
 	"github.com/jizi19911101/gin-vue-admin/server/global"
-	"github.com/jizi19911101/gin-vue-admin/server/model/autocode"
 	autocodeReq "github.com/jizi19911101/gin-vue-admin/server/model/autocode/request"
 	"github.com/jizi19911101/gin-vue-admin/server/model/common/request"
 	"github.com/jizi19911101/gin-vue-admin/server/model/common/response"
@@ -28,7 +29,7 @@ var moduleService = service.ServiceGroupApp.AutoCodeServiceGroup.ModuleService
 // @Success 200 {string} string "{"success":true,"data":{},"msg":"获取成功"}"
 // @Router /module/createModule [post]
 func (moduleApi *ModuleApi) CreateModule(c *gin.Context) {
-	var module autocode.Module
+	var module api_test.Module
 	_ = c.ShouldBindJSON(&module)
 	if err := moduleService.CreateModule(module); err != nil {
 		global.GVA_LOG.Error("创建失败!", zap.Error(err))
@@ -48,7 +49,7 @@ func (moduleApi *ModuleApi) CreateModule(c *gin.Context) {
 // @Success 200 {string} string "{"success":true,"data":{},"msg":"删除成功"}"
 // @Router /module/deleteModule [delete]
 func (moduleApi *ModuleApi) DeleteModule(c *gin.Context) {
-	var module autocode.Module
+	var module api_test.Module
 	_ = c.ShouldBindJSON(&module)
 	if err := moduleService.DeleteModule(module); err != nil {
 		global.GVA_LOG.Error("删除失败!", zap.Error(err))
@@ -88,7 +89,7 @@ func (moduleApi *ModuleApi) DeleteModuleByIds(c *gin.Context) {
 // @Success 200 {string} string "{"success":true,"data":{},"msg":"更新成功"}"
 // @Router /module/updateModule [put]
 func (moduleApi *ModuleApi) UpdateModule(c *gin.Context) {
-	var module autocode.Module
+	var module api_test.Module
 	_ = c.ShouldBindJSON(&module)
 	fmt.Println("12122module", module)
 	if err := moduleService.UpdateModule(module); err != nil {
@@ -109,7 +110,7 @@ func (moduleApi *ModuleApi) UpdateModule(c *gin.Context) {
 // @Success 200 {string} string "{"success":true,"data":{},"msg":"查询成功"}"
 // @Router /module/findModule [get]
 func (moduleApi *ModuleApi) FindModule(c *gin.Context) {
-	var module autocode.Module
+	var module api_test.Module
 	_ = c.ShouldBindQuery(&module)
 	if err, remodule := moduleService.GetModule(module.ID); err != nil {
 		global.GVA_LOG.Error("查询失败!", zap.Error(err))

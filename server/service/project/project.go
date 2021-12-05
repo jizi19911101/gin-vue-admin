@@ -2,9 +2,9 @@ package project
 
 import (
 	"github.com/jizi19911101/gin-vue-admin/server/global"
-	"github.com/jizi19911101/gin-vue-admin/server/model/autocode"
 	autoCodeReq "github.com/jizi19911101/gin-vue-admin/server/model/autocode/request"
 	"github.com/jizi19911101/gin-vue-admin/server/model/common/request"
+	"github.com/jizi19911101/gin-vue-admin/server/model/project"
 )
 
 type ProjectService struct {
@@ -12,14 +12,14 @@ type ProjectService struct {
 
 // CreateProject 创建Project记录
 // Author [piexlmax](https://github.com/piexlmax)
-func (projectService *ProjectService) CreateProject(project autocode.Project) (err error) {
+func (projectService *ProjectService) CreateProject(project project.Project) (err error) {
 	err = global.GVA_DB.Create(&project).Error
 	return err
 }
 
 // DeleteProject 删除Project记录
 // Author [piexlmax](https://github.com/piexlmax)
-func (projectService *ProjectService) DeleteProject(project autocode.Project) (err error) {
+func (projectService *ProjectService) DeleteProject(project project.Project) (err error) {
 	err = global.GVA_DB.Delete(&project).Error
 	return err
 }
@@ -27,20 +27,20 @@ func (projectService *ProjectService) DeleteProject(project autocode.Project) (e
 // DeleteProjectByIds 批量删除Project记录
 // Author [piexlmax](https://github.com/piexlmax)
 func (projectService *ProjectService) DeleteProjectByIds(ids request.IdsReq) (err error) {
-	err = global.GVA_DB.Delete(&[]autocode.Project{}, "id in ?", ids.Ids).Error
+	err = global.GVA_DB.Delete(&[]project.Project{}, "id in ?", ids.Ids).Error
 	return err
 }
 
 // UpdateProject 更新Project记录
 // Author [piexlmax](https://github.com/piexlmax)
-func (projectService *ProjectService) UpdateProject(project autocode.Project) (err error) {
+func (projectService *ProjectService) UpdateProject(project project.Project) (err error) {
 	err = global.GVA_DB.Save(&project).Error
 	return err
 }
 
 // GetProject 根据id获取Project记录
 // Author [piexlmax](https://github.com/piexlmax)
-func (projectService *ProjectService) GetProject(id uint) (err error, project autocode.Project) {
+func (projectService *ProjectService) GetProject(id uint) (err error, project project.Project) {
 	err = global.GVA_DB.Where("id = ?", id).First(&project).Error
 	return
 }
@@ -51,8 +51,8 @@ func (projectService *ProjectService) GetProjectInfoList(info autoCodeReq.Projec
 	limit := info.PageSize
 	offset := info.PageSize * (info.Page - 1)
 	// 创建db
-	db := global.GVA_DB.Model(&autocode.Project{})
-	var projects []autocode.Project
+	db := global.GVA_DB.Model(&project.Project{})
+	var projects []project.Project
 	// 如果有条件搜索 下方会自动创建搜索语句
 	if info.Name != "" {
 		db = db.Where("name = ?", info.Name)

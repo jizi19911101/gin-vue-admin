@@ -1,13 +1,15 @@
 package api_test
 
 import (
-	"fmt"
 	"strings"
+
+	apiInfoReq "github.com/jizi19911101/gin-vue-admin/server/model/api_test/request"
+	apiInfoRes "github.com/jizi19911101/gin-vue-admin/server/model/api_test/response"
+
+	"github.com/jizi19911101/gin-vue-admin/server/model/api_test"
 
 	"github.com/gin-gonic/gin"
 	"github.com/jizi19911101/gin-vue-admin/server/global"
-	apiInfoReq "github.com/jizi19911101/gin-vue-admin/server/model/apiInfo/request"
-	"github.com/jizi19911101/gin-vue-admin/server/model/autocode"
 	autocodeReq "github.com/jizi19911101/gin-vue-admin/server/model/autocode/request"
 	"github.com/jizi19911101/gin-vue-admin/server/model/common/request"
 	"github.com/jizi19911101/gin-vue-admin/server/model/common/response"
@@ -30,17 +32,9 @@ var apiInfoService = service.ServiceGroupApp.AutoCodeServiceGroup.ApiInfoService
 // @Success 200 {string} string "{"success":true,"data":{},"msg":"获取成功"}"
 // @Router /apiInfo/createApiInfo [post]
 func (apiInfoApi *ApiInfoApi) CreateApiInfo(c *gin.Context) {
-	var reqApiInfo apiInfoReq.ApiInfo
-	_ = c.ShouldBindJSON(&reqApiInfo)
-	apiInfo := autocode.ApiInfo{
-		Name:    reqApiInfo.Name,
-		Url:     reqApiInfo.Url,
-		Method:  reqApiInfo.Method,
-		Project: reqApiInfo.Project,
-		Module:  reqApiInfo.Module,
-		Params:  strings.Join(reqApiInfo.Params, ","),
-	}
-	//s2 := strings.Join(s1,",")
+	var apiInfoRequest apiInfoReq.ApiInfoRequest
+	_ = c.ShouldBindJSON(&apiInfoRequest)
+	apiInfo := apiInfoApi.transferRequest(apiInfoRequest)
 	if err := apiInfoService.CreateApiInfo(apiInfo); err != nil {
 		global.GVA_LOG.Error("创建失败!", zap.Error(err))
 		response.FailWithMessage("创建失败", c)
@@ -59,7 +53,7 @@ func (apiInfoApi *ApiInfoApi) CreateApiInfo(c *gin.Context) {
 // @Success 200 {string} string "{"success":true,"data":{},"msg":"删除成功"}"
 // @Router /apiInfo/deleteApiInfo [delete]
 func (apiInfoApi *ApiInfoApi) DeleteApiInfo(c *gin.Context) {
-	var apiInfo autocode.ApiInfo
+	var apiInfo api_test.ApiInfo
 	_ = c.ShouldBindJSON(&apiInfo)
 	if err := apiInfoService.DeleteApiInfo(apiInfo); err != nil {
 		global.GVA_LOG.Error("删除失败!", zap.Error(err))
@@ -100,18 +94,9 @@ func (apiInfoApi *ApiInfoApi) DeleteApiInfoByIds(c *gin.Context) {
 // @Router /apiInfo/updateApiInfo [put]
 func (apiInfoApi *ApiInfoApi) UpdateApiInfo(c *gin.Context) {
 	//var apiInfo autocode.ApiInfo
-	var reqApiInfo apiInfoReq.ApiInfo
-	_ = c.ShouldBindJSON(&reqApiInfo)
-	apiInfo := autocode.ApiInfo{
-		Name:    reqApiInfo.Name,
-		Url:     reqApiInfo.Url,
-		Params:  strings.Join(reqApiInfo.Params, ","),
-		Project: reqApiInfo.Project,
-		Module:  reqApiInfo.Module,
-		Method:  reqApiInfo.Method,
-	}
-	apiInfo.ID = reqApiInfo.ID
-	apiInfo.CreatedAt = reqApiInfo.CreatedAt
+	var apiInfoRequest apiInfoReq.ApiInfoRequest
+	_ = c.ShouldBindJSON(&apiInfoRequest)
+	apiInfo := apiInfoApi.transferRequest(apiInfoRequest)
 	if err := apiInfoService.UpdateApiInfo(apiInfo); err != nil {
 		global.GVA_LOG.Error("更新失败!", zap.Error(err))
 		response.FailWithMessage("更新失败", c)
@@ -130,22 +115,13 @@ func (apiInfoApi *ApiInfoApi) UpdateApiInfo(c *gin.Context) {
 // @Success 200 {string} string "{"success":true,"data":{},"msg":"查询成功"}"
 // @Router /apiInfo/findApiInfo [get]
 func (apiInfoApi *ApiInfoApi) FindApiInfo(c *gin.Context) {
-	var apiInfo autocode.ApiInfo
+	var apiInfo api_test.ApiInfo
 	_ = c.ShouldBindQuery(&apiInfo)
 	if err, reapiInfo := apiInfoService.GetApiInfo(apiInfo.ID); err != nil {
 		global.GVA_LOG.Error("查询失败!", zap.Error(err))
 		response.FailWithMessage("查询失败", c)
 	} else {
-		resApiInfo := resApiInfo{
-			ID:      reapiInfo.ID,
-			Name:    reapiInfo.Name,
-			Method:  reapiInfo.Method,
-			Url:     reapiInfo.Url,
-			Project: reapiInfo.Project,
-			Module:  reapiInfo.Module,
-		}
-		resApiInfo.Params = strings.Split(reapiInfo.Params, ",")
-		resApiInfo.CreatedAt = reapiInfo.CreatedAt
+		resApiInfo := apiInfoApi.transferResponse(reapiInfo)
 		response.OkWithData(gin.H{"reapiInfo": resApiInfo}, c)
 	}
 }
@@ -166,29 +142,13 @@ func (apiInfoApi *ApiInfoApi) GetApiInfoList(c *gin.Context) {
 		global.GVA_LOG.Error("获取失败!", zap.Error(err))
 		response.FailWithMessage("获取失败", c)
 	} else {
+		apiList := list.([]api_test.ApiInfo)
+		resApiInfoList := make([]apiInfoRes.ApiInfoReSponse, 0, len(apiList))
 
-		apiList := list.([]autocode.ApiInfo)
-		resApiInfoList := make([]resApiInfo, 0, len(apiList))
-
-		for i, api := range apiList {
-			resApiInfo := resApiInfo{
-				ID:      api.ID,
-				Name:    api.Name,
-				Method:  api.Method,
-				Url:     api.Url,
-				Project: api.Project,
-				Module:  api.Module,
-			}
-			//if err := json.Unmarshal([]byte(apiList[i].Params), &resApiInfo.Params);err!=nil{
-			//	fmt.Println(err,"errr12121212121212")
-			//	response.FailWithMessage("param 解析失败", c)
-			//	return
-			//}
-			resApiInfo.Params = strings.Split(apiList[i].Params, ",")
-			resApiInfo.CreatedAt = apiList[i].CreatedAt
+		for _, api := range apiList {
+			resApiInfo := apiInfoApi.transferResponse(api)
 			resApiInfoList = append(resApiInfoList, resApiInfo)
 		}
-		fmt.Println("8989898989898")
 		response.OkWithDetailed(response.PageResult{
 			List:     resApiInfoList,
 			Total:    total,
@@ -198,13 +158,31 @@ func (apiInfoApi *ApiInfoApi) GetApiInfoList(c *gin.Context) {
 	}
 }
 
-type resApiInfo struct {
-	global.GVA_MODEL
-	ID      uint     `json:"ID" form:"id" gorm:"column:id;comment:;type:int;"`
-	Name    string   `json:"name" form:"name" gorm:"column:name;comment:;type:varchar;"`
-	Method  string   `json:"method" form:"method" gorm:"column:method;comment:;type:char;"`
-	Url     string   `json:"url" form:"url" gorm:"column:url;comment:;type:varchar;"`
-	Params  []string `json:"params" form:"params" gorm:"column:params;comment:;type:varchar;"`
-	Project string   `json:"project" form:"project" gorm:"column:project;comment:;type:char;"`
-	Module  string   `json:"module" form:"module" gorm:"column:module;comment:;type:varchar;"`
+func (apiInfoApi *ApiInfoApi) transferRequest(apiInfoRequest apiInfoReq.ApiInfoRequest) api_test.ApiInfo {
+	apiInfo := api_test.ApiInfo{
+		GVA_MODEL: global.GVA_MODEL{
+			ID: apiInfoRequest.ID,
+		},
+		Url:     apiInfoRequest.Url,
+		Name:    apiInfoRequest.Name,
+		Method:  apiInfoRequest.Method,
+		Module:  apiInfoRequest.Module,
+		Project: apiInfoRequest.Project,
+	}
+	apiInfo.Params = strings.Join(apiInfoRequest.Params, ",")
+	return apiInfo
+}
+
+func (apiInfoApi *ApiInfoApi) transferResponse(apiInfo api_test.ApiInfo) apiInfoRes.ApiInfoReSponse {
+	apiInfoResponse := apiInfoRes.ApiInfoReSponse{
+		ID:      apiInfo.ID,
+		Url:     apiInfo.Url,
+		Name:    apiInfo.Name,
+		Method:  apiInfo.Method,
+		Module:  apiInfo.Module,
+		Project: apiInfo.Project,
+	}
+
+	apiInfoResponse.Params = strings.Split(apiInfo.Params, ",")
+	return apiInfoResponse
 }

@@ -2,9 +2,9 @@ package project
 
 import (
 	"github.com/jizi19911101/gin-vue-admin/server/global"
-	"github.com/jizi19911101/gin-vue-admin/server/model/autocode"
 	autoCodeReq "github.com/jizi19911101/gin-vue-admin/server/model/autocode/request"
 	"github.com/jizi19911101/gin-vue-admin/server/model/common/request"
+	"github.com/jizi19911101/gin-vue-admin/server/model/project"
 )
 
 type EnvConfigService struct {
@@ -12,14 +12,14 @@ type EnvConfigService struct {
 
 // CreateEnvConfig 创建EnvConfig记录
 // Author [piexlmax](https://github.com/piexlmax)
-func (envConfigService *EnvConfigService) CreateEnvConfig(envConfig autocode.EnvConfig) (err error) {
+func (envConfigService *EnvConfigService) CreateEnvConfig(envConfig project.EnvConfig) (err error) {
 	err = global.GVA_DB.Create(&envConfig).Error
 	return err
 }
 
 // DeleteEnvConfig 删除EnvConfig记录
 // Author [piexlmax](https://github.com/piexlmax)
-func (envConfigService *EnvConfigService) DeleteEnvConfig(envConfig autocode.EnvConfig) (err error) {
+func (envConfigService *EnvConfigService) DeleteEnvConfig(envConfig project.EnvConfig) (err error) {
 	err = global.GVA_DB.Delete(&envConfig).Error
 	return err
 }
@@ -27,20 +27,20 @@ func (envConfigService *EnvConfigService) DeleteEnvConfig(envConfig autocode.Env
 // DeleteEnvConfigByIds 批量删除EnvConfig记录
 // Author [piexlmax](https://github.com/piexlmax)
 func (envConfigService *EnvConfigService) DeleteEnvConfigByIds(ids request.IdsReq) (err error) {
-	err = global.GVA_DB.Delete(&[]autocode.EnvConfig{}, "id in ?", ids.Ids).Error
+	err = global.GVA_DB.Delete(&[]project.EnvConfig{}, "id in ?", ids.Ids).Error
 	return err
 }
 
 // UpdateEnvConfig 更新EnvConfig记录
 // Author [piexlmax](https://github.com/piexlmax)
-func (envConfigService *EnvConfigService) UpdateEnvConfig(envConfig autocode.EnvConfig) (err error) {
+func (envConfigService *EnvConfigService) UpdateEnvConfig(envConfig project.EnvConfig) (err error) {
 	err = global.GVA_DB.Save(&envConfig).Error
 	return err
 }
 
 // GetEnvConfig 根据id获取EnvConfig记录
 // Author [piexlmax](https://github.com/piexlmax)
-func (envConfigService *EnvConfigService) GetEnvConfig(id uint) (err error, envConfig autocode.EnvConfig) {
+func (envConfigService *EnvConfigService) GetEnvConfig(id uint) (err error, envConfig project.EnvConfig) {
 	err = global.GVA_DB.Where("id = ?", id).First(&envConfig).Error
 	return
 }
@@ -51,8 +51,8 @@ func (envConfigService *EnvConfigService) GetEnvConfigInfoList(info autoCodeReq.
 	limit := info.PageSize
 	offset := info.PageSize * (info.Page - 1)
 	// 创建db
-	db := global.GVA_DB.Model(&autocode.EnvConfig{})
-	var envConfigs []autocode.EnvConfig
+	db := global.GVA_DB.Model(&project.EnvConfig{})
+	var envConfigs []project.EnvConfig
 	// 如果有条件搜索 下方会自动创建搜索语句
 	if info.Name != "" {
 		db = db.Where("name LIKE ?", "%"+info.Name+"%")
