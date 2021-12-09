@@ -78,18 +78,14 @@
           <el-input v-model="formData.name" clearable placeholder="请输入" />
         </el-form-item>
         <el-form-item label="请求方法:" prop="method" >
-          <!-- <el-input v-model="formData.method" clearable placeholder="请输入" /> -->
-          <!-- <el-form-item label="下拉选择" prop="field102"> -->
-            <el-select v-model="formData.method" placeholder="请下拉选择" clearable :style="{width: '100%'}">
-              <el-option v-for="(item, index) in methodOptions" :key="index" :label="item"
-                :value="item" :disabled="item.disabled"></el-option>
-            </el-select>
+          <el-select v-model="formData.method" placeholder="请下拉选择" clearable :style="{width: '100%'}">
+            <el-option v-for="(item, index) in methodOptions" :key="index" :label="item"
+              :value="item" :disabled="item.disabled"></el-option>
+          </el-select>
         </el-form-item>
         <el-form-item label="请求url:">
           <el-input v-model="formData.url" clearable placeholder="请输入" />
         </el-form-item>
-        <!-- <el-form-item label="请求参数:"> -->
-          <!-- <el-input v-model="formData.params" clearable placeholder="请输入" /> -->
             请求参数：
           <el-form-item
             v-for="(item, index) in formData.params"
@@ -102,7 +98,6 @@
           <el-form-item>
           <el-button @click="addDomain" size="small" :style="{float: 'right', width: '20%'}" type="primary">新增参数</el-button>
           </el-form-item>
-        <!-- </el-form-item> -->
         <el-form-item label="所属项目:">
           <el-input v-model="formData.project" clearable placeholder="请输入" :style="{width: '100%'}"/>
         </el-form-item>
