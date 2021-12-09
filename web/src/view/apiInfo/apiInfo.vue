@@ -107,7 +107,7 @@
       </el-form>
       <template #footer>
         <div class="dialog-footer">
-          <el-button size="small" @click="closeDialog">取 消</el-button>
+          <el-button size="small" @click="closeDialog('formData')">取 消</el-button>
           <el-button size="small" type="primary"  @click="enterDialog('formData')">确 定</el-button>
         </div>
       </template>
@@ -148,7 +148,7 @@ export default {
         method: [{required: true, message: '请选择下拉选择',trigger: 'change'}],
         url: [{ required: true, message: '请输入url', trigger: 'blur' }],
         project: [{ required: true, message: '请输入所属项目', trigger: 'blur' }],
-        module: [{ required: true, message: '请输入所属模块', trigger: 'blur' }],
+        module: [{ required: true, message: '请输入所属', trigger: 'blur' }],
 
       },
       methodOptions: ["get","post","put","delete"],
@@ -226,8 +226,9 @@ export default {
         this.dialogFormVisible = true
       }
     },
-    closeDialog() {
+    closeDialog(formData) {
       this.dialogFormVisible = false
+      this.$refs[formData].resetFields();
       this.formData = {
         name: '',
         method: '',
