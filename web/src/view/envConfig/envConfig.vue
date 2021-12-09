@@ -78,7 +78,7 @@
       <template #footer>
         <div class="dialog-footer">
           <el-button size="small" @click="closeDialog()">取 消</el-button>
-          <el-button size="small" type="primary" @click="enterDialog('formData')">确 定</el-button>
+          <el-button size="small" type="primary" @click="enterDialog()">确 定</el-button>
         </div>
       </template>
     </el-dialog>
@@ -202,9 +202,9 @@ export default {
         this.getTableData()
       }
     },
-    async enterDialog(formData) {
+    async enterDialog() {
       let res
-      this.$refs[formData].validate( async (valid) => {
+      this.$refs.formData.validate( async (valid) => {
         if (valid) {
           switch (this.type) {
             case 'create':
