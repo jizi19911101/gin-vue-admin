@@ -6,7 +6,11 @@
           <el-input v-model="searchInfo.name" placeholder="搜索条件" />
         </el-form-item>
         <el-form-item label="所属项目">
-          <el-input v-model="searchInfo.project" placeholder="搜索条件" />
+          <!-- <el-input v-model="searchInfo.project" placeholder="搜索条件" /> -->
+          <el-select v-model="searchInfo.project" placeholder="请下拉选择" clearable :style="{width: '100%'}">
+            <el-option v-for="(item, index) in projectOptions" :key="index" :label="item.label"
+              :value="item.label" :disabled="item.disabled"></el-option>
+          </el-select>
         </el-form-item>
         <el-form-item>
           <el-button size="mini" type="primary" icon="el-icon-search" @click="onSubmit">查询</el-button>
@@ -93,8 +97,13 @@ import infoList from '@/mixins/infoList'
 export default {
   name: 'Module',
   mixins: [infoList],
+  // async created(){
+    
+  // },
+  
   data() {
     return {
+      projectOptions: [],
       listApi: getModuleList,
       dialogFormVisible: false,
       type: '',
@@ -113,6 +122,7 @@ export default {
   },
   async created() {
     await this.getTableData()
+    await this.getDict('project')
   },
   methods: {
   onReset() {
