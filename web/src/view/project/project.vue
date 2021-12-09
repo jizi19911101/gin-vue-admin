@@ -40,6 +40,7 @@
         </el-table-column>
         <el-table-column align="left" label="操作">
             <template #default="scope">
+            <el-button type="text" icon="el-icon-edit" size="small" class="table-button" @click="goToEnvConfig(scope.row)">设置环境变量</el-button>
             <el-button type="text" icon="el-icon-edit" size="small" class="table-button" @click="updateProject(scope.row)">变更</el-button>
             <el-button type="text" icon="el-icon-delete" size="mini" @click="deleteRow(scope.row)">删除</el-button>
             </template>
@@ -161,6 +162,9 @@ export default {
         this.formData = res.data.reproject
         this.dialogFormVisible = true
       }
+    },
+    goToEnvConfig(item){
+      this.$router.push({name:"envConfig", query:{id:item.ID}})
     },
     closeDialog() {
       this.dialogFormVisible = false
