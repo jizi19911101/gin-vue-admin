@@ -38,7 +38,7 @@
         >
         <el-table-column type="selection" width="55" />
         <el-table-column align="left" label="模块名" prop="name" width="120" />
-        <el-table-column align="left" v-show=false label="所属项目" prop="project" width="120" />
+        <el-table-column align="left"  label="所属项目" prop="project" width="120" />
         <el-table-column align="left" label="日期" width="180">
             <template #default="scope">{{ formatDate(scope.row.CreatedAt) }}</template>
         </el-table-column>

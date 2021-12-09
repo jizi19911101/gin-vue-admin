@@ -73,37 +73,36 @@
         </div>
     </div>
     <el-dialog v-model="dialogFormVisible" :before-close="closeDialog" title="新增接口">
-      <el-form :model="formData" label-position="left" label-width="150px">
+      <el-form :model="formData" :rules="rules" ref="formData" label-position="left" label-width="150px">
         <el-form-item label="接口名称:">
           <el-input v-model="formData.name" clearable placeholder="请输入" />
         </el-form-item>
-        <el-form-item label="请求方法:" >
+        <el-form-item label="请求方法:" prop="method" >
           <!-- <el-input v-model="formData.method" clearable placeholder="请输入" /> -->
           <!-- <el-form-item label="下拉选择" prop="field102"> -->
             <el-select v-model="formData.method" placeholder="请下拉选择" clearable :style="{width: '100%'}">
               <el-option v-for="(item, index) in methodOptions" :key="index" :label="item"
-                :value="item" ></el-option>
+                :value="item" :disabled="item.disabled"></el-option>
             </el-select>
         </el-form-item>
         <el-form-item label="请求url:">
           <el-input v-model="formData.url" clearable placeholder="请输入" />
         </el-form-item>
+        <!-- <el-form-item label="请求参数:"> -->
+          <!-- <el-input v-model="formData.params" clearable placeholder="请输入" /> -->
             请求参数：
           <el-form-item
             v-for="(item, index) in formData.params"
             :label="'参数' + index + ':'"
             :key="index"
             :prop="formData.params[index]"
-            :rules="{
-              required: true, message: '参数不能为空', trigger: 'blur'
-            }"
           >
             <el-input v-model="formData.params[index]" :style="{width: '80%'}"></el-input><el-button size="small" @click.prevent="removeDomain(index)"  :style="{width: '20%'}" icon="el-icon-delete" type="info"></el-button>
           </el-form-item>
-          
           <el-form-item>
           <el-button @click="addDomain" size="small" :style="{float: 'right', width: '20%'}" type="primary">新增参数</el-button>
           </el-form-item>
+        <!-- </el-form-item> -->
         <el-form-item label="所属项目:">
           <el-input v-model="formData.project" clearable placeholder="请输入" :style="{width: '100%'}"/>
         </el-form-item>
@@ -114,7 +113,7 @@
       <template #footer>
         <div class="dialog-footer">
           <el-button size="small" @click="closeDialog">取 消</el-button>
-          <el-button size="small" type="primary" @click="enterDialog">确 定</el-button>
+          <el-button size="small" type="primary"  @click="enterDialog('formData')">确 定</el-button>
         </div>
       </template>
     </el-dialog>
@@ -145,20 +144,18 @@ export default {
         name: '',
         method: '',
         url: '',
-        params: [
-          '',
-        ],
+        params: [''],
         project: '',
         module: '',
       },
-        rules: {
+      rules: {
         method: [{
           required: true,
           message: '请选择下拉选择',
           trigger: 'change'
         }],
       },
-      methodOptions: ["get", "post", "delete", "put"],
+      methodOptions: ["get","post","put","delete"],
     }
     
   },
@@ -257,34 +254,43 @@ export default {
         this.getTableData()
       }
     },
-    async enterDialog() {
+    async enterDialog(formData) {
       let res
-      switch (this.type) {
-        case 'create':
-          res = await createApiInfo(this.formData)
-          break
-        case 'update':
-          res = await updateApiInfo(this.formData)
-          break
-        default:
-          res = await createApiInfo(this.formData)
-          break
-      }
-      if (res.code === 0) {
-        this.$message({
-          type: 'success',
-          message: '创建/更改成功'
-        })
-        this.closeDialog()
-        this.getTableData()
-      }
+      this.$refs[formData].validate(async (valid) => {
+        if (!valid) {
+        }else {
+          switch (this.type) {
+              case 'create':
+                res = await createApiInfo(this.formData)
+                break
+              case 'update':
+                res = await updateApiInfo(this.formData)
+                break
+              default:
+                res = await createApiInfo(this.formData)
+                break
+            }
+          if (res.code === 0) {
+            this.$message({
+              type: 'success',
+              message: '创建/更改成功'
+            })
+            this.closeDialog()
+            this.getTableData()
+          }
+        }
+      });
     },
+
+  
     openDialog() {
       this.type = 'create'
       this.dialogFormVisible = true
     }
   },
 }
+
+
 </script>
 
 <style>
