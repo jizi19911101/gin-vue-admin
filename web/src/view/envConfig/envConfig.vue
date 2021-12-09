@@ -8,6 +8,9 @@
         <el-form-item label="base_url">
           <el-input v-model="searchInfo.base_url" placeholder="搜索条件" />
         </el-form-item>
+        <el-form-item label="项目">
+          <el-input v-model="searchInfo.project" placeholder="搜索条件" />
+        </el-form-item>
         <el-form-item>
           <el-button size="mini" type="primary" icon="el-icon-search" @click="onSubmit">查询</el-button>
           <el-button size="mini" icon="el-icon-refresh" @click="onReset">重置</el-button>
@@ -118,6 +121,9 @@ export default {
     }
   },
   async created() {
+
+    this.searchInfo.project = this.$route.query.project
+    // await this.getEnvConfigList({ project: this.$route.query.project })
     await this.getTableData()
   },
   methods: {

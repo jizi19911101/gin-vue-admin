@@ -167,7 +167,7 @@ export default {
       }
     },
     goToEnvConfig(item){
-      this.$router.push({name:"envConfig", query:{id:item.ID}})
+      this.$router.push({name:"envConfig", query:{project:item.name}})
     },
     closeDialog() {
       this.dialogFormVisible = false

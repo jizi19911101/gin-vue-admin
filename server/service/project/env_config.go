@@ -60,6 +60,9 @@ func (envConfigService *EnvConfigService) GetEnvConfigInfoList(info autoCodeReq.
 	if info.Base_url != "" {
 		db = db.Where("base_url LIKE ?", "%"+info.Base_url+"%")
 	}
+	if info.Project != "" {
+		db = db.Where("project LIKE ?", "%"+info.Project+"%")
+	}
 	err = db.Count(&total).Error
 	if err != nil {
 		return
