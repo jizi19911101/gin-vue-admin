@@ -178,7 +178,12 @@ export default {
         type: 'warning'
       }).then(() => {
         this.deleteApiInfo(row)
-      })
+      }).catch(() => {
+          this.$message({
+            type: 'info',
+            message: '已取消删除'
+          })
+        })
     },
       // removeDomain(item) {
       //   var index = this.formData.params.indexOf(item)

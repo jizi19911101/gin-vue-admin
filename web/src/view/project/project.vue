@@ -121,7 +121,12 @@ export default {
         type: 'warning'
       }).then(() => {
         this.deleteProject(row)
-      })
+      }).catch(() => {
+          this.$message({
+            type: 'info',
+            message: '已取消删除'
+          })
+        })
     },
     async onDelete() {
       const ids = []
