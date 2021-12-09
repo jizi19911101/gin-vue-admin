@@ -71,7 +71,11 @@
           <el-input v-model="formData.name" clearable placeholder="请输入" />
         </el-form-item>
         <el-form-item label="所属项目:" prop="project">
-          <el-input v-model="formData.project" clearable placeholder="请输入" />
+          <!-- <el-input v-model="formData.project" clearable placeholder="请输入" /> -->
+          <el-select v-model="formData.project" placeholder="请下拉选择" clearable :style="{width: '100%'}">
+            <el-option v-for="(item, index) in projectOptions" :key="index" :label="item.label"
+              :value="item.label" :disabled="item.disabled"></el-option>
+          </el-select>
         </el-form-item>
       </el-form>
       <template #footer>
