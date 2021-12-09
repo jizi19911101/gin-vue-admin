@@ -58,16 +58,16 @@
             />
         </div>
     </div>
-    <el-dialog v-model="dialogFormVisible" :before-close="closeDialog" title="弹窗操作">
-      <el-form :model="formData" label-position="right" label-width="80px">
-        <el-form-item label="项目名称:">
+    <el-dialog v-model="dialogFormVisible" :before-close="closeDialog" title="新增项目">
+      <el-form :model="formData" :rules="rules" ref="formData" label-position="right" label-width="100px">
+        <el-form-item label="项目名称:" prop="name">
           <el-input v-model="formData.name" clearable placeholder="请输入" />
         </el-form-item>
       </el-form>
       <template #footer>
         <div class="dialog-footer">
           <el-button size="small" @click="closeDialog">取 消</el-button>
-          <el-button size="small" type="primary" @click="enterDialog">确 定</el-button>
+          <el-button size="small" type="primary" @click="enterDialog('formData')">确 定</el-button>
         </div>
       </template>
     </el-dialog>
@@ -96,6 +96,9 @@ export default {
       multipleSelection: [],
       formData: {
         name: '',
+      },
+      rules: {
+        name: [{ required:true, message: "请输入项目名称", trigger:"blur" }]
       }
     }
   },
@@ -168,6 +171,7 @@ export default {
     },
     closeDialog() {
       this.dialogFormVisible = false
+      this.$refs.formData.resetFields();
       this.formData = {
         name: '',
       }
@@ -185,27 +189,34 @@ export default {
         this.getTableData()
       }
     },
-    async enterDialog() {
+    async enterDialog(formData) {
       let res
-      switch (this.type) {
-        case 'create':
-          res = await createProject(this.formData)
-          break
-        case 'update':
-          res = await updateProject(this.formData)
-          break
-        default:
-          res = await createProject(this.formData)
-          break
-      }
-      if (res.code === 0) {
-        this.$message({
-          type: 'success',
-          message: '创建/更改成功'
-        })
-        this.closeDialog()
-        this.getTableData()
-      }
+      this.$refs[formData].validate( async (valid) => {
+        if (!valid){
+
+        }else{
+          switch (this.type) {
+            case 'create':
+              res = await createProject(this.formData)
+              break
+            case 'update':
+              res = await updateProject(this.formData)
+              break
+            default:
+              res = await createProject(this.formData)
+              break
+          }
+          if (res.code === 0) {
+            this.$message({
+              type: 'success',
+              message: '创建/更改成功'
+            })
+            this.closeDialog()
+            this.getTableData()
+          }
+        }
+       })
+
     },
     openDialog() {
       this.type = 'create'

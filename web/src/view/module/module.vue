@@ -63,7 +63,7 @@
     </div>
     <el-dialog v-model="dialogFormVisible" :before-close="closeDialog" title="新增模块">
       <el-form :model="formData" :rules="rules" ref="formData" label-position="left" label-width="100px">
-        <el-form-item label="模块名:" prop="name">
+        <el-form-item label="模块名称:" prop="name">
           <el-input v-model="formData.name" clearable placeholder="请输入" />
         </el-form-item>
         <el-form-item label="所属项目:" prop="project">
@@ -72,7 +72,7 @@
       </el-form>
       <template #footer>
         <div class="dialog-footer">
-          <el-button size="small" @click="closeDialog('formData')">取 消</el-button>
+          <el-button size="small" @click="closeDialog()">取 消</el-button>
           <el-button size="small" type="primary" @click="enterDialog('formData')">确 定</el-button>
         </div>
       </template>
@@ -175,9 +175,9 @@ export default {
         this.dialogFormVisible = true
       }
     },
-    closeDialog(formData) {
+    closeDialog() {
       this.dialogFormVisible = false
-      this.$ref[formData].resetFields();
+      this.$refs.formData.resetFields();
       this.formData = {
         name: '',
         project: '',
