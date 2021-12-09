@@ -9,7 +9,11 @@
           <el-input v-model="searchInfo.url" placeholder="搜索条件" />
         </el-form-item>
         <el-form-item label="所属项目">
-          <el-input v-model="searchInfo.project" placeholder="搜索条件" />
+          <!-- <el-input v-model="searchInfo.project" placeholder="搜索条件" /> -->
+          <el-select v-model="searchInfo.project" placeholder="请下拉选择" clearable :style="{width: '100%'}">
+            <el-option v-for="(item, index) in projectOptions" :key="index" :label="item.label"
+              :value="item.label" :disabled="item.disabled"></el-option>
+          </el-select>
         </el-form-item>
         <el-form-item label="所属模块">
           <el-input v-model="searchInfo.module" placeholder="搜索条件" />
@@ -99,7 +103,11 @@
           <el-button @click="addDomain" size="small" :style="{float: 'right', width: '20%'}" type="primary">新增参数</el-button>
           </el-form-item>
         <el-form-item label="所属项目:" prop="project">
-          <el-input v-model="formData.project" clearable placeholder="请输入" :style="{width: '100%'}"/>
+          <!-- <el-input v-model="formData.project" clearable placeholder="请输入" :style="{width: '100%'}"/> -->
+          <el-select v-model="formData.project" placeholder="请下拉选择" clearable :style="{width: '100%'}">
+            <el-option v-for="(item, index) in projectOptions" :key="index" :label="item.label"
+              :value="item.label" :disabled="item.disabled"></el-option>
+          </el-select>
         </el-form-item>
         <el-form-item label="所属模块:"  prop="module">
           <el-input v-model="formData.module" clearable placeholder="请输入" />
@@ -132,6 +140,7 @@ export default {
     return {
       listApi: getApiInfoList,
       dialogFormVisible: false,
+      projectOptions:[],
       type: '',
       deleteVisible: false,
       multipleSelection: [],
@@ -157,6 +166,7 @@ export default {
   },
   async created() {
     await this.getTableData()
+    await this.getDict('project')
   },
   methods: {
   onReset() {
