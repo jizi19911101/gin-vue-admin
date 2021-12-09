@@ -74,7 +74,7 @@
     </div>
     <el-dialog v-model="dialogFormVisible" :before-close="closeDialog" title="新增接口">
       <el-form :model="formData" :rules="rules" ref="formData" label-position="left" label-width="150px">
-        <el-form-item label="接口名称:">
+        <el-form-item label="接口名称:" prop="name">
           <el-input v-model="formData.name" clearable placeholder="请输入" />
         </el-form-item>
         <el-form-item label="请求方法:" prop="method" >
@@ -83,7 +83,7 @@
               :value="item" :disabled="item.disabled"></el-option>
           </el-select>
         </el-form-item>
-        <el-form-item label="请求url:">
+        <el-form-item label="请求url:"  prop="url">
           <el-input v-model="formData.url" clearable placeholder="请输入" />
         </el-form-item>
             请求参数：
@@ -98,10 +98,10 @@
           <el-form-item>
           <el-button @click="addDomain" size="small" :style="{float: 'right', width: '20%'}" type="primary">新增参数</el-button>
           </el-form-item>
-        <el-form-item label="所属项目:">
+        <el-form-item label="所属项目:" prop="project">
           <el-input v-model="formData.project" clearable placeholder="请输入" :style="{width: '100%'}"/>
         </el-form-item>
-        <el-form-item label="所属模块:">
+        <el-form-item label="所属模块:"  prop="module">
           <el-input v-model="formData.module" clearable placeholder="请输入" />
         </el-form-item>
       </el-form>
@@ -144,11 +144,12 @@ export default {
         module: '',
       },
       rules: {
-        method: [{
-          required: true,
-          message: '请选择下拉选择',
-          trigger: 'change'
-        }],
+        name: [{ required: true, message: '请输入接口名称', trigger: 'blur' }],
+        method: [{required: true, message: '请选择下拉选择',trigger: 'change'}],
+        url: [{ required: true, message: '请输入url', trigger: 'blur' }],
+        project: [{ required: true, message: '请输入所属项目', trigger: 'blur' }],
+        module: [{ required: true, message: '请输入所属模块', trigger: 'blur' }],
+
       },
       methodOptions: ["get","post","put","delete"],
     }
