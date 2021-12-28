@@ -39,7 +39,7 @@ jwt:
   buffer-time: 86400
   expires-time: 604800
   issuer: qmPlus
-  signing-key: 315f0ac2-b899-41d6-89fb-caf42b67f006
+  signing-key: 15d85b38-978e-4b99-bc6b-3785f521d849
 local:
   path: uploads/file
 mysql:
@@ -106,7 +106,7 @@ zap:
   format: console
   prefix: '[github.com/jizi19911101/gin-vue-admin/server]'
   director: log
-  showLine: true
+  showLine: false
   encode-level: LowercaseColorLevelEncoder
   stacktrace-key: stacktrace
   log-in-console: true

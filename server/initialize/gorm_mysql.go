@@ -1,6 +1,8 @@
 package initialize
 
 import (
+	"fmt"
+
 	"github.com/jizi19911101/gin-vue-admin/server/global"
 	"github.com/jizi19911101/gin-vue-admin/server/initialize/internal"
 	"gorm.io/driver/mysql"
@@ -12,7 +14,10 @@ import (
 // Author [SliverHorn](https://github.com/SliverHorn)
 func GormMysql() *gorm.DB {
 	m := global.GVA_CONFIG.Mysql
+	fmt.Println(m, "22222")
+	fmt.Println(m.Dbname, "3333")
 	if m.Dbname == "" {
+		fmt.Println("44444")
 		return nil
 	}
 	mysqlConfig := mysql.Config{
