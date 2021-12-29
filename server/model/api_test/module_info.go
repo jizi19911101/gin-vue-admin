@@ -7,3 +7,8 @@ type ModuleInfo struct {
 	Name         string
 	Organization string
 }
+
+// TableName ModuleInfo 表名
+func (ModuleInfo) TableName() string {
+	return "module_info"
+}

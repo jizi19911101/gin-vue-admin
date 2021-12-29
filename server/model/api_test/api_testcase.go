@@ -9,3 +9,8 @@ type ApiTestcase struct {
 	Module       string
 	Organization string
 }
+
+// TableName ApiTestcase 表名
+func (ApiTestcase) TableName() string {
+	return "api_testcase"
+}

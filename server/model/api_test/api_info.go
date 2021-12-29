@@ -10,3 +10,8 @@ type ApiInfo struct {
 	Module       string
 	Organization string
 }
+
+// TableName ApiInfo 表名
+func (ApiInfo) TableName() string {
+	return "api_info"
+}
