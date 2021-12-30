@@ -56,25 +56,25 @@ func (apiTestcaseService *ApiTestcaseService) ParseApiTestcaseModule() (err erro
 
 	// 把增量模块插入库
 	if count == 0 {
-		for _, v := range moduleInfoListMap {
-			moduleInfoList = append(moduleInfoList, v)
+		for _, module := range moduleInfoListMap {
+			moduleInfoList = append(moduleInfoList, module)
 		}
 		db.Create(&moduleInfoList)
 		return
 	} else {
-		for _, v := range resModuleInfoList {
-			_, ok := moduleInfoListMap[v.Name]
+		for _, module := range resModuleInfoList {
+			_, ok := moduleInfoListMap[module.Name]
 			if ok {
-				delete(moduleInfoListMap, v.Name)
+				delete(moduleInfoListMap, module.Name)
 			} else {
-				delModuleInfoList = append(delModuleInfoList, v.ID)
+				delModuleInfoList = append(delModuleInfoList, module.ID)
 			}
 		}
 	}
 
 	if len(moduleInfoListMap) != 0 {
-		for _, v := range moduleInfoListMap {
-			moduleInfoList = append(moduleInfoList, v)
+		for _, module := range moduleInfoListMap {
+			moduleInfoList = append(moduleInfoList, module)
 		}
 		db.Create(&moduleInfoList)
 	}
