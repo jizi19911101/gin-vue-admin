@@ -66,3 +66,12 @@ func (apiTestcaseApi *ApiTestcaseApi) ParseApiTestcaseApiApi(c *gin.Context) {
 		response.OkWithMessage("解析接口自动化代码接口成功！", c)
 	}
 }
+
+func (apiTestcaseApi *ApiTestcaseApi) ParseApiTestcaseApi(c *gin.Context) {
+	if err := apiTestcaseService.ParseApiTestcase(); err != nil {
+		global.GVA_LOG.Error("解析接口自动化代码用例失败！", zap.Error(err))
+		response.FailWithMessage("解析接口自动化代码用例失败！", c)
+	} else {
+		response.OkWithMessage("解析接口自动化代码用例成功！", c)
+	}
+}

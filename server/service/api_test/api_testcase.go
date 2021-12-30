@@ -19,7 +19,7 @@ type ApiTestcaseService struct {
 func (apiTestcaseService *ApiTestcaseService) ApiTestcaseCode() (err error) {
 	folder, _ := os.Getwd()
 	targetFolder := folder + "/apiTestcaseCode"
-	if err, _ := os.Stat(targetFolder); err != nil {
+	if _, err := os.Stat(targetFolder); err == nil {
 		os.Mkdir(targetFolder, 755)
 	}
 
@@ -103,7 +103,7 @@ func (apiTestcaseService *ApiTestcaseService) ParseApiTestcaseApi() (err error) 
 		folder, _ := os.Getwd()
 		targetFolder := folder + "/apiTestcaseCode/testcases/" + module.Name
 		targetFileList := make([]string, 0)
-		if err, _ := os.Stat(targetFolder); err != nil {
+		if _, err := os.Stat(targetFolder); err == nil {
 			fileInfoList, _ := ioutil.ReadDir(targetFolder)
 			for i := range fileInfoList {
 				reg := regexp.MustCompile(`test_(.*?)\.py`)
@@ -166,5 +166,38 @@ func (apiTestcaseService *ApiTestcaseService) ParseApiTestcaseApi() (err error) 
 		}
 
 	}
+	return
+}
+
+func (apiTestcaseService *ApiTestcaseService) ParseApiTestcase() (err error) {
+	// 取出所有接口
+	apiList := make([]api_test.ApiInfo, 0)
+	db := global.GVA_DB.Model(&api_test.ApiInfo{})
+	db.Find(&apiList)
+
+	// 接口数量为0结束
+	if len(apiList) == 0 {
+		return
+	}
+
+	// 读接口文件
+	for _, api := range apiList {
+		folder, _ := os.Getwd()
+		targetFile := folder + "/apiTestcaseCode/testcases/" + api.Module + "/test_" + api.Name + ".py"
+		if _, err := os.Stat(targetFile); err == nil {
+			//文件存在，解析出用例
+		} else {
+			global.GVA_LOG.Error("解析接口自动化用例出错")
+		}
+
+		// 用例数为0，结束
+
+		//用例数不为 0，读出数据库的用例
+
+		//数据库用例数为0，直接加入
+
+		//数据库用例数不为0，进行筛选再加到数据库
+	}
+
 	return
 }
