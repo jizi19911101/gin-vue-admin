@@ -13,7 +13,7 @@ type ServiceGroup struct {
 	ExampleServiceGroup  example.ServiceGroup
 	AutoCodeServiceGroup autocode.ServiceGroup
 	ApiTestServiceGroup  api_test.ServiceGroup
-	GroupServiceGroup    project.ServiceGroup
+	ProjectServiceGroup  project.ServiceGroup
 }
 
 var ServiceGroupApp = new(ServiceGroup)

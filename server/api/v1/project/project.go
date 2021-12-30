@@ -14,7 +14,7 @@ import (
 type ProjectApi struct {
 }
 
-var projectService = service.ServiceGroupApp.AutoCodeServiceGroup.ProjectService
+var projectService = service.ServiceGroupApp.ProjectServiceGroup.ProjectService
 
 // CreateProject 创建Project
 // @Tags Project

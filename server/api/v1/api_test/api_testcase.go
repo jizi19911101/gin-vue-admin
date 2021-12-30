@@ -11,7 +11,7 @@ import (
 type ApiTestcaseApi struct {
 }
 
-var apiTestcaseService = service.ServiceGroupApp.AutoCodeServiceGroup.ApiTestcaseService
+var apiTestcaseService = service.ServiceGroupApp.ApiTestServiceGroup.ApiTestcaseService
 
 // ApiTestcaseCode 拉取接口自动化代码
 // @Tags ApiTestcaseCode

@@ -14,7 +14,7 @@ import (
 type EnvConfigApi struct {
 }
 
-var envConfigService = service.ServiceGroupApp.AutoCodeServiceGroup.EnvConfigService
+var envConfigService = service.ServiceGroupApp.ProjectServiceGroup.EnvConfigService
 
 // CreateEnvConfig 创建EnvConfig
 // @Tags EnvConfig

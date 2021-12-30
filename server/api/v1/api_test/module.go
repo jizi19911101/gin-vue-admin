@@ -15,7 +15,7 @@ import (
 type ModuleApi struct {
 }
 
-var moduleService = service.ServiceGroupApp.AutoCodeServiceGroup.ModuleService
+var moduleService = service.ServiceGroupApp.ApiTestServiceGroup.ModuleService
 
 // CreateModule 创建Module
 // @Tags Module
