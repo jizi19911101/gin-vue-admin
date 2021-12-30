@@ -31,11 +31,38 @@ func (apiTestcaseApi *ApiTestcaseApi) ApiTestcaseCodeApi(c *gin.Context) {
 	}
 }
 
-func (apiTestcaseApi *ApiTestcaseApi) ParseApiTestcaseApi(c *gin.Context) {
-	if err := apiTestcaseService.ParseApiTestcaseApi(); err != nil {
+// ApiTestcaseCode 解析接口自动化代码模块
+// @Tags ParseApiTestcaseModuleApi
+// @Summary 解析接口自动化代码模块
+// @Security ApiKeyAuth
+// @accept application/json
+// @Produce application/json
+// @Param data body  true "解析接口自动化代码模块"
+// @Success 200 {string} string "{"success":true,"data":{},"msg":"解析接口自动化代码模块成功！"}"
+// @Router /apiTestcase/parseApiTestcaseModule [get]
+func (apiTestcaseApi *ApiTestcaseApi) ParseApiTestcaseModuleApi(c *gin.Context) {
+	if err := apiTestcaseService.ParseApiTestcaseModule(); err != nil {
 		global.GVA_LOG.Error("解析接口自动化代码失败！", zap.Error(err))
-		response.FailWithMessage("解析接口自动化代码失败！", c)
+		response.FailWithMessage("解析接口自动化代码模块失败！", c)
 	} else {
-		response.OkWithMessage("解析接口自动化代码成功！", c)
+		response.OkWithMessage("解析接口自动化代码模块成功！", c)
+	}
+}
+
+// ApiTestcaseCode 解析接口自动化代码接口
+// @Tags ParseApiTestcaseApiApi
+// @Summary 解析接口自动化代码模块
+// @Security ApiKeyAuth
+// @accept application/json
+// @Produce application/json
+// @Param data body  true "解析接口自动化代码接口"
+// @Success 200 {string} string "{"success":true,"data":{},"msg":"解析接口自动化代码接口成功！"}"
+// @Router /apiTestcase/parseApiTestcaseApi [get]
+func (apiTestcaseApi *ApiTestcaseApi) ParseApiTestcaseApiApi(c *gin.Context) {
+	if err := apiTestcaseService.ParseApiTestcaseApi(); err != nil {
+		global.GVA_LOG.Error("解析接口自动化代码接口失败！", zap.Error(err))
+		response.FailWithMessage("解析接口自动化代码接口失败！", c)
+	} else {
+		response.OkWithMessage("解析接口自动化代码接口成功！", c)
 	}
 }
