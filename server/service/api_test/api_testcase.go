@@ -1,6 +1,7 @@
 package api_test
 
 import (
+	"fmt"
 	"io/ioutil"
 	"os"
 	"regexp"
@@ -97,10 +98,10 @@ func (apiTestcaseService *ApiTestcaseService) ParseApiTestcaseApi() (err error) 
 		return
 	}
 
-	//模块不为0，解析文件
-	for _, v := range moduleList {
+	//模块不为0，解析每个模块下的接口文件
+	for _, module := range moduleList {
 		folder, _ := os.Getwd()
-		targetFolder := folder + "/apiTestcaseCode/testcases/" + v.Name
+		targetFolder := folder + "/apiTestcaseCode/testcases/" + module.Name
 		targetFileList := make([]string, 0)
 		if err, _ := os.Stat(targetFolder); err != nil {
 			fileInfoList, _ := ioutil.ReadDir(targetFolder)
@@ -114,17 +115,54 @@ func (apiTestcaseService *ApiTestcaseService) ParseApiTestcaseApi() (err error) 
 		} else {
 			global.GVA_LOG.Error("解析接口自动化代码接口出错")
 		}
+		// 接口文件不为 0，就存入数据库
 		if len(targetFileList) != 0 {
 			db := global.GVA_DB.Model(&api_test.ApiInfo{})
 			apiList := make([]api_test.ApiInfo, 0)
-			for _, value := range targetFileList {
-				apiList = append(apiList, api_test.ApiInfo{
-					Name:         value,
-					Module:       v.Name,
+			apiListMap := make(map[string]api_test.ApiInfo, 0)
+			for _, apiName := range targetFileList {
+				apiListMap[apiName] = api_test.ApiInfo{
+					Name:         apiName,
+					Module:       module.Name,
 					Organization: "触漫",
-				})
+				}
 			}
-			db.Create(&apiList)
+
+			//查出该模块下的接口数据
+			resApiList := make([]api_test.ApiInfo, 0)
+			var count int64
+			db.Where("module = ?", module.Name).Find(&resApiList).Count(&count)
+
+			// 该模块下的接口数据为0，直接插入
+			if count == 0 {
+				for _, api := range apiListMap {
+					apiList = append(apiList, api)
+				}
+				db.Create(&apiList)
+			}
+
+			// 该模块下的接口数据不为0，增量插入
+			delApiList := make([]uint, 0)
+			for _, api := range resApiList {
+				_, ok := apiListMap[api.Name]
+				if ok {
+					delete(apiListMap, api.Name)
+				} else {
+					delApiList = append(delApiList, api.ID)
+				}
+			}
+
+			if len(apiListMap) != 0 {
+				for _, api := range apiListMap {
+					apiList = append(apiList, api)
+				}
+				db.Create(&apiList)
+			}
+			if len(delApiList) != 0 {
+				fmt.Println(delApiList, "delApiList")
+				db.Delete(&api_test.ApiInfo{}, delApiList)
+			}
+
 		}
 
 	}
