@@ -21,8 +21,10 @@ type ApiTestcaseService struct {
 func (apiTestcaseService *ApiTestcaseService) ApiTestcaseCode() (err error) {
 	folder, _ := os.Getwd()
 	targetFolder := folder + "/apiTestcaseCode"
-	if _, err := os.Stat(targetFolder); err == nil {
+	if _, err := os.Stat(targetFolder); err != nil {
 		os.Mkdir(targetFolder, 755)
+	} else {
+		os.Remove(targetFolder)
 	}
 
 	err = utils.OsExecClone(targetFolder, "https://git-ext.chumanapp.com/chuman-test/chuman-api-test-new")
@@ -190,7 +192,9 @@ func (apiTestcaseService *ApiTestcaseService) ParseApiTestcase() (err error) {
 		caseList := make([]string, 0)
 		if _, err := os.Stat(targetFile); err == nil {
 			//文件存在，解析出用例
-			if file, err := os.Open(targetFile); err != nil {
+			file, err := os.Open(targetFile)
+			defer file.Close()
+			if err != nil {
 				panic(err)
 			} else {
 				scanner := bufio.NewScanner(file)
