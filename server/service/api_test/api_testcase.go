@@ -1,10 +1,12 @@
 package api_test
 
 import (
+	"bufio"
 	"fmt"
 	"io/ioutil"
 	"os"
 	"regexp"
+	"strings"
 
 	"github.com/jizi19911101/gin-vue-admin/server/global"
 	"github.com/jizi19911101/gin-vue-admin/server/model/api_test"
@@ -184,19 +186,93 @@ func (apiTestcaseService *ApiTestcaseService) ParseApiTestcase() (err error) {
 	for _, api := range apiList {
 		folder, _ := os.Getwd()
 		targetFile := folder + "/apiTestcaseCode/testcases/" + api.Module + "/test_" + api.Name + ".py"
+		var className string
+		caseList := make([]string, 0)
 		if _, err := os.Stat(targetFile); err == nil {
 			//文件存在，解析出用例
+			if file, err := os.Open(targetFile); err != nil {
+				panic(err)
+			} else {
+				scanner := bufio.NewScanner(file)
+
+				for scanner.Scan() {
+					regClass := regexp.MustCompile("class(.*?):")
+					caseClass := regClass.FindStringSubmatch(scanner.Text())
+
+					regCase := regexp.MustCompile(`^def(.*?)\(`)
+					caseName := regCase.FindStringSubmatch(strings.TrimSpace(scanner.Text()))
+
+					if caseClass != nil {
+						className = caseClass[1]
+					}
+
+					if caseName != nil {
+						caseList = append(caseList, caseName[1])
+					}
+
+				}
+			}
 		} else {
 			global.GVA_LOG.Error("解析接口自动化用例出错")
 		}
 
 		// 用例数为0，结束
+		if caseList == nil {
+			return
+		}
 
 		//用例数不为 0，读出数据库的用例
+		stockTestcase := make([]api_test.ApiTestcase, 0)
+		if className != "" {
+			db := global.GVA_DB.Model(&api_test.ApiTestcase{})
+			db.Where("module = ? AND api = ?", api.Module, api.Name).Find(&stockTestcase)
+		} else {
+			global.GVA_LOG.Error("接口自动化文件用例类名解析出错")
+		}
+
+		caseListMap := make(map[string]api_test.ApiTestcase, 0)
+		for _, v := range caseList {
+			caseListMap[v] = api_test.ApiTestcase{
+				Name:   v,
+				Module: api.Module,
+				Api:    api.Name,
+			}
+
+		}
 
 		//数据库用例数为0，直接加入
+		db := global.GVA_DB.Model(&api_test.ApiTestcase{})
+		cases := make([]api_test.ApiTestcase, 0)
+		if len(stockTestcase) == 0 {
+			for _, v := range caseListMap {
+				cases = append(cases, v)
+			}
+			db.Create(&cases)
+		}
 
 		//数据库用例数不为0，进行筛选再加到数据库
+		delCaseList := make([]uint, 0)
+		for _, c := range stockTestcase {
+			_, ok := caseListMap[c.Name]
+			if ok {
+				delete(caseListMap, c.Name)
+			} else {
+				delCaseList = append(delCaseList, c.ID)
+			}
+		}
+
+		if len(caseListMap) != 0 {
+			for _, v := range caseListMap {
+				cases = append(cases, v)
+			}
+			db.Create(&cases)
+		}
+
+		if len(delCaseList) != 0 {
+			fmt.Println(delCaseList, "delCaseListdelCaseList")
+			db.Delete(&api_test.ApiTestcase{}, delCaseList)
+		}
+
 	}
 
 	return
