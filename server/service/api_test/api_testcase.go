@@ -202,11 +202,11 @@ func (apiTestcaseService *ApiTestcaseService) ParseApiTestcase() (err error) {
 					regCase := regexp.MustCompile(`^def(.*?)\(`)
 					caseName := regCase.FindStringSubmatch(strings.TrimSpace(scanner.Text()))
 
-					if caseClass != nil {
+					if len(caseClass) != 0 {
 						className = caseClass[1]
 					}
 
-					if caseName != nil {
+					if len(caseName) != 0 {
 						caseList = append(caseList, caseName[1])
 					}
 
@@ -217,7 +217,7 @@ func (apiTestcaseService *ApiTestcaseService) ParseApiTestcase() (err error) {
 		}
 
 		// 用例数为0，结束
-		if caseList == nil {
+		if len(caseList) == 0 {
 			return
 		}
 
