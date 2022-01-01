@@ -71,9 +71,9 @@ func (projectApi *ProjectApi) DeleteProject(c *gin.Context) {
 // @Success 200 {string} string "{"success":true,"data":{},"msg":"批量删除成功"}"
 // @Router /project/deleteProjectByIds [delete]
 func (projectApi *ProjectApi) DeleteProjectByIds(c *gin.Context) {
-	var IDS request.IdsReq
-	_ = c.ShouldBindJSON(&IDS)
-	if err := projectService.DeleteProjectByIds(IDS); err != nil {
+	var IdsReq request.IdsReq
+	_ = c.ShouldBindJSON(&IdsReq)
+	if err := projectService.DeleteProjectByIds(IdsReq); err != nil {
 		global.GVA_LOG.Error("批量删除失败!", zap.Error(err))
 		response.FailWithMessage("批量删除失败", c)
 	} else {

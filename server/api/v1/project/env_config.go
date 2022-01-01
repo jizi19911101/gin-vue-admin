@@ -71,9 +71,9 @@ func (envConfigApi *EnvConfigApi) DeleteEnvConfig(c *gin.Context) {
 // @Success 200 {string} string "{"success":true,"data":{},"msg":"批量删除成功"}"
 // @Router /envConfig/deleteEnvConfigByIds [delete]
 func (envConfigApi *EnvConfigApi) DeleteEnvConfigByIds(c *gin.Context) {
-	var IDS request.IdsReq
-	_ = c.ShouldBindJSON(&IDS)
-	if err := envConfigService.DeleteEnvConfigByIds(IDS); err != nil {
+	var IdsReq request.IdsReq
+	_ = c.ShouldBindJSON(&IdsReq)
+	if err := envConfigService.DeleteEnvConfigByIds(IdsReq); err != nil {
 		global.GVA_LOG.Error("批量删除失败!", zap.Error(err))
 		response.FailWithMessage("批量删除失败", c)
 	} else {
