@@ -118,11 +118,11 @@ func (projectApi *ProjectApi) UpdateProject(c *gin.Context) {
 func (projectApi *ProjectApi) FindProject(c *gin.Context) {
 	var project project2.Project
 	_ = c.ShouldBindQuery(&project)
-	if err, reproject := projectService.GetProject(project.ID); err != nil {
+	if err, project := projectService.GetProject(project.ID); err != nil {
 		global.GVA_LOG.Error("查询失败!", zap.Error(err))
 		response.FailWithMessage("查询失败", c)
 	} else {
-		response.OkWithData(gin.H{"reproject": reproject}, c)
+		response.OkWithData(gin.H{"project": project}, c)
 	}
 }
 
