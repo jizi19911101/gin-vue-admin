@@ -2,9 +2,9 @@ package project
 
 import (
 	"github.com/jizi19911101/gin-vue-admin/server/global"
-	autoCodeReq "github.com/jizi19911101/gin-vue-admin/server/model/autocode/request"
 	"github.com/jizi19911101/gin-vue-admin/server/model/common/request"
 	"github.com/jizi19911101/gin-vue-admin/server/model/project"
+	projectReq "github.com/jizi19911101/gin-vue-admin/server/model/project/request"
 )
 
 type ProjectService struct {
@@ -47,7 +47,7 @@ func (projectService *ProjectService) GetProject(id uint) (err error, project pr
 
 // GetProjectInfoList 分页获取Project记录
 // Author [piexlmax](https://github.com/piexlmax)
-func (projectService *ProjectService) GetProjectInfoList(info autoCodeReq.ProjectSearch) (err error, list interface{}, total int64) {
+func (projectService *ProjectService) GetProjectInfoList(info projectReq.ProjectSearch) (err error, list interface{}, total int64) {
 	limit := info.PageSize
 	offset := info.PageSize * (info.Page - 1)
 	// 创建db

@@ -3,10 +3,10 @@ package project
 import (
 	"github.com/gin-gonic/gin"
 	"github.com/jizi19911101/gin-vue-admin/server/global"
-	autocodeReq "github.com/jizi19911101/gin-vue-admin/server/model/autocode/request"
 	"github.com/jizi19911101/gin-vue-admin/server/model/common/request"
 	"github.com/jizi19911101/gin-vue-admin/server/model/common/response"
 	project2 "github.com/jizi19911101/gin-vue-admin/server/model/project"
+	projectReq "github.com/jizi19911101/gin-vue-admin/server/model/project/request"
 	"github.com/jizi19911101/gin-vue-admin/server/service"
 	"go.uber.org/zap"
 )
@@ -136,7 +136,7 @@ func (projectApi *ProjectApi) FindProject(c *gin.Context) {
 // @Success 200 {string} string "{"success":true,"data":{},"msg":"获取成功"}"
 // @Router /project/getProjectList [get]
 func (projectApi *ProjectApi) GetProjectList(c *gin.Context) {
-	var pageInfo autocodeReq.ProjectSearch
+	var pageInfo projectReq.ProjectSearch
 	_ = c.ShouldBindQuery(&pageInfo)
 	if err, list, total := projectService.GetProjectInfoList(pageInfo); err != nil {
 		global.GVA_LOG.Error("获取失败!", zap.Error(err))

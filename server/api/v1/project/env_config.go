@@ -3,10 +3,10 @@ package project
 import (
 	"github.com/gin-gonic/gin"
 	"github.com/jizi19911101/gin-vue-admin/server/global"
-	autocodeReq "github.com/jizi19911101/gin-vue-admin/server/model/autocode/request"
 	"github.com/jizi19911101/gin-vue-admin/server/model/common/request"
 	"github.com/jizi19911101/gin-vue-admin/server/model/common/response"
 	"github.com/jizi19911101/gin-vue-admin/server/model/project"
+	projectReq "github.com/jizi19911101/gin-vue-admin/server/model/project/request"
 	"github.com/jizi19911101/gin-vue-admin/server/service"
 	"go.uber.org/zap"
 )
@@ -136,7 +136,7 @@ func (envConfigApi *EnvConfigApi) FindEnvConfig(c *gin.Context) {
 // @Success 200 {string} string "{"success":true,"data":{},"msg":"获取成功"}"
 // @Router /envConfig/getEnvConfigList [get]
 func (envConfigApi *EnvConfigApi) GetEnvConfigList(c *gin.Context) {
-	var pageInfo autocodeReq.EnvConfigSearch
+	var pageInfo projectReq.EnvConfigSearch
 	_ = c.ShouldBindQuery(&pageInfo)
 	if err, list, total := envConfigService.GetEnvConfigInfoList(pageInfo); err != nil {
 		global.GVA_LOG.Error("获取失败!", zap.Error(err))

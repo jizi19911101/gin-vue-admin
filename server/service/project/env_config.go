@@ -2,9 +2,9 @@ package project
 
 import (
 	"github.com/jizi19911101/gin-vue-admin/server/global"
-	autoCodeReq "github.com/jizi19911101/gin-vue-admin/server/model/autocode/request"
 	"github.com/jizi19911101/gin-vue-admin/server/model/common/request"
 	"github.com/jizi19911101/gin-vue-admin/server/model/project"
+	porjectReq "github.com/jizi19911101/gin-vue-admin/server/model/project/request"
 )
 
 type EnvConfigService struct {
@@ -47,7 +47,7 @@ func (envConfigService *EnvConfigService) GetEnvConfig(id uint) (err error, envC
 
 // GetEnvConfigInfoList 分页获取EnvConfig记录
 // Author [piexlmax](https://github.com/piexlmax)
-func (envConfigService *EnvConfigService) GetEnvConfigInfoList(info autoCodeReq.EnvConfigSearch) (err error, list interface{}, total int64) {
+func (envConfigService *EnvConfigService) GetEnvConfigInfoList(info porjectReq.EnvConfigSearch) (err error, list interface{}, total int64) {
 	limit := info.PageSize
 	offset := info.PageSize * (info.Page - 1)
 	// 创建db
