@@ -13,7 +13,7 @@ type ProjectRouter struct {
 func (s *ProjectRouter) InitProjectRouter(Router *gin.RouterGroup) {
 	projectRouter := Router.Group("project").Use(middleware.OperationRecord())
 	projectRouterWithoutRecord := Router.Group("project")
-	var projectApi = v1.ApiGroupApp.AutoCodeApiGroup.ProjectApi
+	var projectApi = v1.ApiGroupApp.ProjectGroup.ProjectApi
 	{
 		projectRouter.POST("createProject", projectApi.CreateProject)             // 新建Project
 		projectRouter.DELETE("deleteProject", projectApi.DeleteProject)           // 删除Project

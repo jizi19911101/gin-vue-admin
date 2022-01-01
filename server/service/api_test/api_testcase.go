@@ -240,6 +240,7 @@ func (apiTestcaseService *ApiTestcaseService) ParseApiTestcase() (err error) {
 				Name:   v,
 				Module: api.Module,
 				Api:    api.Name,
+				Class:  className,
 			}
 
 		}

@@ -77,7 +77,6 @@ func Routers() *gin.Engine {
 		autocodeRouter.InitSysAutoCodeExampleRouter(PrivateGroup)
 		projectRouter.InitProjectRouter(PrivateGroup)
 		projectRouter.InitEnvConfigRouter(PrivateGroup)
-		apiTestRouter.InitModuleRouter(PrivateGroup)
 		apiTestRouter.InitApiTestcaseRouter(PrivateGroup)
 		//autocodeRouter.InitApiInfoRouter(PrivateGroup)
 		//autocodeRouter.(PrivateGroup)
