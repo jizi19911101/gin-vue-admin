@@ -12,14 +12,14 @@ type EnvConfigService struct {
 
 // CreateEnvConfig 创建EnvConfig记录
 // Author [piexlmax](https://github.com/piexlmax)
-func (envConfigService *EnvConfigService) CreateEnvConfig(envConfig project.EnvConfig) (err error) {
+func (envConfigService *EnvConfigService) CreateEnvConfig(envConfig porjectReq.EnvConfigReq) (err error) {
 	err = global.GVA_DB.Create(&envConfig).Error
 	return err
 }
 
 // DeleteEnvConfig 删除EnvConfig记录
 // Author [piexlmax](https://github.com/piexlmax)
-func (envConfigService *EnvConfigService) DeleteEnvConfig(envConfig project.EnvConfig) (err error) {
+func (envConfigService *EnvConfigService) DeleteEnvConfig(envConfig porjectReq.EnvConfigReq) (err error) {
 	err = global.GVA_DB.Delete(&envConfig).Error
 	return err
 }
@@ -33,14 +33,14 @@ func (envConfigService *EnvConfigService) DeleteEnvConfigByIds(ids request.IdsRe
 
 // UpdateEnvConfig 更新EnvConfig记录
 // Author [piexlmax](https://github.com/piexlmax)
-func (envConfigService *EnvConfigService) UpdateEnvConfig(envConfig project.EnvConfig) (err error) {
+func (envConfigService *EnvConfigService) UpdateEnvConfig(envConfig porjectReq.EnvConfigReq) (err error) {
 	err = global.GVA_DB.Save(&envConfig).Error
 	return err
 }
 
 // GetEnvConfig 根据id获取EnvConfig记录
 // Author [piexlmax](https://github.com/piexlmax)
-func (envConfigService *EnvConfigService) GetEnvConfig(id uint) (err error, envConfig project.EnvConfig) {
+func (envConfigService *EnvConfigService) GetEnvConfig(id uint) (err error, envConfig porjectReq.EnvConfigReq) {
 	err = global.GVA_DB.Where("id = ?", id).First(&envConfig).Error
 	return
 }

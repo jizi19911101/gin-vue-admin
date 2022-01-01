@@ -5,7 +5,6 @@ import (
 	"github.com/jizi19911101/gin-vue-admin/server/global"
 	"github.com/jizi19911101/gin-vue-admin/server/model/common/request"
 	"github.com/jizi19911101/gin-vue-admin/server/model/common/response"
-	"github.com/jizi19911101/gin-vue-admin/server/model/project"
 	projectReq "github.com/jizi19911101/gin-vue-admin/server/model/project/request"
 	"github.com/jizi19911101/gin-vue-admin/server/service"
 	"go.uber.org/zap"
@@ -26,14 +25,14 @@ var envConfigService = service.ServiceGroupApp.ProjectServiceGroup.EnvConfigServ
 // @Success 200 {string} string "{"success":true,"data":{},"msg":"获取成功"}"
 // @Router /envConfig/createEnvConfig [post]
 func (envConfigApi *EnvConfigApi) CreateEnvConfig(c *gin.Context) {
-	var envConfig project.EnvConfig
-	_ = c.ShouldBindJSON(&envConfig)
-	if err := global.Validate.Struct(envConfig); err != nil {
+	var envConfigReq projectReq.EnvConfigReq
+	_ = c.ShouldBindJSON(&envConfigReq)
+	if err := global.Validate.Struct(envConfigReq); err != nil {
 		global.GVA_LOG.Error("参数缺失", zap.Error(err))
 		response.FailWithMessage("参数缺失", c)
 		return
 	}
-	if err := envConfigService.CreateEnvConfig(envConfig); err != nil {
+	if err := envConfigService.CreateEnvConfig(envConfigReq); err != nil {
 		global.GVA_LOG.Error("创建失败!", zap.Error(err))
 		response.FailWithMessage("创建失败", c)
 	} else {
@@ -51,9 +50,9 @@ func (envConfigApi *EnvConfigApi) CreateEnvConfig(c *gin.Context) {
 // @Success 200 {string} string "{"success":true,"data":{},"msg":"删除成功"}"
 // @Router /envConfig/deleteEnvConfig [delete]
 func (envConfigApi *EnvConfigApi) DeleteEnvConfig(c *gin.Context) {
-	var envConfig project.EnvConfig
-	_ = c.ShouldBindJSON(&envConfig)
-	if err := envConfigService.DeleteEnvConfig(envConfig); err != nil {
+	var envConfigReq projectReq.EnvConfigReq
+	_ = c.ShouldBindJSON(&envConfigReq)
+	if err := envConfigService.DeleteEnvConfig(envConfigReq); err != nil {
 		global.GVA_LOG.Error("删除失败!", zap.Error(err))
 		response.FailWithMessage("删除失败", c)
 	} else {
@@ -91,14 +90,14 @@ func (envConfigApi *EnvConfigApi) DeleteEnvConfigByIds(c *gin.Context) {
 // @Success 200 {string} string "{"success":true,"data":{},"msg":"更新成功"}"
 // @Router /envConfig/updateEnvConfig [put]
 func (envConfigApi *EnvConfigApi) UpdateEnvConfig(c *gin.Context) {
-	var envConfig project.EnvConfig
-	_ = c.ShouldBindJSON(&envConfig)
-	if err := global.Validate.Struct(envConfig); err != nil {
+	var envConfigReq projectReq.EnvConfigReq
+	_ = c.ShouldBindJSON(&envConfigReq)
+	if err := global.Validate.Struct(envConfigReq); err != nil {
 		global.GVA_LOG.Error("参数缺失", zap.Error(err))
 		response.FailWithMessage("参数缺失", c)
 		return
 	}
-	if err := envConfigService.UpdateEnvConfig(envConfig); err != nil {
+	if err := envConfigService.UpdateEnvConfig(envConfigReq); err != nil {
 		global.GVA_LOG.Error("更新失败!", zap.Error(err))
 		response.FailWithMessage("更新失败", c)
 	} else {
@@ -116,9 +115,9 @@ func (envConfigApi *EnvConfigApi) UpdateEnvConfig(c *gin.Context) {
 // @Success 200 {string} string "{"success":true,"data":{},"msg":"查询成功"}"
 // @Router /envConfig/findEnvConfig [get]
 func (envConfigApi *EnvConfigApi) FindEnvConfig(c *gin.Context) {
-	var envConfig project.EnvConfig
-	_ = c.ShouldBindQuery(&envConfig)
-	if err, reenvConfig := envConfigService.GetEnvConfig(envConfig.ID); err != nil {
+	var envConfigReq projectReq.EnvConfigReq
+	_ = c.ShouldBindQuery(&envConfigReq)
+	if err, reenvConfig := envConfigService.GetEnvConfig(envConfigReq.ID); err != nil {
 		global.GVA_LOG.Error("查询失败!", zap.Error(err))
 		response.FailWithMessage("查询失败", c)
 	} else {
