@@ -48,21 +48,17 @@ func (apiTestcaseService *ApiTestcaseService) ApiTestcaseCode() (err error) {
 
 // ApiTestcaseCode 解析接口自动化代码模块
 func (apiTestcaseService *ApiTestcaseService) ParseApiTestcaseModule(tmp_file string) (err error) {
-	var resModuleInfoList []api_test.ModuleInfo
-	delModuleInfoList := make([]uint, 0)
-	var count int64
-
 	// 解析出模块
 	fileInfoList, err := ioutil.ReadDir(tmp_file + "/testcases")
 	if len(fileInfoList) == 0 {
 		return
 	}
-	moduleInfoList := make([]api_test.ModuleInfo, 0)
-	moduleInfoListMap := make(map[string]api_test.ModuleInfo)
+
+	parseModuleMap := make(map[string]api_test.ModuleInfo)
 	for i := range fileInfoList {
 		fileName := fileInfoList[i].Name()
 		if fileName != "__init__.py" {
-			moduleInfoListMap[fileName] = api_test.ModuleInfo{
+			parseModuleMap[fileName] = api_test.ModuleInfo{
 				Name: fileName,
 			}
 		}
@@ -70,31 +66,45 @@ func (apiTestcaseService *ApiTestcaseService) ParseApiTestcaseModule(tmp_file st
 
 	// 查库查出模块
 	db := global.GVA_DB.Model(&api_test.ModuleInfo{})
-	db.Find(&resModuleInfoList).Count(&count)
+
+	var moduleList []api_test.ModuleInfo
+	var count int64
+	db.Find(&moduleList).Count(&count)
+
 
 	// 把增量模块插入库
 	if count == 0 {
-		for _, module := range moduleInfoListMap {
-			moduleInfoList = append(moduleInfoList, module)
+		list := make([]api_test.ModuleInfo, 0)
+		for _, module := range parseModuleMap {
+			list = append(list, module)
 		}
-		db.Create(&moduleInfoList)
+		db.Create(&list)
 		return
-	} else {
-		for _, module := range resModuleInfoList {
-			_, ok := moduleInfoListMap[module.Name]
-			if ok {
-				delete(moduleInfoListMap, module.Name)
-			} else {
-				delModuleInfoList = append(delModuleInfoList, module.ID)
-			}
+	}
+
+	moduleMap := make(map[string]api_test.ModuleInfo,0)
+	for _,module := range moduleList {
+		moduleMap[module.Name]=module
+	}
+
+
+	addModuleInfoList := make([]api_test.ModuleInfo, 0)
+	delModuleInfoList := make([]uint, 0)
+
+	for _, module := range moduleList {
+		if _, ok := parseModuleMap[module.Name] ;!ok {
+			delModuleInfoList = append(delModuleInfoList, module.ID)
 		}
 	}
 
-	if len(moduleInfoListMap) != 0 {
-		for _, module := range moduleInfoListMap {
-			moduleInfoList = append(moduleInfoList, module)
+	for key,module := range parseModuleMap {
+		if _,ok:= moduleMap[key];!ok{
+			addModuleInfoList = append(addModuleInfoList, module)
 		}
-		db.Create(&moduleInfoList)
+	}
+
+	if len(addModuleInfoList) != 0 {
+		db.Create(&addModuleInfoList)
 	}
 
 	if len(delModuleInfoList) != 0 {
