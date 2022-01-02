@@ -7,52 +7,53 @@ import (
 	organizationReq "github.com/jizi19911101/gin-vue-admin/server/model/organization/request"
 )
 
-type ProjectService struct {
+type OrganizationService struct {
 }
 
-// CreateProject 创建Project记录
+// CreateOrganization 创建Organization记录
 // Author [piexlmax](https://github.com/piexlmax)
-func (projectService *ProjectService) CreateProject(project organization.Organization) (err error) {
-	err = global.GVA_DB.Create(&project).Error
+func (organizationService *OrganizationService) CreateOrganization(organization organization.Organization) (err error) {
+	err = global.GVA_DB.Create(&organization).Error
 	return err
 }
 
-// DeleteProject 删除Project记录
+// DeleteOrganization 删除Organization记录
 // Author [piexlmax](https://github.com/piexlmax)
-func (projectService *ProjectService) DeleteProject(project organization.Organization) (err error) {
-	err = global.GVA_DB.Delete(&project).Error
+func (organizationService *OrganizationService) DeleteOrganization(organization organization.Organization) (err error) {
+	err = global.GVA_DB.Delete(&organization).Error
 	return err
 }
 
-// DeleteProjectByIds 批量删除Project记录
+// DeleteOrganizationByIds 批量删除Organization记录
 // Author [piexlmax](https://github.com/piexlmax)
-func (projectService *ProjectService) DeleteProjectByIds(ids request.IdsReq) (err error) {
+func (organizationService *OrganizationService) DeleteOrganizationByIds(ids request.IdsReq) (err error) {
 	err = global.GVA_DB.Delete(&[]organization.Organization{}, "id in ?", ids.Ids).Error
 	return err
 }
 
-// UpdateProject 更新Project记录
+// UpdateOrganization 更新Organization记录
 // Author [piexlmax](https://github.com/piexlmax)
-func (projectService *ProjectService) UpdateProject(project organization.Organization) (err error) {
-	err = global.GVA_DB.Save(&project).Error
+func (organizationService *OrganizationService) UpdateOrganization(organization organization.Organization) (err error) {
+	//err = global.GVA_DB.Save(&organization).Error
+	err = global.GVA_DB.Select("*").Omit("created_at").Updates(&organization).Error
 	return err
 }
 
-// GetProject 根据id获取Project记录
+// GetOrganization 根据id获取Organization记录
 // Author [piexlmax](https://github.com/piexlmax)
-func (projectService *ProjectService) GetProject(id uint) (err error, project organization.Organization) {
-	err = global.GVA_DB.Where("id = ?", id).First(&project).Error
+func (organizationService *OrganizationService) GetOrganization(id uint) (err error, organization organization.Organization) {
+	err = global.GVA_DB.Where("id = ?", id).First(&organization).Error
 	return
 }
 
-// GetProjectInfoList 分页获取Project记录
+// GetOrganizationInfoList 分页获取Organization记录
 // Author [piexlmax](https://github.com/piexlmax)
-func (projectService *ProjectService) GetProjectInfoList(info organizationReq.OrganizationSearch) (err error, list interface{}, total int64) {
+func (organizationService *OrganizationService) GetOrganizationInfoList(info organizationReq.OrganizationSearch) (err error, list interface{}, total int64) {
 	limit := info.PageSize
 	offset := info.PageSize * (info.Page - 1)
 	// 创建db
 	db := global.GVA_DB.Model(&organization.Organization{})
-	var projects []organization.Organization
+	var organizations []organization.Organization
 	// 如果有条件搜索 下方会自动创建搜索语句
 	if info.Name != "" {
 		db = db.Where("name = ?", info.Name)
@@ -61,6 +62,6 @@ func (projectService *ProjectService) GetProjectInfoList(info organizationReq.Or
 	if err != nil {
 		return
 	}
-	err = db.Limit(limit).Offset(offset).Find(&projects).Error
-	return err, projects, total
+	err = db.Limit(limit).Offset(offset).Find(&organizations).Error
+	return err, organizations, total
 }

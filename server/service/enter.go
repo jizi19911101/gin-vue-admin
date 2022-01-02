@@ -9,11 +9,11 @@ import (
 )
 
 type ServiceGroup struct {
-	SystemServiceGroup   system.ServiceGroup
-	ExampleServiceGroup  example.ServiceGroup
-	AutoCodeServiceGroup autocode.ServiceGroup
-	ApiTestServiceGroup  api_test.ServiceGroup
-	ProjectServiceGroup  organization.ServiceGroup
+	SystemServiceGroup       system.ServiceGroup
+	ExampleServiceGroup      example.ServiceGroup
+	AutoCodeServiceGroup     autocode.ServiceGroup
+	ApiTestServiceGroup      api_test.ServiceGroup
+	OrganizationServiceGroup organization.ServiceGroup
 }
 
 var ServiceGroupApp = new(ServiceGroup)

@@ -1,12 +1,15 @@
 package organization
 
 import (
+	"fmt"
+
 	"github.com/gin-gonic/gin"
 	"github.com/jizi19911101/gin-vue-admin/server/global"
 	"github.com/jizi19911101/gin-vue-admin/server/model/common/request"
 	"github.com/jizi19911101/gin-vue-admin/server/model/common/response"
 	"github.com/jizi19911101/gin-vue-admin/server/model/organization"
 	organizationReq "github.com/jizi19911101/gin-vue-admin/server/model/organization/request"
+	organizationRes "github.com/jizi19911101/gin-vue-admin/server/model/organization/response"
 	"github.com/jizi19911101/gin-vue-admin/server/service"
 	"go.uber.org/zap"
 )
@@ -14,18 +17,18 @@ import (
 type OrganizationApi struct {
 }
 
-var projectService = service.ServiceGroupApp.ProjectServiceGroup.ProjectService
+var organizationService = service.ServiceGroupApp.OrganizationServiceGroup.OrganizationService
 
-// CreateProject 创建Project
-// @Tags Project
-// @Summary 创建Project
+// CreateOrganization 创建Organization
+// @Tags Organization
+// @Summary 创建Organization
 // @Security ApiKeyAuth
 // @accept application/json
 // @Produce application/json
-// @Param data body autocode.Project true "创建Project"
+// @Param data body autocode.Organization true "创建Organization"
 // @Success 200 {string} string "{"success":true,"data":{},"msg":"获取成功"}"
-// @Router /organization/createProject [post]
-func (organizationApi *OrganizationApi) CreateProject(c *gin.Context) {
+// @Router /organization/createOrganization [post]
+func (organizationApi *OrganizationApi) CreateOrganization(c *gin.Context) {
 	var organizationReq organizationReq.OrganizationReq
 	_ = c.ShouldBindJSON(&organizationReq)
 	if err := global.Validate.Struct(organizationReq); err != nil {
@@ -34,7 +37,7 @@ func (organizationApi *OrganizationApi) CreateProject(c *gin.Context) {
 		return
 	}
 	organization := organizationApi.transferOrganization(organizationReq)
-	if err := projectService.CreateProject(organization); err != nil {
+	if err := organizationService.CreateOrganization(organization); err != nil {
 		global.GVA_LOG.Error("创建失败!", zap.Error(err))
 		response.FailWithMessage("创建失败", c)
 	} else {
@@ -42,20 +45,20 @@ func (organizationApi *OrganizationApi) CreateProject(c *gin.Context) {
 	}
 }
 
-// DeleteProject 删除Project
-// @Tags Project
-// @Summary 删除Project
+// DeleteOrganization 删除Organization
+// @Tags Organization
+// @Summary 删除Organization
 // @Security ApiKeyAuth
 // @accept application/json
 // @Produce application/json
-// @Param data body autocode.Project true "删除Project"
+// @Param data body autocode.Organization true "删除Organization"
 // @Success 200 {string} string "{"success":true,"data":{},"msg":"删除成功"}"
-// @Router /organization/deleteProject [delete]
-func (organizationApi *OrganizationApi) DeleteProject(c *gin.Context) {
+// @Router /organization/deleteOrganization [delete]
+func (organizationApi *OrganizationApi) DeleteOrganization(c *gin.Context) {
 	var organizationReq organizationReq.OrganizationReq
 	_ = c.ShouldBindJSON(&organizationReq)
 	organization := organizationApi.transferOrganization(organizationReq)
-	if err := projectService.DeleteProject(organization); err != nil {
+	if err := organizationService.DeleteOrganization(organization); err != nil {
 		global.GVA_LOG.Error("删除失败!", zap.Error(err))
 		response.FailWithMessage("删除失败", c)
 	} else {
@@ -63,19 +66,19 @@ func (organizationApi *OrganizationApi) DeleteProject(c *gin.Context) {
 	}
 }
 
-// DeleteProjectByIds 批量删除Project
-// @Tags Project
-// @Summary 批量删除Project
+// DeleteOrganizationByIds 批量删除
+// @Tags Organization
+// @Summary 批量删除Organization
 // @Security ApiKeyAuth
 // @accept application/json
 // @Produce application/json
-// @Param data body request.IdsReq true "批量删除Project"
+// @Param data body request.IdsReq true "批量删除Organization"
 // @Success 200 {string} string "{"success":true,"data":{},"msg":"批量删除成功"}"
-// @Router /organization/deleteProjectByIds [delete]
-func (organizationApi *OrganizationApi) DeleteProjectByIds(c *gin.Context) {
+// @Router /organization/deleteOrganizationByIds [delete]
+func (organizationApi *OrganizationApi) DeleteOrganizationByIds(c *gin.Context) {
 	var IdsReq request.IdsReq
 	_ = c.ShouldBindJSON(&IdsReq)
-	if err := projectService.DeleteProjectByIds(IdsReq); err != nil {
+	if err := organizationService.DeleteOrganizationByIds(IdsReq); err != nil {
 		global.GVA_LOG.Error("批量删除失败!", zap.Error(err))
 		response.FailWithMessage("批量删除失败", c)
 	} else {
@@ -83,16 +86,16 @@ func (organizationApi *OrganizationApi) DeleteProjectByIds(c *gin.Context) {
 	}
 }
 
-// UpdateProject 更新Project
-// @Tags Project
-// @Summary 更新Project
+// UpdateOrganization 更新Organization
+// @Tags Organization
+// @Summary 更新Organization
 // @Security ApiKeyAuth
 // @accept application/json
 // @Produce application/json
-// @Param data body autocode.Project true "更新Project"
+// @Param data body autocode.Organization true "更新Organization"
 // @Success 200 {string} string "{"success":true,"data":{},"msg":"更新成功"}"
-// @Router /organization/updateProject [put]
-func (organizationApi *OrganizationApi) UpdateProject(c *gin.Context) {
+// @Router /organization/updateOrganization [put]
+func (organizationApi *OrganizationApi) UpdateOrganization(c *gin.Context) {
 	var organizationReq organizationReq.OrganizationReq
 	_ = c.ShouldBindJSON(&organizationReq)
 	if err := global.Validate.Struct(organizationReq); err != nil {
@@ -101,7 +104,7 @@ func (organizationApi *OrganizationApi) UpdateProject(c *gin.Context) {
 		return
 	}
 	organization := organizationApi.transferOrganization(organizationReq)
-	if err := projectService.UpdateProject(organization); err != nil {
+	if err := organizationService.UpdateOrganization(organization); err != nil {
 		global.GVA_LOG.Error("更新失败!", zap.Error(err))
 		response.FailWithMessage("更新失败", c)
 	} else {
@@ -109,52 +112,68 @@ func (organizationApi *OrganizationApi) UpdateProject(c *gin.Context) {
 	}
 }
 
-// FindProject 用id查询Project
-// @Tags Project
-// @Summary 用id查询Project
+// FindOrganization 用id查询Organization
+// @Tags Organization
+// @Summary 用id查询Organization
 // @Security ApiKeyAuth
 // @accept application/json
 // @Produce application/json
-// @Param data query autocode.Project true "用id查询Project"
+// @Param data query autocode.Organization true "用id查询Organization"
 // @Success 200 {string} string "{"success":true,"data":{},"msg":"查询成功"}"
-// @Router /organization/findProject [get]
-func (organizationApi *OrganizationApi) FindProject(c *gin.Context) {
+// @Router /organization/findOrganization [get]
+func (organizationApi *OrganizationApi) FindOrganization(c *gin.Context) {
 	var organizationReq organizationReq.OrganizationReq
 	_ = c.ShouldBindQuery(&organizationReq)
-	if err, project := projectService.GetProject(organizationReq.ID); err != nil {
+	if err, organization := organizationService.GetOrganization(organizationReq.ID); err != nil {
 		global.GVA_LOG.Error("查询失败!", zap.Error(err))
 		response.FailWithMessage("查询失败", c)
 	} else {
-		response.OkWithData(gin.H{"organization": project}, c)
+		organizationRes := organizationRes.OrganizationRes{
+			ID:   organization.ID,
+			Name: organization.Name,
+		}
+		response.OkWithData(gin.H{"organization": organizationRes}, c)
 	}
+
 }
 
-// GetProjectList 分页获取Project列表
-// @Tags Project
-// @Summary 分页获取Project列表
+// GetOrganizationList 分页获取Organization列表
+// @Tags Organization
+// @Summary 分页获取Organization列表
 // @Security ApiKeyAuth
 // @accept application/json
 // @Produce application/json
-// @Param data query autocodeReq.ProjectSearch true "分页获取Project列表"
+// @Param data query autocodeReq.OrganizationSearch true "分页获取Organization列表"
 // @Success 200 {string} string "{"success":true,"data":{},"msg":"获取成功"}"
-// @Router /organization/getProjectList [get]
-func (organizationApi *OrganizationApi) GetProjectList(c *gin.Context) {
-	var pageInfo organizationReq.OrganizationSearch
-	_ = c.ShouldBindQuery(&pageInfo)
-	if err, list, total := projectService.GetProjectInfoList(pageInfo); err != nil {
+// @Router /organization/getOrganizationList [get]
+func (organizationApi *OrganizationApi) GetOrganizationList(c *gin.Context) {
+	var organizationReq organizationReq.OrganizationSearch
+	_ = c.ShouldBindQuery(&organizationReq)
+	fmt.Println(organizationReq, "12121212")
+	if err, list, total := organizationService.GetOrganizationInfoList(organizationReq); err != nil {
 		global.GVA_LOG.Error("获取失败!", zap.Error(err))
 		response.FailWithMessage("获取失败", c)
 	} else {
+		organizationList := list.([]organization.Organization)
+		organizationResList := make([]organizationRes.OrganizationRes, 0)
+		for _, organization := range organizationList {
+			organizationResList = append(organizationResList, organizationRes.OrganizationRes{
+				ID:   organization.ID,
+				Name: organization.Name,
+			})
+		}
 		response.OkWithDetailed(response.PageResult{
-			List:     list,
+			List:     organizationResList,
 			Total:    total,
-			Page:     pageInfo.Page,
-			PageSize: pageInfo.PageSize,
+			Page:     organizationReq.Page,
+			PageSize: organizationReq.PageSize,
 		}, "获取成功", c)
 	}
 }
 
 func (organizationApi *OrganizationApi) transferOrganization(organizationReq organizationReq.OrganizationReq) (organization organization.Organization) {
 	organization.Name = organizationReq.Name
+	organization.ID = organizationReq.ID
+
 	return
 }

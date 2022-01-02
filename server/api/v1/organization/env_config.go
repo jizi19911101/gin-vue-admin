@@ -9,6 +9,7 @@ import (
 	"github.com/jizi19911101/gin-vue-admin/server/model/common/response"
 	organization "github.com/jizi19911101/gin-vue-admin/server/model/organization"
 	organizationReq "github.com/jizi19911101/gin-vue-admin/server/model/organization/request"
+	organizationRes "github.com/jizi19911101/gin-vue-admin/server/model/organization/response"
 	"github.com/jizi19911101/gin-vue-admin/server/service"
 	"go.uber.org/zap"
 )
@@ -16,7 +17,7 @@ import (
 type EnvConfigApi struct {
 }
 
-var envConfigService = service.ServiceGroupApp.ProjectServiceGroup.EnvConfigService
+var envConfigService = service.ServiceGroupApp.OrganizationServiceGroup.EnvConfigService
 
 // CreateEnvConfig 创建EnvConfig
 // @Tags EnvConfig
@@ -129,7 +130,13 @@ func (envConfigApi *EnvConfigApi) FindEnvConfig(c *gin.Context) {
 		global.GVA_LOG.Error("查询失败!", zap.Error(err))
 		response.FailWithMessage("查询失败", c)
 	} else {
-		response.OkWithData(gin.H{"envConfig": envConfig}, c)
+		envConfigRes := organizationRes.EnvConfigRes{
+			ID:           envConfig.ID,
+			Name:         envConfig.Name,
+			Base_url:     envConfig.Base_url,
+			Organization: envConfig.Organization,
+		}
+		response.OkWithData(gin.H{"envConfig": envConfigRes}, c)
 	}
 }
 
@@ -143,23 +150,35 @@ func (envConfigApi *EnvConfigApi) FindEnvConfig(c *gin.Context) {
 // @Success 200 {string} string "{"success":true,"data":{},"msg":"获取成功"}"
 // @Router /envConfig/getEnvConfigList [get]
 func (envConfigApi *EnvConfigApi) GetEnvConfigList(c *gin.Context) {
-	var pageInfo organizationReq.EnvConfigSearch
-	_ = c.ShouldBindQuery(&pageInfo)
-	if err, list, total := envConfigService.GetEnvConfigInfoList(pageInfo); err != nil {
+	var organizationReq organizationReq.EnvConfigSearch
+	_ = c.ShouldBindQuery(&organizationReq)
+	if err, list, total := envConfigService.GetEnvConfigInfoList(organizationReq); err != nil {
 		global.GVA_LOG.Error("获取失败!", zap.Error(err))
 		response.FailWithMessage("获取失败", c)
 	} else {
+		envConfigList := list.([]organization.EnvConfig)
+		envConfigResList := make([]organizationRes.EnvConfigRes, 0)
+		for _, envconfig := range envConfigList {
+			envConfigResList = append(envConfigResList, organizationRes.EnvConfigRes{
+				ID:           envconfig.ID,
+				Name:         envconfig.Name,
+				Base_url:     envconfig.Base_url,
+				Organization: envconfig.Organization,
+			})
+		}
+
 		response.OkWithDetailed(response.PageResult{
-			List:     list,
+			List:     envConfigResList,
 			Total:    total,
-			Page:     pageInfo.Page,
-			PageSize: pageInfo.PageSize,
+			Page:     organizationReq.Page,
+			PageSize: organizationReq.PageSize,
 		}, "获取成功", c)
 	}
 }
 
 func (envConfigApi *EnvConfigApi) transferEnvconfig(envConfigReq organizationReq.EnvConfigReq) (evnConfig organization.EnvConfig) {
 	//evnConfig = organization.EnvConfig{}
+	evnConfig.ID = envConfigReq.ID
 	evnConfig.Name = envConfigReq.Name
 	evnConfig.Base_url = envConfigReq.Base_url
 	evnConfig.Organization = envConfigReq.Organization
