@@ -4,7 +4,7 @@ import (
 	"github.com/jizi19911101/gin-vue-admin/server/service/api_test"
 	"github.com/jizi19911101/gin-vue-admin/server/service/autocode"
 	"github.com/jizi19911101/gin-vue-admin/server/service/example"
-	"github.com/jizi19911101/gin-vue-admin/server/service/project"
+	"github.com/jizi19911101/gin-vue-admin/server/service/organization"
 	"github.com/jizi19911101/gin-vue-admin/server/service/system"
 )
 
@@ -13,7 +13,7 @@ type ServiceGroup struct {
 	ExampleServiceGroup  example.ServiceGroup
 	AutoCodeServiceGroup autocode.ServiceGroup
 	ApiTestServiceGroup  api_test.ServiceGroup
-	ProjectServiceGroup  project.ServiceGroup
+	ProjectServiceGroup  organization.ServiceGroup
 }
 
 var ServiceGroupApp = new(ServiceGroup)

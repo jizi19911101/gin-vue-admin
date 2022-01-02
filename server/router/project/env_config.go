@@ -13,7 +13,7 @@ type EnvConfigRouter struct {
 func (s *EnvConfigRouter) InitEnvConfigRouter(Router *gin.RouterGroup) {
 	envConfigRouter := Router.Group("envConfig").Use(middleware.OperationRecord())
 	envConfigRouterWithoutRecord := Router.Group("envConfig")
-	var envConfigApi = v1.ApiGroupApp.ProjectGroup.EnvConfigApi
+	var envConfigApi = v1.ApiGroupApp.OrganizationGroup.EnvConfigApi
 	{
 		envConfigRouter.POST("createEnvConfig", envConfigApi.CreateEnvConfig)             // 新建EnvConfig
 		envConfigRouter.DELETE("deleteEnvConfig", envConfigApi.DeleteEnvConfig)           // 删除EnvConfig

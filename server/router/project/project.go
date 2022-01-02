@@ -11,17 +11,17 @@ type ProjectRouter struct {
 
 // InitProjectRouter 初始化 Project 路由信息
 func (s *ProjectRouter) InitProjectRouter(Router *gin.RouterGroup) {
-	projectRouter := Router.Group("project").Use(middleware.OperationRecord())
-	projectRouterWithoutRecord := Router.Group("project")
-	var projectApi = v1.ApiGroupApp.ProjectGroup.ProjectApi
+	projectRouter := Router.Group("organization").Use(middleware.OperationRecord())
+	projectRouterWithoutRecord := Router.Group("organization")
+	var organizationApi = v1.ApiGroupApp.OrganizationGroup.OrganizationApi
 	{
-		projectRouter.POST("createProject", projectApi.CreateProject)             // 新建Project
-		projectRouter.DELETE("deleteProject", projectApi.DeleteProject)           // 删除Project
-		projectRouter.DELETE("deleteProjectByIds", projectApi.DeleteProjectByIds) // 批量删除Project
-		projectRouter.PUT("updateProject", projectApi.UpdateProject)              // 更新Project
+		projectRouter.POST("createProject", organizationApi.CreateProject)             // 新建Project
+		projectRouter.DELETE("deleteProject", organizationApi.DeleteProject)           // 删除Project
+		projectRouter.DELETE("deleteProjectByIds", organizationApi.DeleteProjectByIds) // 批量删除Project
+		projectRouter.PUT("updateProject", organizationApi.UpdateProject)              // 更新Project
 	}
 	{
-		projectRouterWithoutRecord.GET("findProject", projectApi.FindProject)       // 根据ID获取Project
-		projectRouterWithoutRecord.GET("getProjectList", projectApi.GetProjectList) // 获取Project列表
+		projectRouterWithoutRecord.GET("findProject", organizationApi.FindProject)       // 根据ID获取Project
+		projectRouterWithoutRecord.GET("getProjectList", organizationApi.GetProjectList) // 获取Project列表
 	}
 }
