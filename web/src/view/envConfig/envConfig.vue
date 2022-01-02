@@ -8,8 +8,8 @@
         <el-form-item label="base_url">
           <el-input v-model="searchInfo.base_url" placeholder="搜索条件" />
         </el-form-item>
-        <el-form-item label="项目">
-          <el-input v-model="searchInfo.project" placeholder="搜索条件" />
+        <el-form-item label="组织">
+          <el-input v-model="searchInfo.organization" placeholder="搜索条件" />
         </el-form-item>
         <el-form-item>
           <el-button size="mini" type="primary" icon="el-icon-search" @click="onSubmit">查询</el-button>
@@ -42,7 +42,7 @@
         <el-table-column type="selection" width="55" />
         <el-table-column align="left" label="环境名称" prop="name" width="120" />
         <el-table-column align="left" label="base_url" prop="base_url" width="360" />
-        <el-table-column align="left"  label="所属项目" prop="project" width="120" />
+        <el-table-column align="left"  label="所属组织" prop="organization" width="120" />
 
         <el-table-column align="left" label="日期" width="180">
             <template #default="scope">{{ formatDate(scope.row.CreatedAt) }}</template>
@@ -74,8 +74,8 @@
         <el-form-item label="base_url:" prop="base_url">
           <el-input v-model="formData.base_url" clearable placeholder="请输入" />
         </el-form-item>
-        <el-form-item label="所属项目:" prop="project">
-          <el-input v-model="formData.project" clearable placeholder="请输入" />
+        <el-form-item label="组织:" prop="organization">
+          <el-input v-model="formData.organization" clearable placeholder="请输入" />
         </el-form-item>
       </el-form>
       <template #footer>
@@ -111,18 +111,18 @@ export default {
       formData: {
         name: '',
         base_url: '',
-        project: '',
+        organization: '',
       },
       rules: {
         name: [{ required:true, message:"输入环境名称", trigger:"blur" }],
         base_url: [{ required:true, message:"输入base_url", trigger:"blur" }],
-        project: [{ required:true, message:"输入项目名称", trigger:"blur" }],
+        organization: [{ required:true, message:"输入组织名称", trigger:"blur" }],
       }
     }
   },
   async created() {
 
-    this.searchInfo.project = this.$route.query.project
+    this.searchInfo.organization = this.$route.query.organization
     // await this.getEnvConfigList({ project: this.$route.query.project })
     await this.getTableData()
   },
@@ -183,7 +183,7 @@ export default {
       const res = await findEnvConfig({ ID: row.ID })
       this.type = 'update'
       if (res.code === 0) {
-        this.formData = res.data.reenvConfig
+        this.formData = res.data.envConfig
         this.dialogFormVisible = true
       }
     },

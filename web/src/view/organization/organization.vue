@@ -2,7 +2,7 @@
   <div>
     <div class="gva-search-box">
       <el-form :inline="true" :model="searchInfo" class="demo-form-inline">
-        <el-form-item label="项目名称">
+        <el-form-item label="组织名称">
           <el-input v-model="searchInfo.name" placeholder="搜索条件" />
         </el-form-item>
         <el-form-item>
@@ -34,14 +34,14 @@
         @selection-change="handleSelectionChange"
         >
         <el-table-column type="selection" width="55" />
-        <el-table-column align="left" label="项目名称" prop="name" width="120" />
+        <el-table-column align="left" label="组织名称" prop="name" width="120" />
         <el-table-column align="left" label="日期" width="180">
             <template #default="scope">{{ formatDate(scope.row.CreatedAt) }}</template>
         </el-table-column>
         <el-table-column align="left" label="操作">
             <template #default="scope">
             <el-button type="text" icon="el-icon-edit" size="small" class="table-button" @click="goToEnvConfig(scope.row)">设置环境变量</el-button>
-            <el-button type="text" icon="el-icon-edit" size="small" class="table-button" @click="updateProject(scope.row)">变更</el-button>
+            <el-button type="text" icon="el-icon-edit" size="small" class="table-button" @click="updateOrganization(scope.row)">变更</el-button>
             <el-button type="text" icon="el-icon-delete" size="mini" @click="deleteRow(scope.row)">删除</el-button>
             </template>
         </el-table-column>
@@ -58,9 +58,9 @@
             />
         </div>
     </div>
-    <el-dialog v-model="dialogFormVisible" :before-close="closeDialog" title="新增项目">
+    <el-dialog v-model="dialogFormVisible" :before-close="closeDialog" title="新增组织">
       <el-form :model="formData" :rules="rules" ref="formData" label-position="right" label-width="100px">
-        <el-form-item label="项目名称:" prop="name">
+        <el-form-item label="组织名称:" prop="name">
           <el-input v-model="formData.name" clearable placeholder="请输入" />
         </el-form-item>
       </el-form>
@@ -76,20 +76,20 @@
 
 <script>
 import {
-  createProject,
-  deleteProject,
-  deleteProjectByIds,
-  updateProject,
-  findProject,
-  getProjectList
-} from '@/api/project' //  此处请自行替换地址
+  createOrganization,
+  deleteOrganization,
+  deleteOrganizationByIds,
+  updateOrganization,
+  findOrganization,
+  getOrganizationList
+} from '@/api/organization' //  此处请自行替换地址
 import infoList from '@/mixins/infoList'
 export default {
-  name: 'Project',
+  name: 'Organization',
   mixins: [infoList],
   data() {
     return {
-      listApi: getProjectList,
+      listApi: getOrganizationList,
       dialogFormVisible: false,
       type: '',
       deleteVisible: false,
@@ -98,7 +98,7 @@ export default {
         name: '',
       },
       rules: {
-        name: [{ required:true, message: "请输入项目名称", trigger:"blur" }]
+        name: [{ required:true, message: "请输入组织名称", trigger:"blur" }]
       }
     }
   },
@@ -124,7 +124,7 @@ export default {
         cancelButtonText: '取消',
         type: 'warning'
       }).then(() => {
-        this.deleteProject(row)
+        this.deleteOrganization(row)
       }).catch(() => {
           this.$message({
             type: 'info',
@@ -145,7 +145,7 @@ export default {
         this.multipleSelection.map(item => {
           ids.push(item.ID)
         })
-      const res = await deleteProjectByIds({ ids })
+      const res = await deleteOrganizationByIds({ ids })
       if (res.code === 0) {
         this.$message({
           type: 'success',
@@ -158,16 +158,16 @@ export default {
         this.getTableData()
       }
     },
-    async updateProject(row) {
-      const res = await findProject({ ID: row.ID })
+    async updateOrganization(row) {
+      const res = await findOrganization({ ID: row.ID })
       this.type = 'update'
       if (res.code === 0) {
-        this.formData = res.data.reproject
+        this.formData = res.data.organization
         this.dialogFormVisible = true
       }
     },
     goToEnvConfig(item){
-      this.$router.push({name:"envConfig", query:{project:item.name}})
+      this.$router.push({name:"envConfig", query:{organization:item.name}})
     },
     closeDialog() {
       this.dialogFormVisible = false
@@ -176,8 +176,8 @@ export default {
         name: '',
       }
     },
-    async deleteProject(row) {
-      const res = await deleteProject({ ID: row.ID })
+    async deleteOrganization(row) {
+      const res = await deleteOrganization({ ID: row.ID })
       if (res.code === 0) {
         this.$message({
           type: 'success',
@@ -197,13 +197,13 @@ export default {
         }else{
           switch (this.type) {
             case 'create':
-              res = await createProject(this.formData)
+              res = await createOrganization(this.formData)
               break
             case 'update':
-              res = await updateProject(this.formData)
+              res = await updateOrganization(this.formData)
               break
             default:
-              res = await createProject(this.formData)
+              res = await createOrganization(this.formData)
               break
           }
           if (res.code === 0) {
