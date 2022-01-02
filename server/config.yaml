@@ -49,8 +49,8 @@ mysql:
   db-name: gva
   username: root
   password: "123456"
-  max-idle-conns: 0
-  max-open-conns: 0
+  max-idle-conns: 5
+  max-open-conns: 30
   log-mode: ""
   log-zap: false
 pgsql:

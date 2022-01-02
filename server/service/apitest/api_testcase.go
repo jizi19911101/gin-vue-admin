@@ -1,4 +1,4 @@
-package api_test
+package apitest
 
 import (
 	"bufio"
@@ -8,9 +8,10 @@ import (
 	"regexp"
 	"strings"
 
+	"go.uber.org/zap"
+
 	"github.com/jizi19911101/gin-vue-admin/server/global"
 	"github.com/jizi19911101/gin-vue-admin/server/model/api_test"
-
 	"github.com/jizi19911101/gin-vue-admin/server/utils"
 )
 
@@ -19,27 +20,40 @@ type ApiTestcaseService struct {
 
 // ApiTestcaseCode 拉取接口自动化代码
 func (apiTestcaseService *ApiTestcaseService) ApiTestcaseCode() (err error) {
-	folder, _ := os.Getwd()
-	targetFolder := folder + "/apiTestcaseCode"
-	if _, err := os.Stat(targetFolder); err != nil {
-		os.Mkdir(targetFolder, 755)
-	} else {
-		os.Remove(targetFolder)
+	folder, err := os.Getwd()
+	tmp, err := ioutil.TempDir(folder, "temp_*")
+	defer os.RemoveAll(tmp)
+	if err != nil {
+		return err
+	}
+	err = utils.OsExecClone(tmp, "https://git-ext.chumanapp.com/chuman-test/chuman-api-test-new")
+	if err != nil {
+		return err
+	}
+	err = apiTestcaseService.ParseApiTestcaseModule(tmp)
+	if err != nil {
+		return err
+	}
+	err = apiTestcaseService.ParseApiTestcaseApi(tmp)
+	if err != nil {
+		return err
 	}
 
-	err = utils.OsExecClone(targetFolder, "https://git-ext.chumanapp.com/chuman-test/chuman-api-test-new")
+	err = apiTestcaseService.ParseApiTestcase(tmp)
+	if err != nil {
+		return err
+	}
 	return
 }
 
 // ApiTestcaseCode 解析接口自动化代码模块
-func (apiTestcaseService *ApiTestcaseService) ParseApiTestcaseModule() (err error) {
+func (apiTestcaseService *ApiTestcaseService) ParseApiTestcaseModule(tmp_file string) (err error) {
 	var resModuleInfoList []api_test.ModuleInfo
 	delModuleInfoList := make([]uint, 0)
 	var count int64
 
 	// 解析出模块
-	pwd, _ := os.Getwd()
-	fileInfoList, err := ioutil.ReadDir(pwd + "/apiTestcaseCode/testcases")
+	fileInfoList, err := ioutil.ReadDir(tmp_file + "/testcases")
 	if len(fileInfoList) == 0 {
 		return
 	}
@@ -91,7 +105,7 @@ func (apiTestcaseService *ApiTestcaseService) ParseApiTestcaseModule() (err erro
 }
 
 // ApiTestcaseCode 解析接口自动化代码接口
-func (apiTestcaseService *ApiTestcaseService) ParseApiTestcaseApi() (err error) {
+func (apiTestcaseService *ApiTestcaseService) ParseApiTestcaseApi(tmp_file string) (err error) {
 	//取出模块
 	moduleList := make([]api_test.ModuleInfo, 0)
 	db := global.GVA_DB.Model(&api_test.ModuleInfo{})
@@ -104,8 +118,7 @@ func (apiTestcaseService *ApiTestcaseService) ParseApiTestcaseApi() (err error) 
 
 	//模块不为0，解析每个模块下的接口文件
 	for _, module := range moduleList {
-		folder, _ := os.Getwd()
-		targetFolder := folder + "/apiTestcaseCode/testcases/" + module.Name
+		targetFolder := tmp_file + "/testcases/" + module.Name
 		targetFileList := make([]string, 0)
 		if _, err := os.Stat(targetFolder); err == nil {
 			fileInfoList, _ := ioutil.ReadDir(targetFolder)
@@ -117,7 +130,7 @@ func (apiTestcaseService *ApiTestcaseService) ParseApiTestcaseApi() (err error) 
 				}
 			}
 		} else {
-			global.GVA_LOG.Error("解析接口自动化代码接口出错")
+			global.GVA_LOG.Error("解析接口自动化代码接口出错", zap.Error(err))
 		}
 		// 接口文件不为 0，就存入数据库
 		if len(targetFileList) != 0 {
@@ -173,7 +186,7 @@ func (apiTestcaseService *ApiTestcaseService) ParseApiTestcaseApi() (err error) 
 	return
 }
 
-func (apiTestcaseService *ApiTestcaseService) ParseApiTestcase() (err error) {
+func (apiTestcaseService *ApiTestcaseService) ParseApiTestcase(tmp_file string) (err error) {
 	// 取出所有接口
 	apiList := make([]api_test.ApiInfo, 0)
 	db := global.GVA_DB.Model(&api_test.ApiInfo{})
@@ -186,36 +199,39 @@ func (apiTestcaseService *ApiTestcaseService) ParseApiTestcase() (err error) {
 
 	// 读接口文件
 	for _, api := range apiList {
-		folder, _ := os.Getwd()
-		targetFile := folder + "/apiTestcaseCode/testcases/" + api.Module + "/test_" + api.Name + ".py"
+		targetFile := tmp_file + "/testcases/" + api.Module + "/test_" + api.Name + ".py"
 		var className string
 		caseList := make([]string, 0)
 		if _, err := os.Stat(targetFile); err == nil {
-			//文件存在，解析出用例
-			file, err := os.Open(targetFile)
-			defer file.Close()
-			if err != nil {
-				panic(err)
-			} else {
-				scanner := bufio.NewScanner(file)
 
-				for scanner.Scan() {
-					regClass := regexp.MustCompile("class(.*?):")
-					caseClass := regClass.FindStringSubmatch(scanner.Text())
+			func() {
+				//文件存在，解析出用例
+				file, err := os.Open(targetFile)
+				defer file.Close()
+				if err != nil {
+					panic(err)
+				} else {
+					scanner := bufio.NewScanner(file)
 
-					regCase := regexp.MustCompile(`^def(.*?)\(`)
-					caseName := regCase.FindStringSubmatch(strings.TrimSpace(scanner.Text()))
+					for scanner.Scan() {
+						regClass := regexp.MustCompile("class(.*?):")
+						caseClass := regClass.FindStringSubmatch(scanner.Text())
 
-					if len(caseClass) != 0 {
-						className = caseClass[1]
+						regCase := regexp.MustCompile(`^def(.*?)\(`)
+						caseName := regCase.FindStringSubmatch(strings.TrimSpace(scanner.Text()))
+
+						if len(caseClass) != 0 {
+							className = caseClass[1]
+						}
+
+						if len(caseName) != 0 {
+							caseList = append(caseList, caseName[1])
+						}
+
 					}
-
-					if len(caseName) != 0 {
-						caseList = append(caseList, caseName[1])
-					}
-
 				}
-			}
+			}()
+
 		} else {
 			global.GVA_LOG.Error("解析接口自动化用例出错")
 		}

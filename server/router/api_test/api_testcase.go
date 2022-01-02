@@ -15,8 +15,8 @@ func (s *ApiTestcaseRouter) InitApiTestcaseRouter(Router *gin.RouterGroup) {
 	var apiTestcaseApi = v1.ApiGroupApp.ApiTestGroup
 	{
 		apiTestcaseRouter.GET("apiTestcaseCode", apiTestcaseApi.ApiTestcaseCodeApi)
-		apiTestcaseRouter.GET("parseApiTestcaseModule", apiTestcaseApi.ParseApiTestcaseModuleApi)
-		apiTestcaseRouter.GET("parseApiTestcaseApi", apiTestcaseApi.ParseApiTestcaseApiApi)
-		apiTestcaseRouter.GET("parseApiTestcase", apiTestcaseApi.ParseApiTestcaseApi)
+		//apiTestcaseRouter.GET("parseApiTestcaseModule", apiTestcaseApi.ParseApiTestcaseModuleApi)
+		//apiTestcaseRouter.GET("parseApiTestcaseApi", apiTestcaseApi.ParseApiTestcaseApiApi)
+		//apiTestcaseRouter.GET("parseApiTestcase", apiTestcaseApi.ParseApiTestcaseApi)
 	}
 }
