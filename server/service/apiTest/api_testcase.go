@@ -18,7 +18,7 @@ type ApiTestcaseService struct {
 }
 
 // ApiTestcaseCode 拉取接口自动化代码
-func (apiTestcaseService *ApiTestcaseService) ApiTestcaseCode() (err error) {
+func (apiTestcaseService *ApiTestcaseService) SyncApiTestCase() (err error) {
 	tmpDir, err := ioutil.TempDir("./", "temp_*")
 	defer os.RemoveAll(tmpDir)
 	if err != nil {
