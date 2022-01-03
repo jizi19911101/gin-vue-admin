@@ -19,8 +19,7 @@ type ApiTestcaseService struct {
 
 // ApiTestcaseCode 拉取接口自动化代码
 func (apiTestcaseService *ApiTestcaseService) ApiTestcaseCode() (err error) {
-	folder, err := os.Getwd()
-	tmp, err := ioutil.TempDir(folder, "temp_*")
+	tmp, err := ioutil.TempDir("./", "temp_*")
 	defer os.RemoveAll(tmp)
 	if err != nil {
 		return err
