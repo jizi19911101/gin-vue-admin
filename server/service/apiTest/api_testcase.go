@@ -111,7 +111,7 @@ func (apiTestcaseService *ApiTestcaseService) ParseApiTestcaseModule(tmpDir stri
 }
 
 // ApiTestcaseCode 解析接口自动化代码接口
-func (apiTestcaseService *ApiTestcaseService) ParseApiTestcaseApi(tmpDir string) (err error) {
+func (apiTestcaseService *ApiTestcaseService) ParseApiTestcaseApi(tmpDir string) error {
 	//取出模块
 	moduleList := make([]apiTest.Module, 0)
 	db := global.GVA_DB.Model(&apiTest.Module{})
@@ -119,67 +119,77 @@ func (apiTestcaseService *ApiTestcaseService) ParseApiTestcaseApi(tmpDir string)
 
 	//模块为 0，结束
 	if len(moduleList) == 0 {
-		return
+		return nil
 	}
 
 	//模块不为0，解析每个模块下的接口文件
 	for _, module := range moduleList {
-		targetFolder := tmpDir + "/testcases/" + module.Name
-		targetFileList := make([]string, 0)
-		if _, err := os.Stat(targetFolder); err == nil {
-			fileInfoList, _ := ioutil.ReadDir(targetFolder)
-			for i := range fileInfoList {
-				reg := regexp.MustCompile(`test_(.*?)\.py`)
-				targetFile := reg.FindStringSubmatch(fileInfoList[i].Name())
-				if len(targetFile) != 0 {
-					targetFileList = append(targetFileList, targetFile[1])
-				}
-			}
-		} else {
-			global.GVA_LOG.Error("解析接口自动化代码接口出错", zap.Error(err))
+		moduleFolder := tmpDir + "/testcases/" + module.Name
+		if _, err := os.Stat(moduleFolder); err != nil {
+			global.GVA_LOG.Error("解析模块目录出错", zap.Error(err))
+			return err
 		}
-		// 接口文件不为 0，就存入数据库
-		if len(targetFileList) != 0 {
-			db := global.GVA_DB.Model(&apiTest.Api{})
-			apiList := make([]apiTest.Api, 0)
-			apiListMap := make(map[string]apiTest.Api, 0)
-			for _, apiName := range targetFileList {
-				apiListMap[apiName] = apiTest.Api{
-					Name:   apiName,
+
+		parseApiList := make([]string, 0)
+		list, _ := ioutil.ReadDir(moduleFolder)
+		for i := range list {
+			reg := regexp.MustCompile(`test_(.*?)\.py`)
+			result := reg.FindStringSubmatch(list[i].Name())
+			if len(result) != 0 {
+				parseApiList = append(parseApiList, result[1])
+			}
+		}
+
+		// 接口文件不为 0，就进行处理并存入数据库
+		if len(parseApiList) != 0 {
+			parseApiMap := make(map[string]apiTest.Api, 0)
+			for _, a := range parseApiList {
+				parseApiMap[a] = apiTest.Api{
+					Name:   a,
 					Module: module.Name,
 				}
 			}
 
 			//查出该模块下的接口数据
-			resApiList := make([]apiTest.Api, 0)
+			apiList := make([]apiTest.Api, 0)
 			var count int64
-			db.Where("module = ?", module.Name).Find(&resApiList).Count(&count)
+			db := global.GVA_DB.Model(&apiTest.Api{})
+			db.Where("module = ?", module.Name).Find(&apiList).Count(&count)
 
 			// 该模块下的接口数据为0，直接插入
 			if count == 0 {
-				for _, api := range apiListMap {
+				apiList := make([]apiTest.Api, 0)
+				for _, api := range parseApiMap {
 					apiList = append(apiList, api)
 				}
 				db.Create(&apiList)
+			}
+
+			apiMap := make(map[string]apiTest.Api, 0)
+			for _, a := range apiList {
+				apiMap[a.Name] = a
 			}
 
 			// 该模块下的接口数据不为0，增量插入
 			delApiList := make([]uint, 0)
-			for _, api := range resApiList {
-				_, ok := apiListMap[api.Name]
-				if ok {
-					delete(apiListMap, api.Name)
-				} else {
-					delApiList = append(delApiList, api.ID)
+			addApiList := make([]apiTest.Api, 0)
+
+			for key, value := range apiMap {
+				if _, ok := parseApiMap[key]; !ok {
+					delApiList = append(delApiList, value.ID)
 				}
 			}
 
-			if len(apiListMap) != 0 {
-				for _, api := range apiListMap {
-					apiList = append(apiList, api)
+			for key, value := range parseApiMap {
+				if _, ok := apiMap[key]; !ok {
+					addApiList = append(addApiList, value)
 				}
-				db.Create(&apiList)
 			}
+
+			if len(addApiList) != 0 {
+				db.Create(&addApiList)
+			}
+
 			if len(delApiList) != 0 {
 				db.Delete(&apiTest.Api{}, delApiList)
 			}
@@ -187,7 +197,7 @@ func (apiTestcaseService *ApiTestcaseService) ParseApiTestcaseApi(tmpDir string)
 		}
 
 	}
-	return
+	return nil
 }
 
 func (apiTestcaseService *ApiTestcaseService) ParseApiTestcase(tmpDir string) (err error) {
