@@ -2,6 +2,7 @@ package apiTest
 
 import (
 	"bufio"
+	"errors"
 	"io/ioutil"
 	"os"
 	"regexp"
@@ -200,7 +201,7 @@ func (apiTestcaseService *ApiTestcaseService) ParseApiTestcaseApi(tmpDir string)
 	return nil
 }
 
-func (apiTestcaseService *ApiTestcaseService) ParseApiTestcase(tmpDir string) (err error) {
+func (apiTestcaseService *ApiTestcaseService) ParseApiTestcase(tmpDir string) error {
 	// 取出所有接口
 	apiList := make([]apiTest.Api, 0)
 	db := global.GVA_DB.Model(&apiTest.Api{})
@@ -208,99 +209,81 @@ func (apiTestcaseService *ApiTestcaseService) ParseApiTestcase(tmpDir string) (e
 
 	// 接口数量为0结束
 	if len(apiList) == 0 {
-		return
+		return nil
 	}
 
 	// 读接口文件
 	for _, api := range apiList {
-		targetFile := tmpDir + "/testcases/" + api.Module + "/test_" + api.Name + ".py"
-		var className string
-		caseList := make([]string, 0)
-		if _, err := os.Stat(targetFile); err == nil {
+		apiFile := tmpDir + "/testcases/" + api.Module + "/test_" + api.Name + ".py"
+		if _, err := os.Stat(apiFile); err != nil {
+			global.GVA_LOG.Error("接口文件不存在", zap.Error(err))
+			return err
+		}
 
-			func() {
-				//文件存在，解析出用例
-				file, err := os.Open(targetFile)
-				defer file.Close()
-				if err != nil {
-					panic(err)
-				} else {
-					scanner := bufio.NewScanner(file)
-
-					for scanner.Scan() {
-						regClass := regexp.MustCompile("class(.*?):")
-						caseClass := regClass.FindStringSubmatch(scanner.Text())
-
-						regCase := regexp.MustCompile(`^def(.*?)\(`)
-						caseName := regCase.FindStringSubmatch(strings.TrimSpace(scanner.Text()))
-
-						if len(caseClass) != 0 {
-							className = caseClass[1]
-						}
-
-						if len(caseName) != 0 {
-							caseList = append(caseList, caseName[1])
-						}
-
-					}
-				}
-			}()
-
-		} else {
-			global.GVA_LOG.Error("解析接口自动化用例出错")
+		//文件存在，解析出用例
+		className, parseCaseList, err := parseCase(apiFile)
+		if err != nil {
+			global.GVA_LOG.Error("解析接口用例出错", zap.Error(err))
+			return err
 		}
 
 		// 用例数为0，结束
-		if len(caseList) == 0 {
-			return
+		if len(parseCaseList) == 0 {
+			return nil
 		}
 
-		//用例数不为 0，读出数据库的用例
-		stockTestcase := make([]apiTest.ApiTestcase, 0)
-		if className != "" {
-			db := global.GVA_DB.Model(&apiTest.ApiTestcase{})
-			db.Where("module = ? AND api = ?", api.Module, api.Name).Find(&stockTestcase)
-		} else {
-			global.GVA_LOG.Error("接口自动化文件用例类名解析出错")
-		}
-
-		caseListMap := make(map[string]apiTest.ApiTestcase, 0)
-		for _, v := range caseList {
-			caseListMap[v] = apiTest.ApiTestcase{
+		parseCaseMap := make(map[string]apiTest.ApiTestcase, 0)
+		for _, v := range parseCaseList {
+			parseCaseMap[v] = apiTest.ApiTestcase{
 				Name:   v,
 				Module: api.Module,
 				Api:    api.Name,
 				Class:  className,
 			}
-
 		}
 
-		//数据库用例数为0，直接加入
+		//用例数不为 0，读出数据库的用例
 		db := global.GVA_DB.Model(&apiTest.ApiTestcase{})
-		cases := make([]apiTest.ApiTestcase, 0)
-		if len(stockTestcase) == 0 {
-			for _, v := range caseListMap {
-				cases = append(cases, v)
+		caseList := make([]apiTest.ApiTestcase, 0)
+		if className == "" {
+			global.GVA_LOG.Error("接口用例类名解析出错")
+			//抛出错误
+			return errors.New("接口用例类名解析出错")
+		}
+		db.Where("module = ? AND api = ?", api.Module, api.Name).Find(&caseList)
+
+		//数据库用例数为0，直接加入
+		if len(caseList) == 0 {
+			list := make([]apiTest.ApiTestcase, 0)
+			for _, v := range parseCaseMap {
+				list = append(list, v)
 			}
-			db.Create(&cases)
+			db.Create(&list)
+		}
+
+		caseMap := make(map[string]apiTest.ApiTestcase, 0)
+		for _, c := range caseList {
+			caseMap[c.Name] = c
 		}
 
 		//数据库用例数不为0，进行筛选再加到数据库
 		delCaseList := make([]uint, 0)
-		for _, c := range stockTestcase {
-			_, ok := caseListMap[c.Name]
-			if ok {
-				delete(caseListMap, c.Name)
-			} else {
-				delCaseList = append(delCaseList, c.ID)
+		addCaseList := make([]apiTest.ApiTestcase, 0)
+
+		for _, t := range caseMap {
+			if _, ok := parseCaseMap[t.Name]; !ok {
+				delCaseList = append(delCaseList, t.ID)
 			}
 		}
 
-		if len(caseListMap) != 0 {
-			for _, v := range caseListMap {
-				cases = append(cases, v)
+		for _, t := range parseCaseMap {
+			if _, ok := caseMap[t.Name]; !ok {
+				addCaseList = append(addCaseList, t)
 			}
-			db.Create(&cases)
+		}
+
+		if len(addCaseList) != 0 {
+			db.Create(&addCaseList)
 		}
 
 		if len(delCaseList) != 0 {
@@ -309,5 +292,34 @@ func (apiTestcaseService *ApiTestcaseService) ParseApiTestcase(tmpDir string) (e
 
 	}
 
-	return
+	return nil
+}
+
+func parseCase(apiFile string) (string, []string, error) {
+	var className string
+	parseCaseList := make([]string, 0)
+
+	file, err := os.Open(apiFile)
+	if err != nil {
+		global.GVA_LOG.Error("打开接口文件出错", zap.Error(err))
+		return "", nil, err
+	}
+	defer file.Close()
+
+	scanner := bufio.NewScanner(file)
+	for scanner.Scan() {
+		reg := regexp.MustCompile("class(.*?):")
+		result := reg.FindStringSubmatch(scanner.Text())
+		if len(result) != 0 {
+			className = result[1]
+		}
+
+		reg = regexp.MustCompile(`^def(.*?)\(`)
+		result = reg.FindStringSubmatch(strings.TrimSpace(scanner.Text()))
+		if len(result) != 0 {
+			parseCaseList = append(parseCaseList, result[1])
+		}
+
+	}
+	return className, parseCaseList, nil
 }
