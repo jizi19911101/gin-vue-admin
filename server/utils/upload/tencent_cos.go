@@ -10,7 +10,6 @@ import (
 	"time"
 
 	"github.com/jizi19911101/gin-vue-admin/server/global"
-
 	"github.com/tencentyun/cos-go-sdk-v5"
 	"go.uber.org/zap"
 )

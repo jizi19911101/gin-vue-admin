@@ -9,23 +9,9 @@ import (
 	"github.com/jizi19911101/gin-vue-admin/server/model/example"
 	"github.com/jizi19911101/gin-vue-admin/server/model/organization"
 	"github.com/jizi19911101/gin-vue-admin/server/model/system"
-
 	"go.uber.org/zap"
 	"gorm.io/gorm"
 )
-
-// Gorm 初始化数据库并产生数据库全局变量
-// Author SliverHorn
-func Gorm() *gorm.DB {
-	switch global.GVA_CONFIG.System.DbType {
-	case "mysql":
-		return GormMysql()
-	case "pgsql":
-		return GormPgSql()
-	default:
-		return GormMysql()
-	}
-}
 
 // RegisterTables 注册数据库表专用
 // Author SliverHorn

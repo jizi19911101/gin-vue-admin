@@ -127,7 +127,7 @@ func (apiTestcaseService *ApiTestcaseService) ParseApiTestcaseApi(tmpDir string)
 	for _, module := range moduleList {
 		moduleFolder := tmpDir + "/testcases/" + module.Name
 		if _, err := os.Stat(moduleFolder); err != nil {
-			global.GVA_LOG.Error("解析模块目录出错", zap.Error(err))
+			global.GVA_LOG.Error("模块目录不存在", zap.Error(err))
 			return err
 		}
 
@@ -164,6 +164,7 @@ func (apiTestcaseService *ApiTestcaseService) ParseApiTestcaseApi(tmpDir string)
 					apiList = append(apiList, api)
 				}
 				db.Create(&apiList)
+				continue
 			}
 
 			apiMap := make(map[string]apiTest.Api, 0)
@@ -214,6 +215,7 @@ func (apiTestcaseService *ApiTestcaseService) ParseApiTestcase(tmpDir string) er
 
 	// 读接口文件
 	for _, api := range apiList {
+		global.GVA_LOG.Debug(api.Name + "接口进行用例解析")
 		apiFile := tmpDir + "/testcases/" + api.Module + "/test_" + api.Name + ".py"
 		if _, err := os.Stat(apiFile); err != nil {
 			global.GVA_LOG.Error("接口文件不存在", zap.Error(err))
@@ -229,7 +231,7 @@ func (apiTestcaseService *ApiTestcaseService) ParseApiTestcase(tmpDir string) er
 
 		// 用例数为0，结束
 		if len(parseCaseList) == 0 {
-			return nil
+			continue
 		}
 
 		parseCaseMap := make(map[string]apiTest.ApiTestcase, 0)
@@ -259,6 +261,7 @@ func (apiTestcaseService *ApiTestcaseService) ParseApiTestcase(tmpDir string) er
 				list = append(list, v)
 			}
 			db.Create(&list)
+			continue
 		}
 
 		caseMap := make(map[string]apiTest.ApiTestcase, 0)

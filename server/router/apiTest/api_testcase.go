@@ -14,7 +14,7 @@ func (s *ApiTestcaseRouter) InitApiTestcaseRouter(Router *gin.RouterGroup) {
 	//apiTestcaseRouterWithRecord := Router.Group("apiTestcase")
 	var apiTestcaseApi = v1.ApiGroupApp.ApiTestGroup
 	{
-		apiTestcaseRouter.GET("syncApiTestCase", apiTestcaseApi.SyncApiTestCaseApi)
+		apiTestcaseRouter.GET("syncApiTestcase", apiTestcaseApi.SyncApiTestCaseApi)
 
 	}
 }
