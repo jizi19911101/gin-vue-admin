@@ -1,4 +1,4 @@
-package api_test
+package apiTest
 
 import "github.com/jizi19911101/gin-vue-admin/server/global"
 

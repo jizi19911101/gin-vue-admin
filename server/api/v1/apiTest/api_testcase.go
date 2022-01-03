@@ -1,4 +1,4 @@
-package api_test
+package apiTest
 
 import (
 	"github.com/gin-gonic/gin"

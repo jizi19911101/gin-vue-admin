@@ -1,7 +1,7 @@
 package v1
 
 import (
-	"github.com/jizi19911101/gin-vue-admin/server/api/v1/api_test"
+	"github.com/jizi19911101/gin-vue-admin/server/api/v1/apiTest"
 	"github.com/jizi19911101/gin-vue-admin/server/api/v1/autocode"
 	"github.com/jizi19911101/gin-vue-admin/server/api/v1/example"
 	"github.com/jizi19911101/gin-vue-admin/server/api/v1/organization"
@@ -12,7 +12,7 @@ type ApiGroup struct {
 	SystemApiGroup    system.ApiGroup
 	ExampleApiGroup   example.ApiGroup
 	AutoCodeApiGroup  autocode.ApiGroup
-	ApiTestGroup      api_test.ApiGroup
+	ApiTestGroup      apiTest.ApiGroup
 	OrganizationGroup organization.ApiGroup
 }
 
