@@ -1,8 +1,6 @@
 package organization
 
 import (
-	"fmt"
-
 	"github.com/gin-gonic/gin"
 	"github.com/jizi19911101/gin-vue-admin/server/global"
 	"github.com/jizi19911101/gin-vue-admin/server/model/common/request"
@@ -149,7 +147,6 @@ func (organizationApi *OrganizationApi) FindOrganization(c *gin.Context) {
 func (organizationApi *OrganizationApi) GetOrganizationList(c *gin.Context) {
 	var organizationReq organizationReq.OrganizationSearch
 	_ = c.ShouldBindQuery(&organizationReq)
-	fmt.Println(organizationReq, "12121212")
 	if err, list, total := organizationService.GetOrganizationInfoList(organizationReq); err != nil {
 		global.GVA_LOG.Error("获取失败!", zap.Error(err))
 		response.FailWithMessage("获取失败", c)

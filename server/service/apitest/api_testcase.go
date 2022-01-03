@@ -2,7 +2,6 @@ package apitest
 
 import (
 	"bufio"
-	"fmt"
 	"io/ioutil"
 	"os"
 	"regexp"
@@ -71,7 +70,6 @@ func (apiTestcaseService *ApiTestcaseService) ParseApiTestcaseModule(tmp_file st
 	var count int64
 	db.Find(&moduleList).Count(&count)
 
-
 	// 把增量模块插入库
 	if count == 0 {
 		list := make([]api_test.ModuleInfo, 0)
@@ -82,23 +80,22 @@ func (apiTestcaseService *ApiTestcaseService) ParseApiTestcaseModule(tmp_file st
 		return
 	}
 
-	moduleMap := make(map[string]api_test.ModuleInfo,0)
-	for _,module := range moduleList {
-		moduleMap[module.Name]=module
+	moduleMap := make(map[string]api_test.ModuleInfo, 0)
+	for _, module := range moduleList {
+		moduleMap[module.Name] = module
 	}
-
 
 	addModuleInfoList := make([]api_test.ModuleInfo, 0)
 	delModuleInfoList := make([]uint, 0)
 
 	for _, module := range moduleList {
-		if _, ok := parseModuleMap[module.Name] ;!ok {
+		if _, ok := parseModuleMap[module.Name]; !ok {
 			delModuleInfoList = append(delModuleInfoList, module.ID)
 		}
 	}
 
-	for key,module := range parseModuleMap {
-		if _,ok:= moduleMap[key];!ok{
+	for key, module := range parseModuleMap {
+		if _, ok := moduleMap[key]; !ok {
 			addModuleInfoList = append(addModuleInfoList, module)
 		}
 	}
@@ -186,7 +183,6 @@ func (apiTestcaseService *ApiTestcaseService) ParseApiTestcaseApi(tmp_file strin
 				db.Create(&apiList)
 			}
 			if len(delApiList) != 0 {
-				fmt.Println(delApiList, "delApiList")
 				db.Delete(&api_test.ApiInfo{}, delApiList)
 			}
 
@@ -300,7 +296,6 @@ func (apiTestcaseService *ApiTestcaseService) ParseApiTestcase(tmp_file string) 
 		}
 
 		if len(delCaseList) != 0 {
-			fmt.Println(delCaseList, "delCaseListdelCaseList")
 			db.Delete(&api_test.ApiTestcase{}, delCaseList)
 		}
 

@@ -34,7 +34,6 @@ func (envConfigService *EnvConfigService) DeleteEnvConfigByIds(ids request.IdsRe
 // UpdateEnvConfig 更新EnvConfig记录
 // Author [piexlmax](https://github.com/piexlmax)
 func (envConfigService *EnvConfigService) UpdateEnvConfig(envConfig organization.EnvConfig) (err error) {
-	//fmt.Println(envConfig, "8989898989")
 	//err = global.GVA_DB.Save(&envConfig).Error
 	err = global.GVA_DB.Select("*").Omit("created_at").Updates(&envConfig).Error
 	return err

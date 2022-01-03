@@ -1,8 +1,6 @@
 package organization
 
 import (
-	"fmt"
-
 	"github.com/gin-gonic/gin"
 	"github.com/jizi19911101/gin-vue-admin/server/global"
 	"github.com/jizi19911101/gin-vue-admin/server/model/common/request"
@@ -31,7 +29,6 @@ var envConfigService = service.ServiceGroupApp.OrganizationServiceGroup.EnvConfi
 func (envConfigApi *EnvConfigApi) CreateEnvConfig(c *gin.Context) {
 	var envConfigReq organizationReq.EnvConfigReq
 	_ = c.ShouldBindJSON(&envConfigReq)
-	fmt.Println(envConfigReq, "envConfigReq")
 	if err := global.Validate.Struct(envConfigReq); err != nil {
 		global.GVA_LOG.Error("参数缺失", zap.Error(err))
 		response.FailWithMessage("参数缺失", c)
