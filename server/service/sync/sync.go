@@ -1,4 +1,4 @@
-package apiTest
+package sync
 
 import (
 	"bufio"
@@ -15,11 +15,11 @@ import (
 	"github.com/jizi19911101/gin-vue-admin/server/utils"
 )
 
-type ApiTestcaseService struct {
+type SyncService struct {
 }
 
 // ApiTestcaseCode 拉取接口自动化代码
-func (apiTestcaseService *ApiTestcaseService) SyncApiTestCase() (err error) {
+func (syncService *SyncService) SyncApiTestCase() (err error) {
 	tmpDir, err := ioutil.TempDir("./", "temp_*")
 	defer os.RemoveAll(tmpDir)
 	if err != nil {
@@ -29,16 +29,16 @@ func (apiTestcaseService *ApiTestcaseService) SyncApiTestCase() (err error) {
 	if err != nil {
 		return err
 	}
-	err = apiTestcaseService.ParseApiTestcaseModule(tmpDir)
+	err = syncService.ParseApiTestcaseModule(tmpDir)
 	if err != nil {
 		return err
 	}
-	err = apiTestcaseService.ParseApiTestcaseApi(tmpDir)
+	err = syncService.ParseApiTestcaseApi(tmpDir)
 	if err != nil {
 		return err
 	}
 
-	err = apiTestcaseService.ParseApiTestcase(tmpDir)
+	err = syncService.ParseApiTestcase(tmpDir)
 	if err != nil {
 		return err
 	}
@@ -46,7 +46,7 @@ func (apiTestcaseService *ApiTestcaseService) SyncApiTestCase() (err error) {
 }
 
 // ApiTestcaseCode 解析接口自动化代码模块
-func (apiTestcaseService *ApiTestcaseService) ParseApiTestcaseModule(tmpDir string) (err error) {
+func (syncService *SyncService) ParseApiTestcaseModule(tmpDir string) (err error) {
 	// 解析出模块
 	fileInfoList, err := ioutil.ReadDir(tmpDir + "/testcases")
 	if len(fileInfoList) == 0 {
@@ -112,7 +112,7 @@ func (apiTestcaseService *ApiTestcaseService) ParseApiTestcaseModule(tmpDir stri
 }
 
 // ApiTestcaseCode 解析接口自动化代码接口
-func (apiTestcaseService *ApiTestcaseService) ParseApiTestcaseApi(tmpDir string) error {
+func (syncService *SyncService) ParseApiTestcaseApi(tmpDir string) error {
 	//取出模块
 	moduleList := make([]apiTest.Module, 0)
 	db := global.GVA_DB.Model(&apiTest.Module{})
@@ -202,7 +202,7 @@ func (apiTestcaseService *ApiTestcaseService) ParseApiTestcaseApi(tmpDir string)
 	return nil
 }
 
-func (apiTestcaseService *ApiTestcaseService) ParseApiTestcase(tmpDir string) error {
+func (syncService *SyncService) ParseApiTestcase(tmpDir string) error {
 	// 取出所有接口
 	apiList := make([]apiTest.Api, 0)
 	db := global.GVA_DB.Model(&apiTest.Api{})

@@ -1,4 +1,4 @@
-package apiTest
+package sync
 
 import (
 	"testing"

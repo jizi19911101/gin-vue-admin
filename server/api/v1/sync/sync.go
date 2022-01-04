@@ -1,4 +1,4 @@
-package apiTest
+package sync
 
 import (
 	"github.com/gin-gonic/gin"
@@ -8,10 +8,10 @@ import (
 	"go.uber.org/zap"
 )
 
-type ApiTestcaseApi struct {
+type SyncApi struct {
 }
 
-var apiTestcaseService = service.ServiceGroupApp.ApiTestServiceGroup.ApiTestcaseService
+var syncService = service.ServiceGroupApp.SyncGroup.SyncService
 
 // ApiTestcaseCode 同步并解析接口自动化代码
 // @Tags ApiTestcaseCode
@@ -22,8 +22,8 @@ var apiTestcaseService = service.ServiceGroupApp.ApiTestServiceGroup.ApiTestcase
 // @Param data body  true "同步并解析接口自动化代码"
 // @Success 200 {string} string "{"success":true,"data":{},"msg":"同步并解析接口自动化代码成功！"}"
 // @Router /apiTestcase/apiTestcaseCode [get]
-func (apiTestcaseApi *ApiTestcaseApi) SyncApiTestCaseApi(c *gin.Context) {
-	if err := apiTestcaseService.SyncApiTestCase(); err != nil {
+func (syncApi *SyncApi) SyncApiTestCaseApi(c *gin.Context) {
+	if err := syncService.SyncApiTestCase(); err != nil {
 		global.GVA_LOG.Error("同步并解析接口自动化代码！", zap.Error(err))
 		response.FailWithMessage("同步并解析接口自动化代码失败！", c)
 	} else {
