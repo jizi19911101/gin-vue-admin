@@ -19,7 +19,6 @@ var syncService = service.ServiceGroupApp.SyncGroup.SyncService
 // @Security ApiKeyAuth
 // @accept application/json
 // @Produce application/json
-// @Param data body  true "同步并解析接口自动化代码"
 // @Success 200 {string} string "{"success":true,"data":{},"msg":"同步并解析接口自动化代码成功！"}"
 // @Router /apiTestcase/apiTestcaseCode [get]
 func (syncApi *SyncApi) SyncApiTestCaseApi(c *gin.Context) {

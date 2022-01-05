@@ -126,6 +126,9 @@ definitions:
       expiresTime:
         description: 过期时间
         type: integer
+      issuer:
+        description: 签发者
+        type: string
       signingKey:
         description: jwt签名
         type: string
@@ -160,7 +163,43 @@ definitions:
         description: 数据库密码
         type: string
       path:
+        description: 服务器地址
+        type: string
+      port:
+        description: 端口
+        type: string
+      username:
+        description: 数据库用户名
+        type: string
+    type: object
+  config.Pgsql:
+    properties:
+      config:
+        description: 高级配置
+        type: string
+      dbname:
+        description: 数据库名
+        type: string
+      logMode:
+        description: 是否开启Gorm全局日志
+        type: string
+      logZap:
+        description: 是否通过zap写入日志文件
+        type: boolean
+      maxIdleConns:
+        description: 空闲中的最大连接数
+        type: integer
+      maxOpenConns:
+        description: 打开到数据库的最大连接数
+        type: integer
+      password:
+        description: 数据库密码
+        type: string
+      path:
         description: 服务器地址:端口
+        type: string
+      port:
+        description: :端口
         type: string
       username:
         description: 数据库用户名
@@ -225,6 +264,8 @@ definitions:
       mysql:
         $ref: '#/definitions/config.Mysql'
         description: gorm
+      pgsql:
+        $ref: '#/definitions/config.Pgsql'
       qiniu:
         $ref: '#/definitions/config.Qiniu'
       redis:
@@ -249,6 +290,10 @@ definitions:
       env:
         description: 环境值
         type: string
+      iplimitCount:
+        type: integer
+      iplimitTime:
+        type: integer
       ossType:
         description: Oss类型
         type: string
@@ -297,9 +342,6 @@ definitions:
         type: string
       level:
         description: 级别
-        type: string
-      linkName:
-        description: 软链接名称
         type: string
       logInConsole:
         description: 输出控制台
@@ -385,11 +427,6 @@ definitions:
           $ref: '#/definitions/system.SysBaseMenu'
         type: array
     type: object
-  request.AutoHistoryByID:
-    properties:
-      id:
-        type: integer
-    type: object
   request.CasbinInReceive:
     properties:
       authorityId:
@@ -423,6 +460,21 @@ definitions:
     type: object
   request.Empty:
     type: object
+  request.EnvConfigReq:
+    properties:
+      base_url:
+        type: string
+      id:
+        type: integer
+      name:
+        type: string
+      organization:
+        type: string
+    required:
+    - base_url
+    - name
+    - organization
+    type: object
   request.GetAuthorityId:
     properties:
       authorityId:
@@ -446,6 +498,9 @@ definitions:
     properties:
       dbName:
         description: 数据库名
+        type: string
+      dbType:
+        description: 数据库类型
         type: string
       host:
         description: 服务器地址
@@ -477,6 +532,15 @@ definitions:
       username:
         description: 用户名
         type: string
+    type: object
+  request.OrganizationReq:
+    properties:
+      id:
+        type: integer
+      name:
+        type: string
+    required:
+    - name
     type: object
   request.PageInfo:
     properties:
@@ -575,6 +639,14 @@ definitions:
         type: string
       to:
         description: 邮件发送给谁
+        type: string
+    type: object
+  response.Response:
+    properties:
+      code:
+        type: integer
+      data: {}
+      msg:
         type: string
     type: object
   response.SysAuthorityCopyResponse:
@@ -1094,6 +1166,22 @@ paths:
       summary: 创建基础api
       tags:
       - SysApi
+  /apiTestcase/apiTestcaseCode:
+    get:
+      consumes:
+      - application/json
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: '{"success":true,"data":{},"msg":"同步并解析接口自动化代码成功！"}'
+          schema:
+            type: string
+      security:
+      - ApiKeyAuth: []
+      summary: 同步并解析接口自动化代码
+      tags:
+      - ApiTestcaseCode
   /authority/copyAuthority:
     post:
       consumes:
@@ -1260,19 +1348,19 @@ paths:
       consumes:
       - application/json
       parameters:
-      - description: 删除回滚记录
+      - description: 请求参数
         in: body
         name: data
         required: true
         schema:
-          $ref: '#/definitions/request.AutoHistoryByID'
+          $ref: '#/definitions/request.GetById'
       produces:
       - application/json
       responses:
         "200":
-          description: '{"success":true,"data":{},"msg":"删除成功"}'
+          description: 删除成功!
           schema:
-            type: string
+            $ref: '#/definitions/response.Response'
       security:
       - ApiKeyAuth: []
       summary: 删除回滚记录
@@ -1315,22 +1403,22 @@ paths:
       consumes:
       - application/json
       parameters:
-      - description: 获取meta信息
+      - description: 请求参数
         in: body
         name: data
         required: true
         schema:
-          $ref: '#/definitions/request.AutoHistoryByID'
+          $ref: '#/definitions/request.GetById'
       produces:
       - application/json
       responses:
         "200":
-          description: '{"success":true,"data":{},"msg":"获取成功"}'
+          description: 获取成功!
           schema:
-            type: string
+            $ref: '#/definitions/response.Response'
       security:
       - ApiKeyAuth: []
-      summary: 回滚
+      summary: 获取meta信息
       tags:
       - AutoCode
   /autoCode/getSysHistory:
@@ -1338,7 +1426,7 @@ paths:
       consumes:
       - application/json
       parameters:
-      - description: 查询回滚记录
+      - description: 请求参数
         in: body
         name: data
         required: true
@@ -1348,9 +1436,9 @@ paths:
       - application/json
       responses:
         "200":
-          description: '{"success":true,"data":{},"msg":"获取成功"}'
+          description: 获取成功!
           schema:
-            type: string
+            $ref: '#/definitions/response.Response'
       security:
       - ApiKeyAuth: []
       summary: 查询回滚记录
@@ -1400,22 +1488,22 @@ paths:
       consumes:
       - application/json
       parameters:
-      - description: 回滚自动生成代码
+      - description: 请求参数
         in: body
         name: data
         required: true
         schema:
-          $ref: '#/definitions/request.AutoHistoryByID'
+          $ref: '#/definitions/request.GetById'
       produces:
       - application/json
       responses:
         "200":
-          description: '{"success":true,"data":{},"msg":"回滚成功"}'
+          description: 回滚成功!
           schema:
-            type: string
+            $ref: '#/definitions/response.Response'
       security:
       - ApiKeyAuth: []
-      summary: 回滚
+      summary: 回滚自动生成代码
       tags:
       - AutoCode
   /autoCodeExample/createAutoCodeExample:
@@ -1813,6 +1901,167 @@ paths:
       summary: 发送邮件
       tags:
       - System
+  /envConfig/createEnvConfig:
+    post:
+      consumes:
+      - application/json
+      parameters:
+      - description: 创建EnvConfig
+        in: body
+        name: data
+        required: true
+        schema:
+          $ref: '#/definitions/request.EnvConfigReq'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: '{"success":true,"data":{},"msg":"获取成功"}'
+          schema:
+            type: string
+      security:
+      - ApiKeyAuth: []
+      summary: 创建EnvConfig
+      tags:
+      - EnvConfig
+  /envConfig/deleteEnvConfig:
+    delete:
+      consumes:
+      - application/json
+      parameters:
+      - description: 删除EnvConfig
+        in: body
+        name: data
+        required: true
+        schema:
+          $ref: '#/definitions/request.EnvConfigReq'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: '{"success":true,"data":{},"msg":"删除成功"}'
+          schema:
+            type: string
+      security:
+      - ApiKeyAuth: []
+      summary: 删除EnvConfig
+      tags:
+      - EnvConfig
+  /envConfig/deleteEnvConfigByIds:
+    delete:
+      consumes:
+      - application/json
+      parameters:
+      - description: 批量删除EnvConfig
+        in: body
+        name: data
+        required: true
+        schema:
+          $ref: '#/definitions/request.IdsReq'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: '{"success":true,"data":{},"msg":"批量删除成功"}'
+          schema:
+            type: string
+      security:
+      - ApiKeyAuth: []
+      summary: 批量删除EnvConfig
+      tags:
+      - EnvConfig
+  /envConfig/findEnvConfig:
+    get:
+      consumes:
+      - application/json
+      parameters:
+      - in: query
+        name: base_url
+        required: true
+        type: string
+      - in: query
+        name: id
+        type: integer
+      - in: query
+        name: name
+        required: true
+        type: string
+      - in: query
+        name: organization
+        required: true
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: '{"success":true,"data":{},"msg":"查询成功"}'
+          schema:
+            type: string
+      security:
+      - ApiKeyAuth: []
+      summary: 用id查询EnvConfig
+      tags:
+      - EnvConfig
+  /envConfig/getEnvConfigList:
+    get:
+      consumes:
+      - application/json
+      parameters:
+      - in: query
+        name: base_url
+        required: true
+        type: string
+      - in: query
+        name: name
+        required: true
+        type: string
+      - in: query
+        name: organization
+        required: true
+        type: string
+      - description: 页码
+        in: query
+        name: page
+        type: integer
+      - description: 每页大小
+        in: query
+        name: pageSize
+        type: integer
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: '{"success":true,"data":{},"msg":"获取成功"}'
+          schema:
+            type: string
+      security:
+      - ApiKeyAuth: []
+      summary: 分页获取EnvConfig列表
+      tags:
+      - EnvConfig
+  /envConfig/updateEnvConfig:
+    put:
+      consumes:
+      - application/json
+      parameters:
+      - description: 更新EnvConfig
+        in: body
+        name: data
+        required: true
+        schema:
+          $ref: '#/definitions/request.EnvConfigReq'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: '{"success":true,"data":{},"msg":"更新成功"}'
+          schema:
+            type: string
+      security:
+      - ApiKeyAuth: []
+      summary: 更新EnvConfig
+      tags:
+      - EnvConfig
   /excel/downloadTemplate:
     get:
       consumes:
@@ -2272,6 +2521,151 @@ paths:
       summary: 更新菜单
       tags:
       - Menu
+  /organization/createOrganization:
+    post:
+      consumes:
+      - application/json
+      parameters:
+      - description: 创建Organization
+        in: body
+        name: data
+        required: true
+        schema:
+          $ref: '#/definitions/request.OrganizationReq'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: '{"success":true,"data":{},"msg":"获取成功"}'
+          schema:
+            type: string
+      security:
+      - ApiKeyAuth: []
+      summary: 创建Organization
+      tags:
+      - Organization
+  /organization/deleteOrganization:
+    delete:
+      consumes:
+      - application/json
+      parameters:
+      - description: 删除Organization
+        in: body
+        name: data
+        required: true
+        schema:
+          $ref: '#/definitions/request.OrganizationReq'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: '{"success":true,"data":{},"msg":"删除成功"}'
+          schema:
+            type: string
+      security:
+      - ApiKeyAuth: []
+      summary: 删除Organization
+      tags:
+      - Organization
+  /organization/deleteOrganizationByIds:
+    delete:
+      consumes:
+      - application/json
+      parameters:
+      - description: 批量删除Organization
+        in: body
+        name: data
+        required: true
+        schema:
+          $ref: '#/definitions/request.IdsReq'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: '{"success":true,"data":{},"msg":"批量删除成功"}'
+          schema:
+            type: string
+      security:
+      - ApiKeyAuth: []
+      summary: 批量删除Organization
+      tags:
+      - Organization
+  /organization/findOrganization:
+    get:
+      consumes:
+      - application/json
+      parameters:
+      - in: query
+        name: id
+        type: integer
+      - in: query
+        name: name
+        required: true
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: '{"success":true,"data":{},"msg":"查询成功"}'
+          schema:
+            type: string
+      security:
+      - ApiKeyAuth: []
+      summary: 用id查询Organization
+      tags:
+      - Organization
+  /organization/getOrganizationList:
+    get:
+      consumes:
+      - application/json
+      parameters:
+      - in: query
+        name: name
+        required: true
+        type: string
+      - description: 页码
+        in: query
+        name: page
+        type: integer
+      - description: 每页大小
+        in: query
+        name: pageSize
+        type: integer
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: '{"success":true,"data":{},"msg":"获取成功"}'
+          schema:
+            type: string
+      security:
+      - ApiKeyAuth: []
+      summary: 分页获取Organization列表
+      tags:
+      - Organization
+  /organization/updateOrganization:
+    put:
+      consumes:
+      - application/json
+      parameters:
+      - description: 更新Organization
+        in: body
+        name: data
+        required: true
+        schema:
+          $ref: '#/definitions/request.OrganizationReq'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: '{"success":true,"data":{},"msg":"更新成功"}'
+          schema:
+            type: string
+      security:
+      - ApiKeyAuth: []
+      summary: 更新Organization
+      tags:
+      - Organization
   /sysDictionary/createSysDictionary:
     post:
       consumes:
@@ -2992,6 +3386,27 @@ paths:
           schema:
             type: string
       summary: 用户注册账号
+      tags:
+      - SysUser
+  /user/resetPassword:
+    post:
+      parameters:
+      - description: ID
+        in: body
+        name: data
+        required: true
+        schema:
+          $ref: '#/definitions/system.SysUser'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: '{"success":true,"data":{},"msg":"修改成功"}'
+          schema:
+            type: string
+      security:
+      - ApiKeyAuth: []
+      summary: 用户修改密码
       tags:
       - SysUser
   /user/setUserAuthorities:
