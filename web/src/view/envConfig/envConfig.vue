@@ -8,6 +8,9 @@
         <el-form-item label="base_url">
           <el-input v-model="searchInfo.base_url" placeholder="搜索条件" />
         </el-form-item>
+        <el-form-item label="组织">
+          <el-input v-model="searchInfo.organization" placeholder="搜索条件" />
+        </el-form-item>
         <el-form-item>
           <el-button size="mini" type="primary" icon="el-icon-search" @click="onSubmit">查询</el-button>
           <el-button size="mini" icon="el-icon-refresh" @click="onReset">重置</el-button>
@@ -39,7 +42,7 @@
         <el-table-column type="selection" width="55" />
         <el-table-column align="left" label="环境名称" prop="name" width="120" />
         <el-table-column align="left" label="base_url" prop="base_url" width="360" />
-        <el-table-column align="left"  label="所属项目" prop="project" width="120" />
+        <el-table-column align="left"  label="所属组织" prop="organization" width="120" />
 
         <el-table-column align="left" label="日期" width="180">
             <template #default="scope">{{ formatDate(scope.row.CreatedAt) }}</template>
@@ -63,22 +66,22 @@
             />
         </div>
     </div>
-    <el-dialog v-model="dialogFormVisible" :before-close="closeDialog" title="弹窗操作">
-      <el-form :model="formData" label-position="right" label-width="80px">
-        <el-form-item label="环境名称:">
+    <el-dialog v-model="dialogFormVisible" :before-close="closeDialog" title="新增环境变量">
+      <el-form :model="formData" :rules="rules" ref="formData" label-position="right" label-width="100px">
+        <el-form-item label="环境名称:" prop="name">
           <el-input v-model="formData.name" clearable placeholder="请输入" />
         </el-form-item>
-        <el-form-item label="base_url:">
+        <el-form-item label="base_url:" prop="base_url">
           <el-input v-model="formData.base_url" clearable placeholder="请输入" />
         </el-form-item>
-        <el-form-item label="所属项目:">
-          <el-input v-model="formData.project" clearable placeholder="请输入" />
+        <el-form-item label="组织:" prop="organization">
+          <el-input v-model="formData.organization" clearable placeholder="请输入" />
         </el-form-item>
       </el-form>
       <template #footer>
         <div class="dialog-footer">
-          <el-button size="small" @click="closeDialog">取 消</el-button>
-          <el-button size="small" type="primary" @click="enterDialog">确 定</el-button>
+          <el-button size="small" @click="closeDialog()">取 消</el-button>
+          <el-button size="small" type="primary" @click="enterDialog()">确 定</el-button>
         </div>
       </template>
     </el-dialog>
@@ -108,10 +111,19 @@ export default {
       formData: {
         name: '',
         base_url: '',
+        organization: '',
+      },
+      rules: {
+        name: [{ required:true, message:"输入环境名称", trigger:"blur" }],
+        base_url: [{ required:true, message:"输入base_url", trigger:"blur" }],
+        organization: [{ required:true, message:"输入组织名称", trigger:"blur" }],
       }
     }
   },
   async created() {
+
+    this.searchInfo.organization = this.$route.query.organization
+    // await this.getEnvConfigList({ project: this.$route.query.project })
     await this.getTableData()
   },
   methods: {
@@ -134,7 +146,12 @@ export default {
         type: 'warning'
       }).then(() => {
         this.deleteEnvConfig(row)
-      })
+      }).catch(() => {
+          this.$message({
+            type: 'info',
+            message: '已取消删除'
+          })
+        })
     },
     async onDelete() {
       const ids = []
@@ -166,12 +183,13 @@ export default {
       const res = await findEnvConfig({ ID: row.ID })
       this.type = 'update'
       if (res.code === 0) {
-        this.formData = res.data.reenvConfig
+        this.formData = res.data.envConfig
         this.dialogFormVisible = true
       }
     },
     closeDialog() {
       this.dialogFormVisible = false
+      this.$refs.formData.resetFields();
       this.formData = {
         name: '',
         base_url: '',
@@ -192,25 +210,32 @@ export default {
     },
     async enterDialog() {
       let res
-      switch (this.type) {
-        case 'create':
-          res = await createEnvConfig(this.formData)
-          break
-        case 'update':
-          res = await updateEnvConfig(this.formData)
-          break
-        default:
-          res = await createEnvConfig(this.formData)
-          break
-      }
-      if (res.code === 0) {
-        this.$message({
-          type: 'success',
-          message: '创建/更改成功'
-        })
-        this.closeDialog()
-        this.getTableData()
-      }
+      this.$refs.formData.validate( async (valid) => {
+        if (valid) {
+          switch (this.type) {
+            case 'create':
+              res = await createEnvConfig(this.formData)
+              break
+            case 'update':
+              res = await updateEnvConfig(this.formData)
+              break
+            default:
+              res = await createEnvConfig(this.formData)
+              break
+          }
+          if (res.code === 0) {
+            this.$message({
+              type: 'success',
+              message: '创建/更改成功'
+            })
+            this.closeDialog()
+            this.getTableData()
+          }
+        }else{
+
+        }
+      })
+
     },
     openDialog() {
       this.type = 'create'

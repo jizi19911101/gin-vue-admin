@@ -1,11 +1,11 @@
 package middleware
 
 import (
+	"github.com/gin-gonic/gin"
 	"github.com/jizi19911101/gin-vue-admin/server/global"
 	"github.com/jizi19911101/gin-vue-admin/server/model/common/response"
 	"github.com/jizi19911101/gin-vue-admin/server/service"
 	"github.com/jizi19911101/gin-vue-admin/server/utils"
-	"github.com/gin-gonic/gin"
 )
 
 var casbinService = service.ServiceGroupApp.SystemServiceGroup.CasbinService
