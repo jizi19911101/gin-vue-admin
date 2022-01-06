@@ -1,6 +1,7 @@
 package router
 
 import (
+	"github.com/jizi19911101/gin-vue-admin/server/router/apicase"
 	"github.com/jizi19911101/gin-vue-admin/server/router/autocode"
 	"github.com/jizi19911101/gin-vue-admin/server/router/example"
 	"github.com/jizi19911101/gin-vue-admin/server/router/organization"
@@ -12,8 +13,9 @@ type RouterGroup struct {
 	System       system.RouterGroup
 	Example      example.RouterGroup
 	Autocode     autocode.RouterGroup
-	ApiTest      sync.RouterGroup
+	Sync         sync.RouterGroup
 	Organization organization.RouterGroup
+	ApiCase      apicase.RouterGroup
 }
 
 var RouterGroupApp = new(RouterGroup)

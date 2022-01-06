@@ -11,7 +11,7 @@ import (
 type SyncApi struct {
 }
 
-var syncService = service.ServiceGroupApp.SyncGroup.SyncService
+var syncService = service.ServiceGroupApp.SyncServiceGroup.SyncService
 
 // ApiTestcaseCode 同步并解析接口自动化代码
 // @Tags ApiTestcaseCode

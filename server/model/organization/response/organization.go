@@ -12,5 +12,5 @@ type OrganizationSearch struct {
 
 type OrganizationRes struct {
 	ID   uint
-	Name string `json:"name" form:"name" gorm:"column:name;comment:" validate:"required"`
+	Name string `json:"name" form:"name"  validate:"required"`
 }
