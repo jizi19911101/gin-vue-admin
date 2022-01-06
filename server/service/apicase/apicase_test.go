@@ -7,7 +7,12 @@ import (
 )
 
 func TestApiCase(t *testing.T) {
-	runApiCaseReq := apicaseReq.RunApiCaseReq{}
+	runApiCaseReq := apicaseReq.RunApiCaseReq{
+		Env:    "demo",
+		Module: "adventuregame",
+		Api:    "get_game_style_info",
+		Case:   " test_get_game_style_info_exit",
+	}
 	x := ApiCaseService{}
 	x.RunApiCase(runApiCaseReq)
 	//user := "huangweinan"
