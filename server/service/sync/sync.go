@@ -314,13 +314,13 @@ func parseCase(apiFile string) (string, []string, error) {
 		reg := regexp.MustCompile("class(.*?):")
 		result := reg.FindStringSubmatch(scanner.Text())
 		if len(result) != 0 {
-			className = result[1]
+			className = strings.Trim(result[1], " ")
 		}
 
 		reg = regexp.MustCompile(`^def(.*?)\(`)
 		result = reg.FindStringSubmatch(strings.TrimSpace(scanner.Text()))
 		if len(result) != 0 {
-			parseCaseList = append(parseCaseList, result[1])
+			parseCaseList = append(parseCaseList, strings.Trim(result[1], " "))
 		}
 
 	}
