@@ -29,6 +29,7 @@ func (apiCaseApi *ApiCaseApi) RunApiCase(c *gin.Context) {
 	if err := global.Validate.Struct(&runApiCaseReq); err != nil {
 		global.GVA_LOG.Error("参数缺失", zap.Error(err))
 		response.FailWithMessage("参数缺失", c)
+		return
 	}
 	if err := apiCaseService.RunApiCase(runApiCaseReq); err != nil {
 		global.GVA_LOG.Error("发起测试出错", zap.Error(err))

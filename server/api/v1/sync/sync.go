@@ -46,6 +46,7 @@ func (syncApi *SyncApi) SyncApiTestReportApi(c *gin.Context) {
 	if err := global.Validate.Struct(&reportReq); err != nil {
 		global.GVA_LOG.Error("参数缺失", zap.Error(err))
 		response.FailWithMessage("参数缺失", c)
+		return
 	}
 
 	report := apicase.Report{
