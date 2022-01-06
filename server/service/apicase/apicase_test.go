@@ -11,7 +11,7 @@ func TestApiCase(t *testing.T) {
 		Env:    "demo",
 		Module: "adventuregame",
 		Api:    "get_game_style_info",
-		Case:   " test_get_game_style_info_exit",
+		Case:   "test_get_game_style_info_exit",
 	}
 	x := ApiCaseService{}
 	x.RunApiCase(runApiCaseReq)

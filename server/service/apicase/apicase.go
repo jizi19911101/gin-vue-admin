@@ -30,15 +30,16 @@ func (apiCaseService *ApiCaseService) RunApiCase(runApiCaseReq apicaseReq.RunApi
 	if len(caseName) != 0 {
 		var testcase = &apicase.ApiTestcase{}
 		db := global.GVA_DB.Model(&apicase.ApiTestcase{})
-		db.Select("class").Where("name = ?", caseName).Find(&testcase)
+		db.Select("class").Where("name = ? AND api = ? ", caseName, api).Find(&testcase)
 		if len(testcase.Class) != 0 {
-			data = data + "::" + testcase.Class + "::" + caseName
+			data = data + "&class=" + testcase.Class + "&case=" + caseName
 		}
 
 	}
+	global.GVA_LOG.Debug("调接口自动化job的data参数：" + data)
+
 	cmd := exec.Command("curl", url, "--user", user+":"+userToken, "--data", data)
-	out, err := cmd.CombinedOutput()
-	global.GVA_LOG.Debug(string(out) + "outoutoutout22")
+	_, err := cmd.CombinedOutput()
 	if err != nil {
 		return err
 	}
