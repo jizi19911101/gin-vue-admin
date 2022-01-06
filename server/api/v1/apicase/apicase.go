@@ -29,38 +29,30 @@ func (apiCaseApi *ApiCaseApi) RunApiCase(c *gin.Context) {
 	if err := global.Validate.Struct(&runApiCaseReq); err != nil {
 		global.GVA_LOG.Error("参数缺失", zap.Error(err))
 		response.FailWithMessage("参数缺失", c)
-		return
 	}
 	if err := apiCaseService.RunApiCase(runApiCaseReq); err != nil {
 		global.GVA_LOG.Error("发起测试出错", zap.Error(err))
 		response.FailWithMessage("发起测试出错", c)
-		return
 	}
 	response.OkWithMessage("成功发起测试，稍后生成测试报告", c)
-	return
 }
 
 func (apiCaseApi *ApiCaseApi) ModuleInfo(c *gin.Context) {
 	response.OkWithData(gin.H{}, c)
-	return
 }
 
 func (apiCaseApi *ApiCaseApi) ApiInfo(c *gin.Context) {
 	response.OkWithData(gin.H{}, c)
-	return
 }
 
 func (apiCaseApi *ApiCaseApi) CaseInfo(c *gin.Context) {
 	response.OkWithData(gin.H{}, c)
-	return
 }
 
 func (apiCaseApi *ApiCaseApi) Report(c *gin.Context) {
 	response.OkWithData(gin.H{}, c)
-	return
 }
 
 func (apiCaseApi *ApiCaseApi) SearchReport(c *gin.Context) {
 	response.OkWithData(gin.H{}, c)
-	return
 }

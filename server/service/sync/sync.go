@@ -298,6 +298,11 @@ func (syncService *SyncService) ParseApiTestcase(tmpDir string) error {
 	return nil
 }
 
+func (syncService *SyncService) SyncApiTestReport(report apicase.Report) error {
+	err := global.GVA_DB.Create(&report).Error
+	return err
+}
+
 func parseCase(apiFile string) (string, []string, error) {
 	var className string
 	parseCaseList := make([]string, 0)

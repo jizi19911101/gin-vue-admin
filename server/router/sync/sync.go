@@ -14,6 +14,7 @@ func (s *SyncRouter) InitSyncRouter(Router *gin.RouterGroup) {
 	var syncApi = v1.ApiGroupApp.SyncGroup
 	{
 		syncRouter.GET("syncApiTestcase", syncApi.SyncApiTestCaseApi)
+		syncRouter.GET("syncApiTestReport", syncApi.SyncApiTestReportApi)
 
 	}
 }
