@@ -34,6 +34,7 @@ func (apiCaseApi *ApiCaseApi) RunApiCase(c *gin.Context) {
 	if err := apiCaseService.RunApiCase(runApiCaseReq); err != nil {
 		global.GVA_LOG.Error("发起测试出错", zap.Error(err))
 		response.FailWithMessage("发起测试出错", c)
+		return
 	}
 	response.OkWithMessage("成功发起测试，稍后生成测试报告", c)
 }
