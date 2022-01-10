@@ -45,8 +45,8 @@ func (apiCaseApi *ApiCaseApi) ModuleList(c *gin.Context) {
 	var moduleListReq apicaseReq.ModuleSearch
 	_ = c.ShouldBindQuery(&moduleListReq)
 	if err, list, total := apiCaseService.ModuleList(moduleListReq); err != nil {
+		global.GVA_LOG.Error("获取模块列表失败", zap.Error(err))
 		response.FailWithMessage("获取模块列表失败", c)
-		return
 	} else {
 		moduleList := list.([]apicase.Module)
 		moduleListRes := make([]apicaseRes.ModuleRes, 0)
@@ -68,7 +68,29 @@ func (apiCaseApi *ApiCaseApi) ModuleList(c *gin.Context) {
 }
 
 func (apiCaseApi *ApiCaseApi) ApiList(c *gin.Context) {
-	response.OkWithData(gin.H{}, c)
+	var apiListReq apicaseReq.ApiSearch
+	_ = c.ShouldBindQuery(&apiListReq)
+	if err, list, total := apiCaseService.ApiList(apiListReq); err != nil {
+		global.GVA_LOG.Error("获取接口列表失败", zap.Error(err))
+		response.FailWithMessage("获取接口列表失败", c)
+	} else {
+		apiList := list.([]apicase.Api)
+		apiListRes := make([]apicaseRes.ApiRes, 0)
+		for i := range apiList {
+			apiListRes = append(apiListRes, apicaseRes.ApiRes{
+				Name:           apiList[i].Name,
+				Module:         apiList[i].Module,
+				OrganizationID: apiList[i].OrganizationID,
+			})
+		}
+		response.OkWithDetailed(response.PageResult{
+			List:     apiListRes,
+			Total:    total,
+			Page:     apiListReq.Page,
+			PageSize: apiListReq.PageSize,
+		}, "获取接口列表成功", c)
+	}
+
 }
 
 func (apiCaseApi *ApiCaseApi) CaseList(c *gin.Context) {
