@@ -95,7 +95,31 @@ func (apiCaseApi *ApiCaseApi) ApiList(c *gin.Context) {
 }
 
 func (apiCaseApi *ApiCaseApi) CaseList(c *gin.Context) {
-	response.OkWithData(gin.H{}, c)
+	var apiCaseListReq apicaseReq.ApiCaseReq
+	_ = c.ShouldBindQuery(&apiCaseListReq)
+	if err, list, total := apiCaseService.ApiCaseList(apiCaseListReq); err != nil {
+		global.GVA_LOG.Error("获取用例列表失败！", zap.Error(err))
+		response.FailWithMessage("获取用例列表失败！", c)
+	} else {
+		apiCaseList := list.([]apicase.ApiCase)
+		apiCaseListRes := make([]apicaseRes.ApiCaseRes, 0)
+		for i := range apiCaseList {
+			apiCaseListRes = append(apiCaseListRes, apicaseRes.ApiCaseRes{
+				ID:             apiCaseList[i].ID,
+				Name:           apiCaseList[i].Name,
+				OrganizationID: apiCaseList[i].ID,
+				Module:         apiCaseList[i].Module,
+				Api:            apiCaseList[i].Api,
+			})
+		}
+		response.OkWithDetailed(response.PageResult{
+			List:     apiCaseListRes,
+			Total:    total,
+			Page:     apiCaseListReq.Page,
+			PageSize: apiCaseListReq.PageSize,
+		}, "获取用例列表成功！", c)
+	}
+
 }
 
 func (apiCaseApi *ApiCaseApi) ReportList(c *gin.Context) {

@@ -234,9 +234,9 @@ func (syncService *SyncService) ParseApiTestcase(tmpDir string) error {
 			continue
 		}
 
-		parseCaseMap := make(map[string]apicase.ApiTestcase, 0)
+		parseCaseMap := make(map[string]apicase.ApiCase, 0)
 		for _, v := range parseCaseList {
-			parseCaseMap[v] = apicase.ApiTestcase{
+			parseCaseMap[v] = apicase.ApiCase{
 				Name:   v,
 				Module: api.Module,
 				Api:    api.Name,
@@ -245,8 +245,8 @@ func (syncService *SyncService) ParseApiTestcase(tmpDir string) error {
 		}
 
 		//用例数不为 0，读出数据库的用例
-		db := global.GVA_DB.Model(&apicase.ApiTestcase{})
-		caseList := make([]apicase.ApiTestcase, 0)
+		db := global.GVA_DB.Model(&apicase.ApiCase{})
+		caseList := make([]apicase.ApiCase, 0)
 		if className == "" {
 			global.GVA_LOG.Error("接口用例类名解析出错")
 			//抛出错误
@@ -256,7 +256,7 @@ func (syncService *SyncService) ParseApiTestcase(tmpDir string) error {
 
 		//数据库用例数为0，直接加入
 		if len(caseList) == 0 {
-			list := make([]apicase.ApiTestcase, 0)
+			list := make([]apicase.ApiCase, 0)
 			for _, v := range parseCaseMap {
 				list = append(list, v)
 			}
@@ -264,14 +264,14 @@ func (syncService *SyncService) ParseApiTestcase(tmpDir string) error {
 			continue
 		}
 
-		caseMap := make(map[string]apicase.ApiTestcase, 0)
+		caseMap := make(map[string]apicase.ApiCase, 0)
 		for _, c := range caseList {
 			caseMap[c.Name] = c
 		}
 
 		//数据库用例数不为0，进行筛选再加到数据库
 		delCaseList := make([]uint, 0)
-		addCaseList := make([]apicase.ApiTestcase, 0)
+		addCaseList := make([]apicase.ApiCase, 0)
 
 		for _, t := range caseMap {
 			if _, ok := parseCaseMap[t.Name]; !ok {
@@ -290,7 +290,7 @@ func (syncService *SyncService) ParseApiTestcase(tmpDir string) error {
 		}
 
 		if len(delCaseList) != 0 {
-			db.Delete(&apicase.ApiTestcase{}, delCaseList)
+			db.Delete(&apicase.ApiCase{}, delCaseList)
 		}
 
 	}

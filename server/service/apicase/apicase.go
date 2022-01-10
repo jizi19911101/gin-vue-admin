@@ -28,8 +28,8 @@ func (apiCaseService *ApiCaseService) RunApiCase(runApiCaseReq apicaseReq.RunApi
 		data = data + "&api=" + "test_" + api + ".py"
 	}
 	if len(caseName) != 0 {
-		var testcase = &apicase.ApiTestcase{}
-		db := global.GVA_DB.Model(&apicase.ApiTestcase{})
+		var testcase = &apicase.ApiCase{}
+		db := global.GVA_DB.Model(&apicase.ApiCase{})
 		db.Select("class").Where("name = ? AND api = ? ", caseName, api).Find(&testcase)
 		if len(testcase.Class) != 0 {
 			data = data + "&class=" + testcase.Class + "&case=" + caseName
@@ -87,4 +87,31 @@ func (apiCaseService *ApiCaseService) ApiList(info apicaseReq.ApiSearch) (error,
 	}
 	err := db.Limit(limit).Offset(offset).Find(&apiList).Error
 	return err, apiList, total
+}
+
+func (apiCaseService *ApiCaseService) ApiCaseList(info apicaseReq.ApiCaseReq) (error, interface{}, int64) {
+	limit := info.PageSize
+	offset := info.PageSize * (info.Page - 1)
+
+	db := global.GVA_DB.Model(&apicase.ApiCase{})
+	var total int64
+	var apiCaseList []apicase.ApiCase
+
+	if info.Module != "" {
+		db.Where("module = ?", info.Module)
+	}
+	if info.Api != "" {
+		db.Where("api = ? ", info.Api)
+	}
+	if info.Name != "" {
+		db.Where("name = ? ", info.Name)
+
+	}
+
+	if err := db.Count(&total).Error; err != nil {
+		return err, nil, 0
+	}
+	err := db.Limit(limit).Offset(offset).Find(&apiCaseList).Error
+
+	return err, apiCaseList, total
 }
