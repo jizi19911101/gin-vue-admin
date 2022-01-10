@@ -25,7 +25,7 @@ func (syncService *SyncService) SyncApiTestCase() (err error) {
 	if err != nil {
 		return err
 	}
-	err = utils.OsExecClone(tmpDir, "http://git-ext.chumanapp.com/chuman-test/chuman-api-test-new.git")
+	err = utils.OsExecClone(tmpDir, "git@git-ext.chumanapp.com:chuman-test/chuman-api-test-new.git")
 	if err != nil {
 		return err
 	}
