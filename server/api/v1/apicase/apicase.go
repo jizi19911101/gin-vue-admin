@@ -78,6 +78,7 @@ func (apiCaseApi *ApiCaseApi) ApiList(c *gin.Context) {
 		apiListRes := make([]apicaseRes.ApiRes, 0)
 		for i := range apiList {
 			apiListRes = append(apiListRes, apicaseRes.ApiRes{
+				ID:             apiList[i].ID,
 				Name:           apiList[i].Name,
 				Module:         apiList[i].Module,
 				OrganizationID: apiList[i].OrganizationID,
