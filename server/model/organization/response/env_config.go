@@ -1,14 +1,9 @@
 package response
 
-import (
-	"github.com/jizi19911101/gin-vue-admin/server/model/common/request"
-	"github.com/jizi19911101/gin-vue-admin/server/model/organization"
-)
-
-type EnvConfigSearch struct {
-	organization.EnvConfig
-	request.PageInfo
-}
+//type EnvConfigSearch struct {
+//	organization.EnvConfig
+//	request.PageInfo
+//}
 
 type EnvConfigRes struct {
 	ID           uint

@@ -4,7 +4,9 @@ import (
 	"github.com/flipped-aurora/gin-vue-admin/server/model/common/response"
 	"github.com/gin-gonic/gin"
 	"github.com/jizi19911101/gin-vue-admin/server/global"
+	"github.com/jizi19911101/gin-vue-admin/server/model/apicase"
 	apicaseReq "github.com/jizi19911101/gin-vue-admin/server/model/apicase/request"
+	apicaseRes "github.com/jizi19911101/gin-vue-admin/server/model/apicase/response"
 	"github.com/jizi19911101/gin-vue-admin/server/service"
 	"go.uber.org/zap"
 )
@@ -39,22 +41,40 @@ func (apiCaseApi *ApiCaseApi) RunApiCase(c *gin.Context) {
 	response.OkWithMessage("成功发起测试，稍后生成测试报告", c)
 }
 
-func (apiCaseApi *ApiCaseApi) ModuleInfo(c *gin.Context) {
+func (apiCaseApi *ApiCaseApi) ModuleList(c *gin.Context) {
+	var moduleListReq apicaseReq.ModuleSearch
+	_ = c.ShouldBindQuery(&moduleListReq)
+	if err, list, total := apiCaseService.ModuleList(moduleListReq); err != nil {
+		response.FailWithMessage("获取模块列表失败", c)
+		return
+	} else {
+		moduleList := list.([]apicase.Module)
+		moduleListRes := make([]apicaseRes.ModuleRes, 0)
+		for i := range moduleList {
+			moduleListRes = append(moduleListRes, apicaseRes.ModuleRes{
+				ID:             moduleList[i].ID,
+				Name:           moduleList[i].Name,
+				OrganizationID: moduleList[i].OrganizationID,
+			})
+		}
+		response.OkWithDetailed(response.PageResult{
+			List:     moduleListRes,
+			Total:    total,
+			Page:     moduleListReq.Page,
+			PageSize: moduleListReq.PageSize,
+		}, "获取模块列表成功", c)
+	}
+
+}
+
+func (apiCaseApi *ApiCaseApi) ApiList(c *gin.Context) {
 	response.OkWithData(gin.H{}, c)
 }
 
-func (apiCaseApi *ApiCaseApi) ApiInfo(c *gin.Context) {
+func (apiCaseApi *ApiCaseApi) CaseList(c *gin.Context) {
 	response.OkWithData(gin.H{}, c)
 }
 
-func (apiCaseApi *ApiCaseApi) CaseInfo(c *gin.Context) {
-	response.OkWithData(gin.H{}, c)
-}
-
-func (apiCaseApi *ApiCaseApi) Report(c *gin.Context) {
-	response.OkWithData(gin.H{}, c)
-}
-
-func (apiCaseApi *ApiCaseApi) SearchReport(c *gin.Context) {
+func (apiCaseApi *ApiCaseApi) ReportList(c *gin.Context) {
 	response.OkWithData(gin.H{}, c)
 }

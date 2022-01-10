@@ -14,10 +14,10 @@ func (s *ApiCaseRouter) InitApiCaseRouter(Router *gin.RouterGroup) {
 	var apiCaseApi = v1.ApiGroupApp.ApiCaseGroup.ApiCaseApi
 	{
 		apiCaseRouter.POST("runApiCase", apiCaseApi.RunApiCase)
-		apiCaseRouter.GET("moduleInfo", apiCaseApi.ModuleInfo)
-		apiCaseRouter.GET("apiInfo", apiCaseApi.ApiInfo)
-		apiCaseRouter.GET("caseInfo", apiCaseApi.CaseInfo)
-		apiCaseRouter.GET("report", apiCaseApi.Report)
-		apiCaseRouter.GET("searchReport", apiCaseApi.SearchReport)
+		apiCaseRouter.GET("moduleList", apiCaseApi.ModuleList)
+		apiCaseRouter.GET("apiList", apiCaseApi.ApiList)
+		apiCaseRouter.GET("caseList", apiCaseApi.CaseList)
+		apiCaseRouter.GET("reportList", apiCaseApi.ReportList)
+		//apiCaseRouter.GET("searchReport", apiCaseApi.SearchReport)
 	}
 }

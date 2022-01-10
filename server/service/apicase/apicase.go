@@ -45,3 +45,23 @@ func (apiCaseService *ApiCaseService) RunApiCase(runApiCaseReq apicaseReq.RunApi
 	}
 	return nil
 }
+
+func (apiCaseService *ApiCaseService) ModuleList(info apicaseReq.ModuleSearch) (error, interface{}, int64) {
+	limit := info.PageSize
+	offset := info.PageSize * (info.Page - 1)
+
+	db := global.GVA_DB.Model(&apicase.Module{})
+	var moduleList []apicase.Module
+	var total int64
+
+	if info.Name != "" {
+		db = db.Where("name = ?", info.Name)
+	}
+	if err := db.Count(&total).Error; err != nil {
+		return err, nil, 0
+	}
+
+	err := db.Limit(limit).Offset(offset).Find(&moduleList).Error
+	return err, moduleList, total
+
+}
