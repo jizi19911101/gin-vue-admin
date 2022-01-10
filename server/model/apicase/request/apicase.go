@@ -10,7 +10,7 @@ type RunApiCaseReq struct {
 	Env            string `json:"env" form:"env"  validate:"required"`
 }
 
-type ApiCaseReq struct {
+type ApiCaseSearch struct {
 	request.PageInfo
 	OrganizationID uint   `json:"organizationID" form:"organizationID" `
 	Module         string `json:"module" form:"module"  `

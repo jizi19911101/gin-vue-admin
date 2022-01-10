@@ -95,7 +95,7 @@ func (apiCaseApi *ApiCaseApi) ApiList(c *gin.Context) {
 }
 
 func (apiCaseApi *ApiCaseApi) CaseList(c *gin.Context) {
-	var apiCaseListReq apicaseReq.ApiCaseReq
+	var apiCaseListReq apicaseReq.ApiCaseSearch
 	_ = c.ShouldBindQuery(&apiCaseListReq)
 	if err, list, total := apiCaseService.ApiCaseList(apiCaseListReq); err != nil {
 		global.GVA_LOG.Error("获取用例列表失败！", zap.Error(err))

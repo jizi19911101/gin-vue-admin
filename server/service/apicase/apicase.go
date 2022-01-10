@@ -89,7 +89,7 @@ func (apiCaseService *ApiCaseService) ApiList(info apicaseReq.ApiSearch) (error,
 	return err, apiList, total
 }
 
-func (apiCaseService *ApiCaseService) ApiCaseList(info apicaseReq.ApiCaseReq) (error, interface{}, int64) {
+func (apiCaseService *ApiCaseService) ApiCaseList(info apicaseReq.ApiCaseSearch) (error, interface{}, int64) {
 	limit := info.PageSize
 	offset := info.PageSize * (info.Page - 1)
 

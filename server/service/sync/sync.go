@@ -215,7 +215,6 @@ func (syncService *SyncService) ParseApiTestcase(tmpDir string) error {
 
 	// 读接口文件
 	for _, api := range apiList {
-		global.GVA_LOG.Debug(api.Name + "接口进行用例解析")
 		apiFile := tmpDir + "/testcases/" + api.Module + "/test_" + api.Name + ".py"
 		if _, err := os.Stat(apiFile); err != nil {
 			global.GVA_LOG.Error("接口文件不存在", zap.Error(err))
