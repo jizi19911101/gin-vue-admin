@@ -115,3 +115,23 @@ func (apiCaseService *ApiCaseService) ApiCaseList(info apicaseReq.ApiCaseSearch)
 
 	return err, apiCaseList, total
 }
+
+func (apiCaseService *ApiCaseService) ReportList(info apicaseReq.ReportSearch) (error, interface{}, int64) {
+	limit := info.PageSize
+	offset := info.PageSize * (info.Page - 1)
+
+	db := global.GVA_DB.Model(&apicase.Report{})
+	var total int64
+	reportList := make([]apicase.Report, 0)
+
+	if info.Name != "" {
+		db.Where("name = ?", info.Name)
+	}
+
+	if err := db.Count(&total).Error; err != nil {
+		return err, nil, 0
+	}
+	err := db.Limit(limit).Offset(offset).Find(&reportList).Error
+	return err, reportList, total
+
+}

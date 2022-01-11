@@ -123,5 +123,28 @@ func (apiCaseApi *ApiCaseApi) CaseList(c *gin.Context) {
 }
 
 func (apiCaseApi *ApiCaseApi) ReportList(c *gin.Context) {
-	response.OkWithData(gin.H{}, c)
+	var reportListReq apicaseReq.ReportSearch
+	_ = c.ShouldBindQuery(&reportListReq)
+	if err, list, total := apiCaseService.ReportList(reportListReq); err != nil {
+		global.GVA_LOG.Error("获取报告列表失败", zap.Error(err))
+		response.FailWithMessage("获取报告列表失败", c)
+	} else {
+		reportList := list.([]apicase.Report)
+		reportListRes := make([]apicaseRes.ReportRes, 0)
+		for i := range reportList {
+			reportListRes = append(reportListRes, apicaseRes.ReportRes{
+				ID:             reportList[i].ID,
+				Name:           reportList[i].Name,
+				Url:            reportList[i].Url,
+				OrganizationID: reportList[i].OrganizationID,
+			})
+		}
+		response.OkWithDetailed(response.PageResult{
+			List:     reportListRes,
+			Total:    total,
+			Page:     reportListReq.Page,
+			PageSize: reportListReq.PageSize,
+		}, "获取报告列表成功", c)
+	}
+
 }
