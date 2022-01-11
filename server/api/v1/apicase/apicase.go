@@ -41,6 +41,15 @@ func (apiCaseApi *ApiCaseApi) RunApiCase(c *gin.Context) {
 	response.OkWithMessage("成功发起测试，稍后生成测试报告", c)
 }
 
+// ModuleList 获取模块列表
+// @Tags ModuleList
+// @Summary 获取模块列表
+// @Security ApiKeyAuth
+// @accept application/json
+// @Produce application/json
+// @Param data body apicaseReq.ModuleSearch true "获取模块列表"
+// @Success 200 {string} string "{"success":true,"data":{},"msg":"获取模块列表成功"}"
+// @Router /apiCase/moduleList [get]
 func (apiCaseApi *ApiCaseApi) ModuleList(c *gin.Context) {
 	var moduleListReq apicaseReq.ModuleSearch
 	_ = c.ShouldBindQuery(&moduleListReq)
@@ -67,6 +76,15 @@ func (apiCaseApi *ApiCaseApi) ModuleList(c *gin.Context) {
 
 }
 
+// ApiList 获取接口列表
+// @Tags ApiList
+// @Summary 获取接口列表
+// @Security ApiKeyAuth
+// @accept application/json
+// @Produce application/json
+// @Param data body apicaseReq.ApiSearch true "获取接口列表"
+// @Success 200 {string} string "{"success":true,"data":{},"msg":"获取接口列表成功"}"
+// @Router /apiCase/apiList [get]
 func (apiCaseApi *ApiCaseApi) ApiList(c *gin.Context) {
 	var apiListReq apicaseReq.ApiSearch
 	_ = c.ShouldBindQuery(&apiListReq)
@@ -94,6 +112,15 @@ func (apiCaseApi *ApiCaseApi) ApiList(c *gin.Context) {
 
 }
 
+// CaseList 获取用例列表
+// @Tags CaseList
+// @Summary 获取用例列表
+// @Security ApiKeyAuth
+// @accept application/json
+// @Produce application/json
+// @Param data body apicaseReq.ApiCaseSearch true "获取用例列表"
+// @Success 200 {string} string "{"success":true,"data":{},"msg":"获取用例列表成功！"}"
+// @Router /apiCase/caseList [get]
 func (apiCaseApi *ApiCaseApi) CaseList(c *gin.Context) {
 	var apiCaseListReq apicaseReq.ApiCaseSearch
 	_ = c.ShouldBindQuery(&apiCaseListReq)
@@ -122,6 +149,15 @@ func (apiCaseApi *ApiCaseApi) CaseList(c *gin.Context) {
 
 }
 
+// ReportList 获取报告列表
+// @Tags ReportList
+// @Summary 获取报告列表
+// @Security ApiKeyAuth
+// @accept application/json
+// @Produce application/json
+// @Param data body apicaseReq.ReportSearch true "获取报告列表"
+// @Success 200 {string} string "{"success":true,"data":{},"msg":"获取报告列表成功!"}"
+// @Router /apiCase/reportList [get]
 func (apiCaseApi *ApiCaseApi) ReportList(c *gin.Context) {
 	var reportListReq apicaseReq.ReportSearch
 	_ = c.ShouldBindQuery(&reportListReq)
@@ -144,7 +180,7 @@ func (apiCaseApi *ApiCaseApi) ReportList(c *gin.Context) {
 			Total:    total,
 			Page:     reportListReq.Page,
 			PageSize: reportListReq.PageSize,
-		}, "获取报告列表成功", c)
+		}, "获取报告列表成功!", c)
 	}
 
 }
