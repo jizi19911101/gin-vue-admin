@@ -22,7 +22,8 @@
         @selection-change="handleSelectionChange"
         >
         <el-table-column type="selection" width="55" />
-        <el-table-column align="left" label="接口名称" prop="name" width="300" />
+        <el-table-column align="left" label="所属模块" prop="module" width="200" />
+        <el-table-column align="left" label="接口名称" prop="name" width="250" />
         <!-- <el-table-column align="left" label="日期" width="180">
             <template #default="scope">{{ formatDate(scope.row.CreatedAt) }}</template>
         </el-table-column> -->
@@ -69,7 +70,6 @@ export default {
   },
   async created() {
     this.searchInfo.module = this.$route.query.module
-    // await this.getEnvConfigList({ project: this.$route.query.project })
     await this.getTableData()
   },
   methods: {

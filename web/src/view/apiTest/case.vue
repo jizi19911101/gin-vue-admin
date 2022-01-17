@@ -22,7 +22,9 @@
         @selection-change="handleSelectionChange"
         >
         <el-table-column type="selection" width="55" />
-        <el-table-column align="left" label="用例名称" prop="name" width="300" />
+        <el-table-column align="left" label="所属模块" prop="module" width="200" />
+        <el-table-column align="left" label="所属接口" prop="api" width="250" />
+        <el-table-column align="left" label="用例名称" prop="name" width="250" />
         <!-- <el-table-column align="left" label="日期" width="180">
             <template #default="scope">{{ formatDate(scope.row.CreatedAt) }}</template>
         </el-table-column> -->
