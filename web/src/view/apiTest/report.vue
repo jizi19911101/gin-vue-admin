@@ -29,7 +29,7 @@
         </el-table-column> -->
         <el-table-column align="left" label="操作">
             <template #default="scope">
-            <el-button type="text" icon="el-icon-data-analysis" size="small" class="table-button" @click="updateOrganization(scope.row)">查看</el-button>
+            <el-button type="text" icon="el-icon-data-analysis" size="small" class="table-button" @click="viewReport(scope.row)">查看</el-button>
             </template>
         </el-table-column>
         </el-table>
@@ -83,6 +83,9 @@ export default {
     handleSelectionChange(val) {
       this.multipleSelection = val
     },
+    viewReport(item){
+      window.open(item.url)
+    }
   },
 }
 </script>
