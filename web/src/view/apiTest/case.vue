@@ -31,7 +31,7 @@
         <el-table-column align="left" label="操作">
             <template #default="scope">
             <el-button type="text" icon="el-icon-data-analysis" size="small" class="table-button" @click="goToReport(scope.row)">测试报告</el-button>
-            <el-button type="text" icon="el-icon-s-tools" size="small" class="table-button" @click="updateOrganization(scope.row)">测试</el-button>
+            <el-button type="text" icon="el-icon-s-tools" size="small" class="table-button" @click="changeVisible(scope.row)">测试</el-button>
             </template>
         </el-table-column>
         </el-table>
@@ -46,6 +46,31 @@
             @size-change="handleSizeChange"
             />
         </div>
+        <el-dialog v-model="dialogFormVisible" :before-close="closeDialog" title="跑测试用例">
+          <el-form :model="formData" :rules="rules" ref="formData" label-position="right" label-width="100px">
+            <el-form-item label="测试环境" prop="env">
+              <el-select v-model="formData.env" placeholder="请下拉选择" clearable :style="{width: '100%'}">
+              <el-option v-for="(item, index) in envOptions" :key="index"  :value="item"
+                :disabled="item.disabled"></el-option>
+              </el-select>
+            </el-form-item>
+            <el-form-item label="测试模块:" prop="module">
+              <el-input v-model="formData.module" readonly placeholder="请输入" />
+            </el-form-item>
+            <el-form-item label="测试接口:" prop="api">
+              <el-input v-model="formData.api" readonly placeholder="请输入" />
+            </el-form-item>
+            <el-form-item label="测试用例:" prop="case">
+              <el-input v-model="formData.case" readonly placeholder="请输入" />
+            </el-form-item>
+          </el-form>
+          <template #footer>
+            <div class="dialog-footer">
+              <el-button size="small" @click="closeDialog">取 消</el-button>
+              <el-button size="small" type="primary" @click="runCase()">确 定</el-button>
+            </div>
+          </template>
+        </el-dialog>
     </div>
 
   </div>
@@ -53,7 +78,8 @@
 
 <script>
 import {
-  getCaseList
+  getCaseList,
+  runCase
 } from '@/api/apiTest' //  此处请自行替换地址
 import infoList from '@/mixins/infoList'
 export default {
@@ -61,11 +87,19 @@ export default {
   mixins: [infoList],
   data() {
     return {
+      dialogFormVisible: false,
       listApi: getCaseList,
       multipleSelection: [],
       formData: {
-        name: '',
+        env: '',
+        module: '',
+        api: '',
+        case: '',
       },
+      envOptions: ["demo","api2","api"],
+      rules: {
+        env: [{ required:true, message: "请选择测试环境", trigger:"blur" }],
+      }
     }
   },
   async created() {
@@ -89,6 +123,40 @@ export default {
     goToReport(item){
       this.$router.push({name:"report",})
     },
+    changeVisible(row) {
+        this.dialogFormVisible = true
+        this.formData.case =  row.name
+        this.formData.api =  row.api
+        this.formData.module =  row.module
+      
+    },
+    closeDialog() {
+      this.dialogFormVisible = false
+      this.$refs.formData.resetFields();
+      this.formData = {
+        module: '',
+        api:'',
+        case:''
+      }
+    },
+    async runCase(){
+      let res
+      this.$refs.formData.validate( async (valid) => {
+        if (!valid){
+
+        }else{
+            res = await runCase(this.formData)
+          if (res.code === 0) {
+            this.$message({
+              type: 'success',
+              message: '发起测试成功，请稍后查询报告'
+            })
+            this.closeDialog()
+          }
+        }
+       })
+
+    }
   },
 }
 </script>
