@@ -66,3 +66,20 @@ export const getCaseList = (params) => {
       params
     })
   }
+
+
+// @Tags runCase
+// @Summary 跑测试用例
+// @Security ApiKeyAuth
+// @accept application/json
+// @Produce application/json
+// @Param data body api.GetById true "跑测试用例"
+// @Success 200 {string} json "{"success":true,"data":{},"msg":"获取成功"}"
+// @Router /apiCase/runApiCase [post]
+export const runCase = (data) => {
+  return service({
+    url: '/apiCase/runApiCase',
+    method: 'post',
+    data
+  })
+}
