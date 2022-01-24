@@ -22,11 +22,13 @@ type SyncService struct {
 // ApiTestcaseCode 拉取接口自动化代码
 func (syncService *SyncService) SyncApiTestCase() (err error) {
 	tmpDir, err := ioutil.TempDir("./", "temp_*")
+	url := global.GVA_CONFIG.Gitlab.ChumanApiTestUrl
+	global.GVA_LOG.Debug("ChumanApiTestUrl" + url)
 	defer os.RemoveAll(tmpDir)
 	if err != nil {
 		return err
 	}
-	err = utils.OsExecClone(tmpDir, "git@git-ext.chumanapp.com:chuman-test/chuman-api-test-new.git")
+	err = utils.OsExecClone(tmpDir, url)
 	if err != nil {
 		return err
 	}

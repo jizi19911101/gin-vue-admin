@@ -22,4 +22,6 @@ type Server struct {
 	Timer      Timer      `mapstructure:"timer" json:"timer" yaml:"timer"`
 	// jenkins
 	Jenkins Jenkins `mapstructure:"jenkins" json:"jenkins" yaml:"jenkins"`
+	// gitlab
+	Gitlab Gitlab `mapstructure:"gitlab" json:"gitlab" yaml:"gitlab"`
 }
