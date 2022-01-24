@@ -13,8 +13,9 @@ type ApiCaseService struct {
 }
 
 func (apiCaseService *ApiCaseService) RunApiCase(runApiCaseReq apicaseReq.RunApiCaseReq) error {
-	user := "huangweinan"
-	userToken := "11b6fc0ee0647ba08c638bf188da4b4c2c"
+	user := global.GVA_CONFIG.Jenkins.User
+	token := global.GVA_CONFIG.Jenkins.Token
+	global.GVA_LOG.Debug("jenkins用户：" + user + token)
 	env := runApiCaseReq.Env
 	module := runApiCaseReq.Module
 	api := runApiCaseReq.Api
@@ -38,7 +39,7 @@ func (apiCaseService *ApiCaseService) RunApiCase(runApiCaseReq apicaseReq.RunApi
 	}
 	global.GVA_LOG.Debug("调接口自动化job的data参数：" + data)
 
-	cmd := exec.Command("curl", url, "--user", user+":"+userToken, "--data", data)
+	cmd := exec.Command("curl", url, "--user", user+":"+token, "--data", data)
 	_, err := cmd.CombinedOutput()
 	if err != nil {
 		return err

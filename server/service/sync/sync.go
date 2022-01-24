@@ -7,6 +7,7 @@ import (
 	"os"
 	"regexp"
 	"strings"
+	"time"
 
 	"go.uber.org/zap"
 
@@ -29,19 +30,22 @@ func (syncService *SyncService) SyncApiTestCase() (err error) {
 	if err != nil {
 		return err
 	}
+	global.GVA_LOG.Debug(time.Now().Format("2006 -1-2  3:4:5"))
 	err = syncService.ParseApiTestcaseModule(tmpDir)
 	if err != nil {
 		return err
 	}
+	global.GVA_LOG.Debug(time.Now().Format("2006 -1-2  3:4:5"))
 	err = syncService.ParseApiTestcaseApi(tmpDir)
 	if err != nil {
 		return err
 	}
-
+	global.GVA_LOG.Debug(time.Now().Format("2006 -1-2  3:4:5"))
 	err = syncService.ParseApiTestcase(tmpDir)
 	if err != nil {
 		return err
 	}
+	global.GVA_LOG.Debug(time.Now().Format("2006 -1-2  3:4:5"))
 	return
 }
 

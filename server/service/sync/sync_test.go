@@ -1,11 +1,15 @@
 package sync
 
 import (
+	"io/ioutil"
+	"os"
 	"testing"
 )
 
 func TestParseCase(t *testing.T) {
-	a := SyncService{}
-	a.ParseApiTestcase("/Users/chenmenghua/Documents/gin-vue-admin/server/temp_520946198")
+	dir, _ := ioutil.TempDir("./", "temp_*")
+	defer os.RemoveAll(dir)
+	syncService := SyncService{}
+	syncService.ParseApiTestcase(dir)
 
 }
