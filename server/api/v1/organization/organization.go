@@ -23,7 +23,7 @@ var organizationService = service.ServiceGroupApp.OrganizationServiceGroup.Organ
 // @Security ApiKeyAuth
 // @accept application/json
 // @Produce application/json
-// @Param data body autocode.Organization true "创建Organization"
+// @Param data body organizationReq.OrganizationReq true "创建Organization"
 // @Success 200 {string} string "{"success":true,"data":{},"msg":"获取成功"}"
 // @Router /organization/createOrganization [post]
 func (organizationApi *OrganizationApi) CreateOrganization(c *gin.Context) {
@@ -49,7 +49,7 @@ func (organizationApi *OrganizationApi) CreateOrganization(c *gin.Context) {
 // @Security ApiKeyAuth
 // @accept application/json
 // @Produce application/json
-// @Param data body autocode.Organization true "删除Organization"
+// @Param data body organizationReq.OrganizationReq true "删除Organization"
 // @Success 200 {string} string "{"success":true,"data":{},"msg":"删除成功"}"
 // @Router /organization/deleteOrganization [delete]
 func (organizationApi *OrganizationApi) DeleteOrganization(c *gin.Context) {
@@ -90,7 +90,7 @@ func (organizationApi *OrganizationApi) DeleteOrganizationByIds(c *gin.Context) 
 // @Security ApiKeyAuth
 // @accept application/json
 // @Produce application/json
-// @Param data body autocode.Organization true "更新Organization"
+// @Param data body organizationReq.OrganizationReq true "更新Organization"
 // @Success 200 {string} string "{"success":true,"data":{},"msg":"更新成功"}"
 // @Router /organization/updateOrganization [put]
 func (organizationApi *OrganizationApi) UpdateOrganization(c *gin.Context) {
@@ -116,7 +116,7 @@ func (organizationApi *OrganizationApi) UpdateOrganization(c *gin.Context) {
 // @Security ApiKeyAuth
 // @accept application/json
 // @Produce application/json
-// @Param data query autocode.Organization true "用id查询Organization"
+// @Param data query organizationReq.OrganizationReq true "用id查询Organization"
 // @Success 200 {string} string "{"success":true,"data":{},"msg":"查询成功"}"
 // @Router /organization/findOrganization [get]
 func (organizationApi *OrganizationApi) FindOrganization(c *gin.Context) {
@@ -141,7 +141,7 @@ func (organizationApi *OrganizationApi) FindOrganization(c *gin.Context) {
 // @Security ApiKeyAuth
 // @accept application/json
 // @Produce application/json
-// @Param data query autocodeReq.OrganizationSearch true "分页获取Organization列表"
+// @Param data query organizationReq.OrganizationSearch true "分页获取Organization列表"
 // @Success 200 {string} string "{"success":true,"data":{},"msg":"获取成功"}"
 // @Router /organization/getOrganizationList [get]
 func (organizationApi *OrganizationApi) GetOrganizationList(c *gin.Context) {

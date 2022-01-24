@@ -1,6 +1,7 @@
 package service
 
 import (
+	"github.com/jizi19911101/gin-vue-admin/server/service/apicase"
 	"github.com/jizi19911101/gin-vue-admin/server/service/autocode"
 	"github.com/jizi19911101/gin-vue-admin/server/service/example"
 	"github.com/jizi19911101/gin-vue-admin/server/service/organization"
@@ -12,8 +13,9 @@ type ServiceGroup struct {
 	SystemServiceGroup       system.ServiceGroup
 	ExampleServiceGroup      example.ServiceGroup
 	AutoCodeServiceGroup     autocode.ServiceGroup
-	SyncGroup                sync.ServiceGroup
+	SyncServiceGroup         sync.ServiceGroup
 	OrganizationServiceGroup organization.ServiceGroup
+	ApiCaseServiceGroup      apicase.ServiceGroup
 }
 
 var ServiceGroupApp = new(ServiceGroup)

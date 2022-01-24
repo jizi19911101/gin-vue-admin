@@ -7,11 +7,12 @@ import (
 	"os"
 	"regexp"
 	"strings"
+	"time"
 
 	"go.uber.org/zap"
 
 	"github.com/jizi19911101/gin-vue-admin/server/global"
-	"github.com/jizi19911101/gin-vue-admin/server/model/apiTest"
+	"github.com/jizi19911101/gin-vue-admin/server/model/apicase"
 	"github.com/jizi19911101/gin-vue-admin/server/utils"
 )
 
@@ -21,27 +22,32 @@ type SyncService struct {
 // ApiTestcaseCode 拉取接口自动化代码
 func (syncService *SyncService) SyncApiTestCase() (err error) {
 	tmpDir, err := ioutil.TempDir("./", "temp_*")
+	url := global.GVA_CONFIG.Gitlab.ChumanApiTestUrl
+	global.GVA_LOG.Debug("ChumanApiTestUrl" + url)
 	defer os.RemoveAll(tmpDir)
 	if err != nil {
 		return err
 	}
-	err = utils.OsExecClone(tmpDir, "https://git-ext.chumanapp.com/chuman-test/chuman-api-test-new")
+	err = utils.OsExecClone(tmpDir, url)
 	if err != nil {
 		return err
 	}
+	global.GVA_LOG.Debug(time.Now().Format("2006 -1-2  3:4:5"))
 	err = syncService.ParseApiTestcaseModule(tmpDir)
 	if err != nil {
 		return err
 	}
+	global.GVA_LOG.Debug(time.Now().Format("2006 -1-2  3:4:5"))
 	err = syncService.ParseApiTestcaseApi(tmpDir)
 	if err != nil {
 		return err
 	}
-
+	global.GVA_LOG.Debug(time.Now().Format("2006 -1-2  3:4:5"))
 	err = syncService.ParseApiTestcase(tmpDir)
 	if err != nil {
 		return err
 	}
+	global.GVA_LOG.Debug(time.Now().Format("2006 -1-2  3:4:5"))
 	return
 }
 
@@ -53,26 +59,26 @@ func (syncService *SyncService) ParseApiTestcaseModule(tmpDir string) (err error
 		return
 	}
 
-	parseModuleMap := make(map[string]apiTest.Module)
+	parseModuleMap := make(map[string]apicase.Module)
 	for i := range fileInfoList {
 		fileName := fileInfoList[i].Name()
 		if fileName != "__init__.py" {
-			parseModuleMap[fileName] = apiTest.Module{
+			parseModuleMap[fileName] = apicase.Module{
 				Name: fileName,
 			}
 		}
 	}
 
 	// 查库查出模块
-	db := global.GVA_DB.Model(&apiTest.Module{})
+	db := global.GVA_DB.Model(&apicase.Module{})
 
-	var moduleList []apiTest.Module
+	var moduleList []apicase.Module
 	var count int64
 	db.Find(&moduleList).Count(&count)
 
 	// 把增量模块插入库
 	if count == 0 {
-		list := make([]apiTest.Module, 0)
+		list := make([]apicase.Module, 0)
 		for _, module := range parseModuleMap {
 			list = append(list, module)
 		}
@@ -80,12 +86,12 @@ func (syncService *SyncService) ParseApiTestcaseModule(tmpDir string) (err error
 		return
 	}
 
-	moduleMap := make(map[string]apiTest.Module, 0)
+	moduleMap := make(map[string]apicase.Module, 0)
 	for _, module := range moduleList {
 		moduleMap[module.Name] = module
 	}
 
-	addModuleInfoList := make([]apiTest.Module, 0)
+	addModuleInfoList := make([]apicase.Module, 0)
 	delModuleInfoList := make([]uint, 0)
 
 	for _, module := range moduleList {
@@ -105,7 +111,7 @@ func (syncService *SyncService) ParseApiTestcaseModule(tmpDir string) (err error
 	}
 
 	if len(delModuleInfoList) != 0 {
-		db.Delete(&apiTest.Module{}, delModuleInfoList)
+		db.Delete(&apicase.Module{}, delModuleInfoList)
 	}
 
 	return
@@ -114,8 +120,8 @@ func (syncService *SyncService) ParseApiTestcaseModule(tmpDir string) (err error
 // ApiTestcaseCode 解析接口自动化代码接口
 func (syncService *SyncService) ParseApiTestcaseApi(tmpDir string) error {
 	//取出模块
-	moduleList := make([]apiTest.Module, 0)
-	db := global.GVA_DB.Model(&apiTest.Module{})
+	moduleList := make([]apicase.Module, 0)
+	db := global.GVA_DB.Model(&apicase.Module{})
 	db.Find(&moduleList)
 
 	//模块为 0，结束
@@ -143,23 +149,23 @@ func (syncService *SyncService) ParseApiTestcaseApi(tmpDir string) error {
 
 		// 接口文件不为 0，就进行处理并存入数据库
 		if len(parseApiList) != 0 {
-			parseApiMap := make(map[string]apiTest.Api, 0)
+			parseApiMap := make(map[string]apicase.Api, 0)
 			for _, a := range parseApiList {
-				parseApiMap[a] = apiTest.Api{
+				parseApiMap[a] = apicase.Api{
 					Name:   a,
 					Module: module.Name,
 				}
 			}
 
 			//查出该模块下的接口数据
-			apiList := make([]apiTest.Api, 0)
+			apiList := make([]apicase.Api, 0)
 			var count int64
-			db := global.GVA_DB.Model(&apiTest.Api{})
+			db := global.GVA_DB.Model(&apicase.Api{})
 			db.Where("module = ?", module.Name).Find(&apiList).Count(&count)
 
 			// 该模块下的接口数据为0，直接插入
 			if count == 0 {
-				apiList := make([]apiTest.Api, 0)
+				apiList := make([]apicase.Api, 0)
 				for _, api := range parseApiMap {
 					apiList = append(apiList, api)
 				}
@@ -167,14 +173,14 @@ func (syncService *SyncService) ParseApiTestcaseApi(tmpDir string) error {
 				continue
 			}
 
-			apiMap := make(map[string]apiTest.Api, 0)
+			apiMap := make(map[string]apicase.Api, 0)
 			for _, a := range apiList {
 				apiMap[a.Name] = a
 			}
 
 			// 该模块下的接口数据不为0，增量插入
 			delApiList := make([]uint, 0)
-			addApiList := make([]apiTest.Api, 0)
+			addApiList := make([]apicase.Api, 0)
 
 			for key, value := range apiMap {
 				if _, ok := parseApiMap[key]; !ok {
@@ -193,7 +199,7 @@ func (syncService *SyncService) ParseApiTestcaseApi(tmpDir string) error {
 			}
 
 			if len(delApiList) != 0 {
-				db.Delete(&apiTest.Api{}, delApiList)
+				db.Delete(&apicase.Api{}, delApiList)
 			}
 
 		}
@@ -204,8 +210,8 @@ func (syncService *SyncService) ParseApiTestcaseApi(tmpDir string) error {
 
 func (syncService *SyncService) ParseApiTestcase(tmpDir string) error {
 	// 取出所有接口
-	apiList := make([]apiTest.Api, 0)
-	db := global.GVA_DB.Model(&apiTest.Api{})
+	apiList := make([]apicase.Api, 0)
+	db := global.GVA_DB.Model(&apicase.Api{})
 	db.Find(&apiList)
 
 	// 接口数量为0结束
@@ -215,7 +221,6 @@ func (syncService *SyncService) ParseApiTestcase(tmpDir string) error {
 
 	// 读接口文件
 	for _, api := range apiList {
-		global.GVA_LOG.Debug(api.Name + "接口进行用例解析")
 		apiFile := tmpDir + "/testcases/" + api.Module + "/test_" + api.Name + ".py"
 		if _, err := os.Stat(apiFile); err != nil {
 			global.GVA_LOG.Error("接口文件不存在", zap.Error(err))
@@ -234,9 +239,9 @@ func (syncService *SyncService) ParseApiTestcase(tmpDir string) error {
 			continue
 		}
 
-		parseCaseMap := make(map[string]apiTest.ApiTestcase, 0)
+		parseCaseMap := make(map[string]apicase.ApiCase, 0)
 		for _, v := range parseCaseList {
-			parseCaseMap[v] = apiTest.ApiTestcase{
+			parseCaseMap[v] = apicase.ApiCase{
 				Name:   v,
 				Module: api.Module,
 				Api:    api.Name,
@@ -245,8 +250,8 @@ func (syncService *SyncService) ParseApiTestcase(tmpDir string) error {
 		}
 
 		//用例数不为 0，读出数据库的用例
-		db := global.GVA_DB.Model(&apiTest.ApiTestcase{})
-		caseList := make([]apiTest.ApiTestcase, 0)
+		db := global.GVA_DB.Model(&apicase.ApiCase{})
+		caseList := make([]apicase.ApiCase, 0)
 		if className == "" {
 			global.GVA_LOG.Error("接口用例类名解析出错")
 			//抛出错误
@@ -256,7 +261,7 @@ func (syncService *SyncService) ParseApiTestcase(tmpDir string) error {
 
 		//数据库用例数为0，直接加入
 		if len(caseList) == 0 {
-			list := make([]apiTest.ApiTestcase, 0)
+			list := make([]apicase.ApiCase, 0)
 			for _, v := range parseCaseMap {
 				list = append(list, v)
 			}
@@ -264,14 +269,14 @@ func (syncService *SyncService) ParseApiTestcase(tmpDir string) error {
 			continue
 		}
 
-		caseMap := make(map[string]apiTest.ApiTestcase, 0)
+		caseMap := make(map[string]apicase.ApiCase, 0)
 		for _, c := range caseList {
 			caseMap[c.Name] = c
 		}
 
 		//数据库用例数不为0，进行筛选再加到数据库
 		delCaseList := make([]uint, 0)
-		addCaseList := make([]apiTest.ApiTestcase, 0)
+		addCaseList := make([]apicase.ApiCase, 0)
 
 		for _, t := range caseMap {
 			if _, ok := parseCaseMap[t.Name]; !ok {
@@ -290,12 +295,17 @@ func (syncService *SyncService) ParseApiTestcase(tmpDir string) error {
 		}
 
 		if len(delCaseList) != 0 {
-			db.Delete(&apiTest.ApiTestcase{}, delCaseList)
+			db.Delete(&apicase.ApiCase{}, delCaseList)
 		}
 
 	}
 
 	return nil
+}
+
+func (syncService *SyncService) SyncApiTestReport(report apicase.Report) error {
+	err := global.GVA_DB.Create(&report).Error
+	return err
 }
 
 func parseCase(apiFile string) (string, []string, error) {
@@ -314,13 +324,13 @@ func parseCase(apiFile string) (string, []string, error) {
 		reg := regexp.MustCompile("class(.*?):")
 		result := reg.FindStringSubmatch(scanner.Text())
 		if len(result) != 0 {
-			className = result[1]
+			className = strings.Trim(result[1], " ")
 		}
 
 		reg = regexp.MustCompile(`^def(.*?)\(`)
 		result = reg.FindStringSubmatch(strings.TrimSpace(scanner.Text()))
 		if len(result) != 0 {
-			parseCaseList = append(parseCaseList, result[1])
+			parseCaseList = append(parseCaseList, strings.Trim(result[1], " "))
 		}
 
 	}

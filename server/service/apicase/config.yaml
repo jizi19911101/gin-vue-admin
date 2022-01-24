@@ -110,9 +110,3 @@ zap:
   encode-level: LowercaseColorLevelEncoder
   stacktrace-key: stacktrace
   log-in-console: true
-jenkins:
-  user: "huangweinan"
-  token: "11b6fc0ee0647ba08c638bf188da4b4c2c"
-gitlab:
-  chuman-api-test-url: "git@git-ext.chumanapp.com:chuman-test/chuman-api-test-new.git"
-

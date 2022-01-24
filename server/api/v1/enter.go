@@ -1,6 +1,7 @@
 package v1
 
 import (
+	"github.com/jizi19911101/gin-vue-admin/server/api/v1/apicase"
 	"github.com/jizi19911101/gin-vue-admin/server/api/v1/autocode"
 	"github.com/jizi19911101/gin-vue-admin/server/api/v1/example"
 	"github.com/jizi19911101/gin-vue-admin/server/api/v1/organization"
@@ -14,6 +15,7 @@ type ApiGroup struct {
 	AutoCodeApiGroup  autocode.ApiGroup
 	SyncGroup         sync.ApiGroup
 	OrganizationGroup organization.ApiGroup
+	ApiCaseGroup      apicase.ApiGroup
 }
 
 var ApiGroupApp = new(ApiGroup)

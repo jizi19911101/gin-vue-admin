@@ -23,7 +23,7 @@ var envConfigService = service.ServiceGroupApp.OrganizationServiceGroup.EnvConfi
 // @Security ApiKeyAuth
 // @accept application/json
 // @Produce application/json
-// @Param data body autocode.EnvConfig true "创建EnvConfig"
+// @Param data body organizationReq.EnvConfigReq true "创建EnvConfig"
 // @Success 200 {string} string "{"success":true,"data":{},"msg":"获取成功"}"
 // @Router /envConfig/createEnvConfig [post]
 func (envConfigApi *EnvConfigApi) CreateEnvConfig(c *gin.Context) {
@@ -50,7 +50,7 @@ func (envConfigApi *EnvConfigApi) CreateEnvConfig(c *gin.Context) {
 // @Security ApiKeyAuth
 // @accept application/json
 // @Produce application/json
-// @Param data body autocode.EnvConfig true "删除EnvConfig"
+// @Param data body organizationReq.EnvConfigReq true "删除EnvConfig"
 // @Success 200 {string} string "{"success":true,"data":{},"msg":"删除成功"}"
 // @Router /envConfig/deleteEnvConfig [delete]
 func (envConfigApi *EnvConfigApi) DeleteEnvConfig(c *gin.Context) {
@@ -91,7 +91,7 @@ func (envConfigApi *EnvConfigApi) DeleteEnvConfigByIds(c *gin.Context) {
 // @Security ApiKeyAuth
 // @accept application/json
 // @Produce application/json
-// @Param data body autocode.EnvConfig true "更新EnvConfig"
+// @Param data body organizationReq.EnvConfigReq true "更新EnvConfig"
 // @Success 200 {string} string "{"success":true,"data":{},"msg":"更新成功"}"
 // @Router /envConfig/updateEnvConfig [put]
 func (envConfigApi *EnvConfigApi) UpdateEnvConfig(c *gin.Context) {
@@ -117,7 +117,7 @@ func (envConfigApi *EnvConfigApi) UpdateEnvConfig(c *gin.Context) {
 // @Security ApiKeyAuth
 // @accept application/json
 // @Produce application/json
-// @Param data query autocode.EnvConfig true "用id查询EnvConfig"
+// @Param data query organizationReq.EnvConfigReq true "用id查询EnvConfig"
 // @Success 200 {string} string "{"success":true,"data":{},"msg":"查询成功"}"
 // @Router /envConfig/findEnvConfig [get]
 func (envConfigApi *EnvConfigApi) FindEnvConfig(c *gin.Context) {
@@ -143,7 +143,7 @@ func (envConfigApi *EnvConfigApi) FindEnvConfig(c *gin.Context) {
 // @Security ApiKeyAuth
 // @accept application/json
 // @Produce application/json
-// @Param data query autocodeReq.EnvConfigSearch true "分页获取EnvConfig列表"
+// @Param data query organizationReq.EnvConfigSearch true "分页获取EnvConfig列表"
 // @Success 200 {string} string "{"success":true,"data":{},"msg":"获取成功"}"
 // @Router /envConfig/getEnvConfigList [get]
 func (envConfigApi *EnvConfigApi) GetEnvConfigList(c *gin.Context) {

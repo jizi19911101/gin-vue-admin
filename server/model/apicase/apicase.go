@@ -1,8 +1,8 @@
-package apiTest
+package apicase
 
 import "github.com/jizi19911101/gin-vue-admin/server/global"
 
-type ApiTestcase struct {
+type ApiCase struct {
 	global.GVA_MODEL
 	Name           string
 	Class          string
@@ -12,6 +12,6 @@ type ApiTestcase struct {
 }
 
 // TableName ApiTestcase 表名
-func (ApiTestcase) TableName() string {
-	return "api_testcase"
+func (ApiCase) TableName() string {
+	return "apicase"
 }
