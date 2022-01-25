@@ -12,6 +12,7 @@ require (
 	github.com/flipped-aurora/ws v1.0.2
 	github.com/fsnotify/fsnotify v1.4.9
 	github.com/fvbock/endless v0.0.0-20170109170031-447134032cb6
+	github.com/gavv/httpexpect/v2 v2.3.1
 	github.com/gin-gonic/gin v1.6.3
 	github.com/go-playground/validator/v10 v10.9.0
 	github.com/go-redis/redis/v8 v8.11.0
