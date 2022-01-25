@@ -1,12 +1,11 @@
 package sync
 
 import (
+	"github.com/gavv/httpexpect/v2"
 	"net/http"
 	"testing"
 
 	"github.com/jizi19911101/gin-vue-admin/server/initialize"
-
-	"github.com/gavv/httpexpect/v2"
 )
 
 // assert example
