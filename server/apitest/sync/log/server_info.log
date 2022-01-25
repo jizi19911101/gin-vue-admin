@@ -18,3 +18,11 @@
 [github.com/jizi19911101/gin-vue-admin/server]2022/01/25 - 17:59:18.079	[34minfo[0m	/Users/chenmenghua/Documents/gin-vue-admin/server/initialize/router.go:34	use middleware cors
 [github.com/jizi19911101/gin-vue-admin/server]2022/01/25 - 17:59:18.079	[34minfo[0m	/Users/chenmenghua/Documents/gin-vue-admin/server/initialize/router.go:36	register swagger handler
 [github.com/jizi19911101/gin-vue-admin/server]2022/01/25 - 17:59:18.080	[34minfo[0m	/Users/chenmenghua/Documents/gin-vue-admin/server/initialize/router.go:89	router register success
+[github.com/jizi19911101/gin-vue-admin/server]2022/01/25 - 18:05:52.663	[34minfo[0m	/Users/chenmenghua/Documents/gin-vue-admin/server/initialize/router.go:31	use middleware logger
+[github.com/jizi19911101/gin-vue-admin/server]2022/01/25 - 18:05:52.663	[34minfo[0m	/Users/chenmenghua/Documents/gin-vue-admin/server/initialize/router.go:34	use middleware cors
+[github.com/jizi19911101/gin-vue-admin/server]2022/01/25 - 18:05:52.664	[34minfo[0m	/Users/chenmenghua/Documents/gin-vue-admin/server/initialize/router.go:36	register swagger handler
+[github.com/jizi19911101/gin-vue-admin/server]2022/01/25 - 18:05:52.664	[34minfo[0m	/Users/chenmenghua/Documents/gin-vue-admin/server/initialize/router.go:89	router register success
+[github.com/jizi19911101/gin-vue-admin/server]2022/01/25 - 18:11:11.313	[34minfo[0m	/Users/chenmenghua/Documents/gin-vue-admin/server/initialize/router.go:31	use middleware logger
+[github.com/jizi19911101/gin-vue-admin/server]2022/01/25 - 18:11:11.314	[34minfo[0m	/Users/chenmenghua/Documents/gin-vue-admin/server/initialize/router.go:34	use middleware cors
+[github.com/jizi19911101/gin-vue-admin/server]2022/01/25 - 18:11:11.314	[34minfo[0m	/Users/chenmenghua/Documents/gin-vue-admin/server/initialize/router.go:36	register swagger handler
+[github.com/jizi19911101/gin-vue-admin/server]2022/01/25 - 18:11:11.315	[34minfo[0m	/Users/chenmenghua/Documents/gin-vue-admin/server/initialize/router.go:89	router register success
