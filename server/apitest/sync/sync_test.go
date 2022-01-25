@@ -1,9 +1,10 @@
 package sync
 
 import (
-	"github.com/gavv/httpexpect/v2"
 	"net/http"
 	"testing"
+
+	"github.com/gavv/httpexpect/v2"
 
 	"github.com/jizi19911101/gin-vue-admin/server/initialize"
 )
@@ -40,8 +41,10 @@ func TestSyncApiTestCase(t *testing.T) {
 		},
 	})
 
-	e.GET("/sync/syncApiTestcase").
+	obj := e.GET("/sync/syncApiTestcase").
 		Expect().
-		Status(http.StatusOK)
+		Status(http.StatusOK).JSON().Object()
+
+	obj.Value("msg").Equal("同步并解析接口自动化代码成功！")
 
 }
