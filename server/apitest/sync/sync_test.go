@@ -2,7 +2,6 @@ package sync
 
 import (
 	"net/http"
-	"os"
 	"testing"
 
 	"github.com/gavv/httpexpect/v2"
@@ -28,7 +27,6 @@ import (
 //}
 
 func TestSyncApiTestCase(t *testing.T) {
-
 	handler := initialize.Routers()
 
 	e := httpexpect.WithConfig(httpexpect.Config{
@@ -51,8 +49,6 @@ func TestSyncApiTestCase(t *testing.T) {
 }
 
 func TestSyncApiTestReport(t *testing.T) {
-	//engine := gin.New()
-	os.Setenv("GVA_CONFIG", "/Users/chenmenghua/Documents/gin-vue-admin/server/config.yaml")
 	handler := initialize.Routers()
 
 	e := httpexpect.WithConfig(httpexpect.Config{
