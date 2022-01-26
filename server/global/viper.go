@@ -30,6 +30,7 @@ func Viper(path ...string) *viper.Viper {
 		if config == "" {
 			if configEnv := os.Getenv(ConfigEnv); configEnv == "" {
 				config = redirectConfigFile(ConfigFile)
+				//config = ConfigFile
 				fmt.Printf("您正在使用config的默认值,config的路径为%v\n", config)
 			} else {
 				config = configEnv
