@@ -2,7 +2,6 @@ package sync
 
 import (
 	"net/http"
-	"os"
 	"testing"
 
 	"github.com/gavv/httpexpect/v2"
@@ -10,25 +9,7 @@ import (
 	"github.com/jizi19911101/gin-vue-admin/server/initialize"
 )
 
-// assert example
-// import "github.com/stretchr/testify/assert"
-// assert := assert.New(t)
-// assert.Equal(123, 123, "they should be equal")
-
-// httpexpect
-// import "github.com/gavv/httpexpect/v2"
-//
-
-//func TestParseCase(t *testing.T) {
-//	dir, _ := ioutil.TempDir("./", "temp_*")
-//	defer os.RemoveAll(dir)
-//	syncService := SyncService{}
-//	syncService.ParseApiTestcase(dir)
-//
-//}
-
 func TestSyncApiTestCase(t *testing.T) {
-
 	handler := initialize.Routers()
 
 	e := httpexpect.WithConfig(httpexpect.Config{
@@ -52,7 +33,6 @@ func TestSyncApiTestCase(t *testing.T) {
 
 func TestSyncApiTestReport(t *testing.T) {
 	//engine := gin.New()
-	os.Setenv("GVA_CONFIG", "/Users/chenmenghua/Documents/gin-vue-admin/server/config.yaml")
 	handler := initialize.Routers()
 
 	e := httpexpect.WithConfig(httpexpect.Config{

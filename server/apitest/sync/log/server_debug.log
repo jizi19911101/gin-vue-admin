@@ -24,3 +24,9 @@
 [github.com/jizi19911101/gin-vue-admin/server]2022/01/25 - 17:59:25.597	[35mdebug[0m	/Users/chenmenghua/Documents/gin-vue-admin/server/service/sync/sync.go:41	2022 -1-25  5:59:25
 [github.com/jizi19911101/gin-vue-admin/server]2022/01/25 - 17:59:26.043	[35mdebug[0m	/Users/chenmenghua/Documents/gin-vue-admin/server/service/sync/sync.go:46	2022 -1-25  5:59:26
 [github.com/jizi19911101/gin-vue-admin/server]2022/01/25 - 17:59:28.171	[35mdebug[0m	/Users/chenmenghua/Documents/gin-vue-admin/server/service/sync/sync.go:51	2022 -1-25  5:59:28
+[github.com/jizi19911101/gin-vue-admin/server]2022/01/26 - 13:54:25.349	[35mdebug[0m	/Users/chenmenghua/Documents/gin-vue-admin/server/service/sync/sync.go:26	ChumanApiTestUrlgit@git-ext.chumanapp.com:chuman-test/chuman-api-test-new.git
+[github.com/jizi19911101/gin-vue-admin/server]2022/01/26 - 13:54:25.349	[35mdebug[0m	/Users/chenmenghua/Documents/gin-vue-admin/server/service/sync/sync.go:31	2022 -1-26  1:54:25
+[github.com/jizi19911101/gin-vue-admin/server]2022/01/26 - 13:54:38.900	[35mdebug[0m	/Users/chenmenghua/Documents/gin-vue-admin/server/service/sync/sync.go:36	2022 -1-26  1:54:38
+[github.com/jizi19911101/gin-vue-admin/server]2022/01/26 - 13:54:38.934	[35mdebug[0m	/Users/chenmenghua/Documents/gin-vue-admin/server/service/sync/sync.go:41	2022 -1-26  1:54:38
+[github.com/jizi19911101/gin-vue-admin/server]2022/01/26 - 13:54:39.475	[35mdebug[0m	/Users/chenmenghua/Documents/gin-vue-admin/server/service/sync/sync.go:46	2022 -1-26  1:54:39
+[github.com/jizi19911101/gin-vue-admin/server]2022/01/26 - 13:54:41.831	[35mdebug[0m	/Users/chenmenghua/Documents/gin-vue-admin/server/service/sync/sync.go:51	2022 -1-26  1:54:41
