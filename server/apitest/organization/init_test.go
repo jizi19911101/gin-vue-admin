@@ -5,11 +5,13 @@ import (
 	"testing"
 
 	"github.com/gavv/httpexpect/v2"
-
 	"github.com/jizi19911101/gin-vue-admin/server/initialize"
 )
 
-func TestCreateOrganization(t *testing.T) {
+var Token = ""
+
+func init() {
+	t := &testing.T{}
 	handler := initialize.Routers()
 
 	e := httpexpect.WithConfig(httpexpect.Config{
@@ -23,15 +25,18 @@ func TestCreateOrganization(t *testing.T) {
 		},
 	})
 
-	organization := map[string]interface{}{
-		"name": "单元测试",
+	userInfo := map[string]interface{}{
+		"username":  "admin",
+		"password":  "123456",
+		"captcha":   "123123",
+		"captchaId": "HZyBBHFXCq8TUGzXD1Fa",
 	}
-	obj := e.POST("/organization/createOrganization").
-		WithHeader("x-token", Token).
-		WithJSON(organization).
+	obj := e.POST("/base/login").
+		WithJSON(userInfo).
 		Expect().
 		Status(http.StatusOK).JSON().Object()
 
-	obj.Value("msg").Equal("创建成功")
+	data := obj.Raw()["data"]
+	Token = data.(map[string]interface{})["token"].(string)
 
 }
