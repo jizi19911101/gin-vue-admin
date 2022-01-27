@@ -1,4 +1,4 @@
-package sync
+package organization
 
 import (
 	"net/http"

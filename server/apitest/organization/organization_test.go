@@ -1,4 +1,4 @@
-package sync
+package organization
 
 import (
 	"net/http"
@@ -23,7 +23,7 @@ func TestCreateOrganization(t *testing.T) {
 		},
 	})
 
-	organization := map[string]interface{}{
+	organization := map[string]string{
 		"name": "单元测试",
 	}
 	obj := e.POST("/organization/createOrganization").

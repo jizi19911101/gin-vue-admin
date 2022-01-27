@@ -2,6 +2,7 @@ package system
 
 import (
 	"errors"
+	"os"
 	"strings"
 	"sync"
 
@@ -19,6 +20,10 @@ import (
 //@description: 更新casbin权限
 //@param: authorityId string, casbinInfos []request.CasbinInfo
 //@return: error
+
+const MaxRedirectCount = 5
+
+var redirectCount = 0
 
 type CasbinService struct {
 }
@@ -103,6 +108,7 @@ var (
 func (casbinService *CasbinService) Casbin() *casbin.SyncedEnforcer {
 	once.Do(func() {
 		a, _ := gormadapter.NewAdapterByDB(global.GVA_DB)
+		global.GVA_CONFIG.Casbin.ModelPath = redirectConfigFile(global.GVA_CONFIG.Casbin.ModelPath)
 		syncedEnforcer, _ = casbin.NewSyncedEnforcer(global.GVA_CONFIG.Casbin.ModelPath, a)
 		syncedEnforcer.AddFunction("ParamsMatch", casbinService.ParamsMatchFunc)
 	})
@@ -133,4 +139,16 @@ func (casbinService *CasbinService) ParamsMatchFunc(args ...interface{}) (interf
 	name2 := args[1].(string)
 
 	return casbinService.ParamsMatch(name1, name2), nil
+}
+
+func redirectConfigFile(path string) string {
+	// 防止无线递归，找不到配置文件
+	if redirectCount > MaxRedirectCount {
+		return path
+	}
+	redirectCount++
+	if _, err := os.Stat(path); err == nil {
+		return path
+	}
+	return redirectConfigFile("../" + path)
 }
