@@ -13,10 +13,6 @@ import (
 //@param: src string, dst string(src: 源位置,绝对路径or相对路径, dst: 目标位置,绝对路径or相对路径,必须为文件夹)
 //@return: err error
 
-const MaxRedirectCount = 5
-
-var redirectCount = 0
-
 func FileMove(src string, dst string) (err error) {
 	if dst == "" {
 		return nil
@@ -75,17 +71,4 @@ func TrimSpace(target interface{}) {
 func FileExist(path string) bool {
 	_, err := os.Lstat(path)
 	return !os.IsNotExist(err)
-}
-
-// 一直往上级目录寻到文件
-func RedirectConfigFile(path string) string {
-	// 防止无线递归，找不到配置文件
-	if redirectCount > MaxRedirectCount {
-		return path
-	}
-	redirectCount++
-	if _, err := os.Stat(path); err == nil {
-		return path
-	}
-	return RedirectConfigFile("../" + path)
 }
