@@ -9,19 +9,15 @@ import (
 	"github.com/songzhibin97/gkit/cache/local_cache"
 
 	_ "github.com/jizi19911101/gin-vue-admin/server/packfile"
+	"github.com/jizi19911101/gin-vue-admin/server/utils"
 
 	"github.com/fsnotify/fsnotify"
 	"github.com/spf13/viper"
 )
 
 const (
-	ConfigEnv        = "GVA_CONFIG"
-	ConfigFile       = "config.yaml"
-	MaxRedirectCount = 5
-)
-
-var (
-	redirectCount = 0
+	ConfigEnv  = "GVA_CONFIG"
+	ConfigFile = "config.yaml"
 )
 
 func Viper(path ...string) *viper.Viper {
@@ -29,7 +25,7 @@ func Viper(path ...string) *viper.Viper {
 	if len(path) == 0 {
 		if config == "" {
 			if configEnv := os.Getenv(ConfigEnv); configEnv == "" {
-				config = redirectConfigFile(ConfigFile)
+				config = utils.RedirectConfigFile(ConfigFile)
 				//config = ConfigFile
 				fmt.Printf("您正在使用config的默认值,config的路径为%v\n", config)
 			} else {
@@ -69,16 +65,4 @@ func Viper(path ...string) *viper.Viper {
 		local_cache.SetDefaultExpire(time.Second * time.Duration(GVA_CONFIG.JWT.ExpiresTime)),
 	)
 	return v
-}
-
-func redirectConfigFile(path string) string {
-	// 防止无线递归，找不到配置文件
-	if redirectCount > MaxRedirectCount {
-		return path
-	}
-	redirectCount++
-	if _, err := os.Stat(path); err == nil {
-		return path
-	}
-	return redirectConfigFile("../" + path)
 }
