@@ -108,8 +108,8 @@ var (
 func (casbinService *CasbinService) Casbin() *casbin.SyncedEnforcer {
 	once.Do(func() {
 		a, _ := gormadapter.NewAdapterByDB(global.GVA_DB)
-		global.GVA_CONFIG.Casbin.ModelPath = redirectConfigFile(global.GVA_CONFIG.Casbin.ModelPath)
-		syncedEnforcer, _ = casbin.NewSyncedEnforcer(global.GVA_CONFIG.Casbin.ModelPath, a)
+		modelPath := redirectConfigFile(global.GVA_CONFIG.Casbin.ModelPath)
+		syncedEnforcer, _ = casbin.NewSyncedEnforcer(modelPath, a)
 		syncedEnforcer.AddFunction("ParamsMatch", casbinService.ParamsMatchFunc)
 	})
 	_ = syncedEnforcer.LoadPolicy()
