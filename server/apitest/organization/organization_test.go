@@ -42,6 +42,7 @@ func TestCreateOrganization(t *testing.T) {
 		WithQuery("name", "单元测试").
 		Expect().
 		Status(http.StatusOK).JSON().Object()
+	obj.Value("msg").Equal("获取成功")
 
 	data := obj.Raw()["data"].(map[string]interface{})
 	list := data["list"].([]interface{})
@@ -51,7 +52,6 @@ func TestCreateOrganization(t *testing.T) {
 		idList = append(idList, id)
 
 	}
-	obj.Value("msg").Equal("获取成功")
 
 	//多个删除
 	delIds := map[string][]float64{
@@ -98,11 +98,11 @@ func TestUpdateOrganization(t *testing.T) {
 		Expect().
 		Status(http.StatusOK).JSON().Object()
 
+	obj.Value("msg").Equal("获取成功")
+
 	data := obj.Raw()["data"].(map[string]interface{})
 	list := data["list"].([]interface{})
 	id := list[0].(map[string]interface{})["ID"].(float64)
-
-	obj.Value("msg").Equal("获取成功")
 
 	// 修改
 	updateConent := map[string]interface{}{
@@ -123,7 +123,8 @@ func TestUpdateOrganization(t *testing.T) {
 		WithQuery("ID", id).
 		Expect().
 		Status(http.StatusOK).JSON().Object()
-	obj.Value("data.organization.name").Equal("单元测试（修改2）")
+	//obj.ContainsKey("data").ContainsKey("organization").ContainsKey("name").Equal("单元测试（修改2）")
+	obj.Path("$.data.organization.name").Equal("单元测试（修改2）")
 
 	// 删除单个
 	delId := map[string]float64{
