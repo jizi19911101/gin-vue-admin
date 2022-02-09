@@ -123,8 +123,8 @@ func TestUpdateOrganization(t *testing.T) {
 		WithQuery("ID", id).
 		Expect().
 		Status(http.StatusOK).JSON().Object()
-	//obj.ContainsKey("data").ContainsKey("organization").ContainsKey("name").Equal("单元测试（修改2）")
-	obj.Path("$.data.organization.name").Equal("单元测试（修改2）")
+	//obj.Value("data").Object().Value("organization").Object().ValueEqual("name", "单元测试（修改2）")
+	obj.Path("$.data.organization.name").String().Equal("单元测试（修改2）")
 
 	// 删除单个
 	delId := map[string]float64{
