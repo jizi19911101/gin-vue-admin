@@ -15,7 +15,7 @@ on:
       - "**.md"
 
 jobs:
-  backend:
+  server:
     runs-on: ubuntu-latest
     steps:
 
@@ -30,3 +30,17 @@ jobs:
           docker build -t 244395036/qa-server:v0.0.1 .
           docker push 244395036/qa-server:v0.0.1
 
+  ui:
+    runs-on: ubuntu-latest
+    steps:
+
+      - uses: actions/checkout@master
+
+      - name: Build image
+        id: vars 
+        shell: bash
+        run: |
+          docker login -u 244395036 -p ${{ secrets.DOCKER_TOKEN }}
+          cd web
+          docker build -t 244395036/qa-ui:v0.0.1 .
+          docker push 244395036/qa-ui:v0.0.1
