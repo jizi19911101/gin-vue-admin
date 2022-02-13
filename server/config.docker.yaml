@@ -54,13 +54,14 @@ captcha:
 
 # mysql connect configuration
 mysql:
-  path: ''
-  config: ''
-  db-name: ''
-  username: ''
-  password: ''
-  max-idle-conns: 10
-  max-open-conns: 100
+  path: 177.7.0.13
+  port: "3306"
+  config: charset=utf8mb4&parseTime=True&loc=Local
+  db-name: gva
+  username: root
+  password: "123456"
+  max-idle-conns: 0
+  max-open-conns: 0
   log-mode: ""
   log-zap: false
 

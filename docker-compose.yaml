@@ -9,9 +9,7 @@ networks:
 
 services:
   web:
-    build:
-      context: ./web
-      dockerfile: ./Dockerfile
+    image: 244395036/qa-ui:v0.0.1
     container_name: gva-web
     restart: always
     ports:
@@ -24,9 +22,7 @@ services:
         ipv4_address: 177.7.0.11
 
   server:
-    build:
-      context: ./server
-      dockerfile: ./Dockerfile
+    image: 244395036/qa-server:v0.0.1
     container_name: gva-server
     restart: always
     ports:
