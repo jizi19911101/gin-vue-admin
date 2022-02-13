@@ -21,12 +21,12 @@ jobs:
 
       - uses: actions/checkout@master
 
-      - name: Get git revision
-        id: vars
+      - name: Build image
+        id: vars 
         shell: bash
         run: |
           docker login -u 244395036 -p ${{ secrets.DOCKER_TOKEN }}
           cd server
-          docker build -t qa-server:v0.0.1 .
-          docker push qa-server:v0.0.1
+          docker build -t 244395036/qa-server:v0.0.1 .
+          docker push 244395036/qa-server:v0.0.1
 
