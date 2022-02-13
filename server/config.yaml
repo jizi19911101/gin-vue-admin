@@ -35,11 +35,16 @@ email:
   nickname: test
 excel:
   dir: ./resource/excel/
+gitlab:
+  chuman-api-test-url: git@git-ext.chumanapp.com:chuman-test/chuman-api-test-new.git
+jenkins:
+  user: huangweinan
+  token: 11b6fc0ee0647ba08c638bf188da4b4c2c
 jwt:
   buffer-time: 86400
   expires-time: 604800
   issuer: qmPlus
-  signing-key: 15d85b38-978e-4b99-bc6b-3785f521d849
+  signing-key: ad5d2755-f181-4626-b1a6-2cd7e11d5e22
 local:
   path: uploads/file
 mysql:
@@ -49,8 +54,8 @@ mysql:
   db-name: gva
   username: root
   password: "123456"
-  max-idle-conns: 5
-  max-open-conns: 30
+  max-idle-conns: 0
+  max-open-conns: 0
   log-mode: ""
   log-zap: false
 pgsql:
@@ -110,9 +115,3 @@ zap:
   encode-level: LowercaseColorLevelEncoder
   stacktrace-key: stacktrace
   log-in-console: true
-jenkins:
-  user: "huangweinan"
-  token: "11b6fc0ee0647ba08c638bf188da4b4c2c"
-gitlab:
-  chuman-api-test-url: "git@git-ext.chumanapp.com:chuman-test/chuman-api-test-new.git"
-

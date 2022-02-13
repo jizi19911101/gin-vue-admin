@@ -88,9 +88,9 @@ export default {
       listApi: getApiList,
       multipleSelection: [],
       formData: {
+        env:'',
         module: '',
         api: '',
-        env:''
       },
       envOptions: ["demo","api2","api"],
       rules: {
@@ -122,7 +122,7 @@ export default {
     goToReport(item){
       this.$router.push({name:"report",})
     },
-    async changeVisible(row) {
+    changeVisible(row) {
         this.dialogFormVisible = true
         this.formData.api =  row.name
         this.formData.module =  row.module
