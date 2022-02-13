@@ -25,23 +25,8 @@ jobs:
         id: vars
         shell: bash
         run: |
-          echo "::set-output name=git_revision::$(git rev-parse --short HEAD)"
+          docker login -u 244395036 -p ${{ secrets.DOCKER_TOKEN }}
+          cd server
+          docker build -t qa-server:v0.0.1 .
+          docker push qa-server:v0.0.1
 
-      - name: Login docker.io
-        uses: docker/login-action@v1
-        with:
-          registry: docker.io
-          username: 244395036
-          password: ${{ secrets.DOCKER_TOKEN }}
-
-      - uses: docker/build-push-action@v2
-        name: Build & Pushing
-        with:
-          context: "./server"
-          file: Dockerfile
-          labels: |-
-            org.opencontainers.image.source=https://github.com/${{ github.repository }}
-            org.opencontainers.image.revision=${{ github.sha }}
-          push: true
-          tags: |-
-            docker.io/244395036/qa-server:v0.0.1
