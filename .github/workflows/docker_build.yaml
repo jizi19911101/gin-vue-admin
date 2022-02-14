@@ -1,0 +1,48 @@
+name: gin-vue-admin docker build
+
+on:
+  push:
+    branches:
+      - "*"
+    paths-ignore:
+      - "./db/**"
+      - "**.md"
+  pull_request:
+    branches:
+      - "*"
+    paths-ignore:
+      - "./db/**"
+      - "**.md"
+
+jobs:
+  server:
+    runs-on: ubuntu-latest
+    steps:
+
+      - uses: actions/checkout@master
+
+      - name: Build image
+        id: vars 
+        shell: bash
+        run: |
+          version=$(date +"%Y.%m.%d.%H.%M.%S")
+          docker login -u 244395036 -p ${{ secrets.DOCKER_TOKEN }}
+          cd server
+          docker build -t 244395036/qa-server:v$version .
+          docker push 244395036/qa-server:v$version
+
+  ui:
+    runs-on: ubuntu-latest
+    steps:
+
+      - uses: actions/checkout@master
+
+      - name: Build image
+        id: vars 
+        shell: bash
+        run: |
+          version=$(date +"%Y.%m.%d.%H.%M.%S")
+          docker login -u 244395036 -p ${{ secrets.DOCKER_TOKEN }}
+          cd web
+          docker build -t 244395036/qa-ui:v$version .
+          docker push 244395036/qa-ui:v$version 

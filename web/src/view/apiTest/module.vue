@@ -80,13 +80,12 @@ export default {
   mixins: [infoList],
   data() {
     return {
-      
       dialogFormVisible: false,
       listApi: getModuleList,
       multipleSelection: [],
       formData: {
-        module: '',
         env: '',
+        module: '',
       },
       envOptions: ["demo","api2","api"],
       rules: {
@@ -116,7 +115,7 @@ export default {
     goToReport(){
       this.$router.push({name:"report",})
     },
-    async changeVisible(row) {
+    changeVisible(row) {
         this.dialogFormVisible = true
         this.formData.module =  row.name
       
@@ -125,7 +124,7 @@ export default {
       this.dialogFormVisible = false
       this.$refs.formData.resetFields();
       this.formData = {
-        name: '',
+        module: '',
       }
     },
     async runCase(){

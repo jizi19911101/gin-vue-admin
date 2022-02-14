@@ -28,6 +28,7 @@ func (syncService *SyncService) SyncApiTestCase() (err error) {
 	if err != nil {
 		return err
 	}
+	global.GVA_LOG.Debug(time.Now().Format("2006 -1-2  3:4:5"))
 	err = utils.OsExecClone(tmpDir, url)
 	if err != nil {
 		return err

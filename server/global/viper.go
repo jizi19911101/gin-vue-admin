@@ -14,7 +14,7 @@ import (
 	"github.com/spf13/viper"
 )
 
-var (
+const (
 	ConfigEnv  = "GVA_CONFIG"
 	ConfigFile = "config.yaml"
 )
@@ -24,8 +24,9 @@ func Viper(path ...string) *viper.Viper {
 	if len(path) == 0 {
 		if config == "" {
 			if configEnv := os.Getenv(ConfigEnv); configEnv == "" {
-				config = ConfigFile
-				fmt.Printf("您正在使用config的默认值,config的路径为%v\n", ConfigFile)
+				config = RedirectConfigFile(ConfigFile)
+				//config = ConfigFile
+				fmt.Printf("您正在使用config的默认值,config的路径为%v\n", config)
 			} else {
 				config = configEnv
 				fmt.Printf("您正在使用GVA_CONFIG环境变量,config的路径为%v\n", config)
@@ -63,4 +64,22 @@ func Viper(path ...string) *viper.Viper {
 		local_cache.SetDefaultExpire(time.Second * time.Duration(GVA_CONFIG.JWT.ExpiresTime)),
 	)
 	return v
+}
+
+// todo 提取为公共方法
+const MaxRedirectCount = 5
+
+var redirectCount = 0
+
+// 一直往上级目录寻到文件
+func RedirectConfigFile(path string) string {
+	// 防止无线递归，找不到配置文件
+	if redirectCount > MaxRedirectCount {
+		return path
+	}
+	redirectCount++
+	if _, err := os.Stat(path); err == nil {
+		return path
+	}
+	return RedirectConfigFile("../" + path)
 }

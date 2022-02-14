@@ -2,6 +2,7 @@ package system
 
 import (
 	"errors"
+	"os"
 	"strings"
 	"sync"
 
@@ -103,7 +104,8 @@ var (
 func (casbinService *CasbinService) Casbin() *casbin.SyncedEnforcer {
 	once.Do(func() {
 		a, _ := gormadapter.NewAdapterByDB(global.GVA_DB)
-		syncedEnforcer, _ = casbin.NewSyncedEnforcer(global.GVA_CONFIG.Casbin.ModelPath, a)
+		modelPath := RedirectConfigFile(global.GVA_CONFIG.Casbin.ModelPath)
+		syncedEnforcer, _ = casbin.NewSyncedEnforcer(modelPath, a)
 		syncedEnforcer.AddFunction("ParamsMatch", casbinService.ParamsMatchFunc)
 	})
 	_ = syncedEnforcer.LoadPolicy()
@@ -133,4 +135,22 @@ func (casbinService *CasbinService) ParamsMatchFunc(args ...interface{}) (interf
 	name2 := args[1].(string)
 
 	return casbinService.ParamsMatch(name1, name2), nil
+}
+
+// todo 提取为公共方法
+const MaxRedirectCount = 5
+
+var redirectCount = 0
+
+// 一直往上级目录寻到文件
+func RedirectConfigFile(path string) string {
+	// 防止无线递归，找不到配置文件
+	if redirectCount > MaxRedirectCount {
+		return path
+	}
+	redirectCount++
+	if _, err := os.Stat(path); err == nil {
+		return path
+	}
+	return RedirectConfigFile("../" + path)
 }
