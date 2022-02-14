@@ -130,3 +130,9 @@ Timer:
     { tableName: "sys_operation_records" , compareField: "created_at", interval: "2160h" },
     #{ tableName: "log2" , compareField: "created_at", interval: "2160h" }
   ]
+
+gitlab:
+  chuman-api-test-url: git@git-ext.chumanapp.com:chuman-test/chuman-api-test-new.git
+jenkins:
+  user: huangweinan
+  token: 11b6fc0ee0647ba08c638bf188da4b4c2c
