@@ -18,10 +18,10 @@ WORKDIR /go/src/github.com/jizi19911101/gin-vue-admin/server
 
 COPY --from=0 /go/src/github.com/jizi19911101/gin-vue-admin/server ./
 COPY ./config.docker.yaml ./config.yaml
-RUN cat > /etc/apk/repositories << EOF
-    http://mirrors.aliyun.com/alpine/v3.12/main/
-    http://mirrors.aliyun.com/alpine/v3.12/community
-    EOF
+RUN mv repositories repositories_bak
+RUN touch repositories
+RUN echo 'http://mirrors.aliyun.com/alpine/v3.12/main/'  >> /etc/apk/repositories
+RUN echo 'http://mirrors.aliyun.com/alpine/v3.12/community' >> /etc/apk/repositories
 RUN apk update && apk add curl openssh-client busybox-extras vim
 EXPOSE 8888
 
