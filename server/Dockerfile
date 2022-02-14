@@ -9,6 +9,11 @@ RUN go env -w CGO_ENABLED=0
 RUN go env
 RUN go mod tidy
 RUN go build -o server .
+RUN cat > /etc/apk/repositories << EOF
+    http://mirrors.aliyun.com/alpine/v3.12/main/
+    http://mirrors.aliyun.com/alpine/v3.12/community
+    EOF
+RUN apk update && apk add curl openssh-client busybox-extras vim
 
 FROM alpine:latest
 LABEL MAINTAINER="SliverHorn@sliver_horn@qq.com"
