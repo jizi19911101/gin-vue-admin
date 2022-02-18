@@ -22,7 +22,7 @@ RUN mv /etc/apk/repositories /etc/apk/repositories_bak
 RUN touch /etc/apk/repositories
 RUN echo 'http://mirrors.aliyun.com/alpine/v3.12/main/'  >> /etc/apk/repositories
 RUN echo 'http://mirrors.aliyun.com/alpine/v3.12/community' >> /etc/apk/repositories
-RUN apk update && apk add curl openssh-client busybox-extras vim
+RUN apk update && apk add curl openssh-client busybox-extras vim git
 EXPOSE 8888
 
 ENTRYPOINT ./server
