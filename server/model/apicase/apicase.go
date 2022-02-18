@@ -8,6 +8,7 @@ type ApiCase struct {
 	Class          string
 	Api            string
 	Module         string
+	Title          string
 	OrganizationID uint
 }
 

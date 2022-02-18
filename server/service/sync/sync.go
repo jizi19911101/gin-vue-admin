@@ -1,7 +1,6 @@
 package sync
 
 import (
-	"bufio"
 	"errors"
 	"io/ioutil"
 	"os"
@@ -242,11 +241,12 @@ func (syncService *SyncService) ParseApiTestcase(tmpDir string) error {
 
 		parseCaseMap := make(map[string]apicase.ApiCase, 0)
 		for _, v := range parseCaseList {
-			parseCaseMap[v] = apicase.ApiCase{
-				Name:   v,
+			parseCaseMap[v["name"]] = apicase.ApiCase{
+				Name:   v["name"],
 				Module: api.Module,
 				Api:    api.Name,
 				Class:  className,
+				Title:  v["title"],
 			}
 		}
 
@@ -309,31 +309,31 @@ func (syncService *SyncService) SyncApiTestReport(report apicase.Report) error {
 	return err
 }
 
-func parseCase(apiFile string) (string, []string, error) {
-	var className string
-	parseCaseList := make([]string, 0)
-
-	file, err := os.Open(apiFile)
+func parseCase(apiFile string) (string, []map[string]string, error) {
+	file, err := ioutil.ReadFile(apiFile)
 	if err != nil {
 		global.GVA_LOG.Error("打开接口文件出错", zap.Error(err))
 		return "", nil, err
 	}
-	defer file.Close()
 
-	scanner := bufio.NewScanner(file)
-	for scanner.Scan() {
-		reg := regexp.MustCompile("class(.*?):")
-		result := reg.FindStringSubmatch(scanner.Text())
-		if len(result) != 0 {
-			className = strings.Trim(result[1], " ")
-		}
+	reg := regexp.MustCompile("class(.*?):")
+	classResult := reg.FindStringSubmatch(string(file))
+	var className string
+	if len(classResult) != 0 {
+		className = strings.Trim(classResult[1], " ")
+	}
 
-		reg = regexp.MustCompile(`^def(.*?)\(`)
-		result = reg.FindStringSubmatch(strings.TrimSpace(scanner.Text()))
-		if len(result) != 0 {
-			parseCaseList = append(parseCaseList, strings.Trim(result[1], " "))
+	reg = regexp.MustCompile(`@allure.title\((.*?)\)(\s*)def(.*?)\(`)
+	caseResult := reg.FindAllStringSubmatch(string(file), -1)
+	parseCaseList := make([]map[string]string, 0)
+	if len(caseResult) != 0 {
+		for _, v := range caseResult {
+			title := strings.Trim(v[1], "'")
+			name := strings.Trim(v[3], " ")
+			parseCaseList = append(parseCaseList, map[string]string{"name": name, "title": title})
 		}
 
 	}
+
 	return className, parseCaseList, nil
 }
