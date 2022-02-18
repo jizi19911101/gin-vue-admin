@@ -134,6 +134,7 @@ func (apiCaseApi *ApiCaseApi) CaseList(c *gin.Context) {
 			apiCaseListRes = append(apiCaseListRes, apicaseRes.ApiCaseRes{
 				ID:             apiCaseList[i].ID,
 				Name:           apiCaseList[i].Name,
+				Title:          apiCaseList[i].Title,
 				OrganizationID: apiCaseList[i].ID,
 				Module:         apiCaseList[i].Module,
 				Api:            apiCaseList[i].Api,
