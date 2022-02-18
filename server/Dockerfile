@@ -23,6 +23,15 @@ RUN touch /etc/apk/repositories
 RUN echo 'http://mirrors.aliyun.com/alpine/v3.12/main/'  >> /etc/apk/repositories
 RUN echo 'http://mirrors.aliyun.com/alpine/v3.12/community' >> /etc/apk/repositories
 RUN apk update && apk add curl openssh-client busybox-extras vim git
+
+#init ssh
+RUN mkdir ~/.ssh \
+    && touch ~/.ssh/id_rsa  \
+    && chmod 600  ~/.ssh/id_rsa   \
+    && touch ~/.ssh/id_rsa.pub  \
+    && chmod 644 ~/.ssh/id_rsa.pub
+
+
 EXPOSE 8888
 
 ENTRYPOINT ./server
