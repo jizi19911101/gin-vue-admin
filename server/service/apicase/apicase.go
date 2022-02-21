@@ -132,7 +132,7 @@ func (apiCaseService *ApiCaseService) ReportList(info apicaseReq.ReportSearch) (
 	if err := db.Count(&total).Error; err != nil {
 		return err, nil, 0
 	}
-	err := db.Limit(limit).Offset(offset).Find(&reportList).Error
+	err := db.Limit(limit).Offset(offset).Order("ID desc").Find(&reportList).Error
 	return err, reportList, total
 
 }
