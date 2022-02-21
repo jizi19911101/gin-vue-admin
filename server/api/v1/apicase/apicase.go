@@ -174,6 +174,7 @@ func (apiCaseApi *ApiCaseApi) ReportList(c *gin.Context) {
 				Name:           reportList[i].Name,
 				Url:            reportList[i].Url,
 				OrganizationID: reportList[i].OrganizationID,
+				CreatedAt:      reportList[i].CreatedAt,
 			})
 		}
 		response.OkWithDetailed(response.PageResult{

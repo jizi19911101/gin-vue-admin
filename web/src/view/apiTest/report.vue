@@ -24,9 +24,9 @@
         <el-table-column type="selection" width="55" />
         <el-table-column align="left" label="报告名称" prop="name" width="300" />
         <el-table-column align="left" label="报告地址" prop="url" width="300" />
-        <!-- <el-table-column align="left" label="日期" width="180">
-            <template #default="scope">{{ formatDate(scope.row.CreatedAt) }}</template>
-        </el-table-column> -->
+        <el-table-column align="left" label="日期" prop="createdAt" width="180">
+            <template #default="scope">{{ formatDate(scope.row.createdAt) }}</template>
+        </el-table-column>
         <el-table-column align="left" label="操作">
             <template #default="scope">
             <el-button type="text" icon="el-icon-data-analysis" size="small" class="table-button" @click="viewReport(scope.row)">查看</el-button>
