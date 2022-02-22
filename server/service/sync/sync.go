@@ -323,7 +323,9 @@ func parseCase(apiFile string) (string, []map[string]string, error) {
 		className = strings.Trim(classResult[1], " ")
 	}
 
-	reg = regexp.MustCompile(`@allure.title\((.*?)\)(\s*)def(.*?)\(`)
+	//reg = regexp.MustCompile(`@allure.title\((.*?)\)(\s*)def(.*?)\(`)
+	//reg = regexp.MustCompile(`@allure.title\((.*?)\)([\s\S]*?)def(.*?)\(`)
+	reg = regexp.MustCompile(`@allure.title\((.*?)\)([^#]*?)def(.*?)\(`)
 	caseResult := reg.FindAllStringSubmatch(string(file), -1)
 	parseCaseList := make([]map[string]string, 0)
 	if len(caseResult) != 0 {
