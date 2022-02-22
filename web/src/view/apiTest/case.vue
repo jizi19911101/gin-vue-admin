@@ -2,6 +2,12 @@
   <div>
     <div class="gva-search-box">
       <el-form :inline="true" :model="searchInfo" class="demo-form-inline">
+        <el-form-item label="所属模块">
+          <el-input v-model="searchInfo.module" placeholder="搜索条件" />
+        </el-form-item>
+        <el-form-item label="所属接口">
+          <el-input v-model="searchInfo.api" placeholder="搜索条件" />
+        </el-form-item>
         <el-form-item label="用例名称">
           <el-input v-model="searchInfo.name" placeholder="搜索条件" />
         </el-form-item>
