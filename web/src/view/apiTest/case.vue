@@ -11,6 +11,9 @@
         <el-form-item label="用例名称">
           <el-input v-model="searchInfo.name" placeholder="搜索条件" />
         </el-form-item>
+        <el-form-item label="用例描述">
+          <el-input v-model="searchInfo.title" placeholder="搜索条件" />
+        </el-form-item>
         <el-form-item>
           <el-button size="mini" type="primary" icon="el-icon-search" @click="onSubmit">查询</el-button>
           <el-button size="mini" icon="el-icon-refresh" @click="onReset">重置</el-button>
