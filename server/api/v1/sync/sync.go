@@ -50,8 +50,10 @@ func (syncApi *SyncApi) SyncApiTestReportApi(c *gin.Context) {
 	}
 
 	report := apicase.Report{
-		Name: reportReq.Name,
-		Url:  reportReq.Url,
+		Name:        reportReq.Name,
+		Url:         reportReq.Url,
+		Env:         reportReq.Env,
+		Description: reportReq.Description,
 	}
 	if err := syncService.SyncApiTestReport(report); err != nil {
 		global.GVA_LOG.Error("同步接口测试报告失败！", zap.Error(err))

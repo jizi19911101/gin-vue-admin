@@ -173,6 +173,8 @@ func (apiCaseApi *ApiCaseApi) ReportList(c *gin.Context) {
 				ID:             reportList[i].ID,
 				Name:           reportList[i].Name,
 				Url:            reportList[i].Url,
+				Env:            reportList[i].Env,
+				Description:    reportList[i].Description,
 				OrganizationID: reportList[i].OrganizationID,
 				CreatedAt:      reportList[i].CreatedAt,
 			})
