@@ -20,6 +20,7 @@ func (apiCaseService *ApiCaseService) RunApiCase(runApiCaseReq apicaseReq.RunApi
 	module := runApiCaseReq.Module
 	api := runApiCaseReq.Api
 	caseName := runApiCaseReq.Case
+	description := runApiCaseReq.Description
 	url := "http://jk-dev.chumanyun.com/job/qa-p0接口自动化测试/buildWithParameters"
 	data := "envir=" + env
 	if len(module) != 0 {
@@ -36,6 +37,9 @@ func (apiCaseService *ApiCaseService) RunApiCase(runApiCaseReq apicaseReq.RunApi
 			data = data + "&class=" + testcase.Class + "&case=" + caseName
 		}
 
+	}
+	if len(description) != 0 {
+		data = data + "&report_desc=" + description
 	}
 	global.GVA_LOG.Debug("调接口自动化job的data参数：" + data)
 
