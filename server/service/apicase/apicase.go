@@ -108,6 +108,10 @@ func (apiCaseService *ApiCaseService) ApiCaseList(info apicaseReq.ApiCaseSearch)
 		db.Where("name = ? ", info.Name)
 
 	}
+	if info.Title != "" {
+		db.Where("title LIKE ? ", "%"+info.Title+"%")
+
+	}
 
 	if err := db.Count(&total).Error; err != nil {
 		return err, nil, 0
