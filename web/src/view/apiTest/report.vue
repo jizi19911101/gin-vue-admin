@@ -22,8 +22,10 @@
         @selection-change="handleSelectionChange"
         >
         <el-table-column type="selection" width="55" />
-        <el-table-column align="left" label="报告名称" prop="name" width="300" />
+        <el-table-column align="left" label="报告名称" prop="name" width="200" />
         <el-table-column align="left" label="报告地址" prop="url" width="300" />
+        <el-table-column align="left" label="测试环境" prop="env" width="100" />
+        <el-table-column align="left" label="报告描述" prop="description" width="250" />
         <el-table-column align="left" label="日期" prop="createdAt" width="180">
             <template #default="scope">{{ formatDate(scope.row.createdAt) }}</template>
         </el-table-column>
