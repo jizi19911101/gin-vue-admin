@@ -119,9 +119,18 @@ func (syncService *SyncService) ParseApiTestcaseModule(tmpDir string) (err error
 
 // ApiTestcaseCode 解析接口自动化代码接口
 func (syncService *SyncService) ParseApiTestcaseApi(tmpDir string) error {
+	// 检查数据库是否存在模块已删但对应api未删的
+	db := global.GVA_DB.Model(&apicase.Api{})
+	delIds := make([]uint, 0)
+	db.Raw("select id from api where module in (select name from module where deleted_at is not null )").Scan(&delIds)
+
+	if len(delIds) != 0 {
+		db.Delete(&apicase.Api{}, delIds)
+	}
+
 	//取出模块
 	moduleList := make([]apicase.Module, 0)
-	db := global.GVA_DB.Model(&apicase.Module{})
+	db = global.GVA_DB.Model(&apicase.Module{})
 	db.Find(&moduleList)
 
 	//模块为 0，结束
@@ -209,9 +218,17 @@ func (syncService *SyncService) ParseApiTestcaseApi(tmpDir string) error {
 }
 
 func (syncService *SyncService) ParseApiTestcase(tmpDir string) error {
+	// 检查数据库是否存在接口已删但对应用例未删的
+	db := global.GVA_DB.Model(&apicase.ApiCase{})
+	delIds := make([]uint, 0)
+	db.Raw("select id from apicase where api in (select name from api where deleted_at is not null )").Scan(&delIds)
+
+	if len(delIds) != 0 {
+		db.Delete(&apicase.Api{}, delIds)
+	}
 	// 取出所有接口
 	apiList := make([]apicase.Api, 0)
-	db := global.GVA_DB.Model(&apicase.Api{})
+	db = global.GVA_DB.Model(&apicase.Api{})
 	db.Find(&apiList)
 
 	// 接口数量为0结束
