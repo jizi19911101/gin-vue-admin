@@ -9,7 +9,7 @@ export default {
   name: 'Devices',
   data () {
     return {
-      url: "http://127.0.0.1:8082/login",
+      url: "http://120.25.149.119:8082/login",
     }
   },
   methods: {
