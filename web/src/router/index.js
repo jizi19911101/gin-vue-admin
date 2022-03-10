@@ -15,11 +15,6 @@ const routes = [{
   name: 'Login',
   component: () => import('@/view/login/index.vue')
 },
-{
-  path: '/devices',
-  name: 'Devices',
-  iframeComponent: Devices
-}
 ]
 
 const router = createRouter({
