@@ -1,6 +1,9 @@
 <template>
   <!-- <iframe style="width: 100%;" :src="url" class="iframe" frameborder="0" scrolling="no"></iframe> -->
-  <iframe style="width: 100%;" :src="url" width="400" height="600" frameborder="0" scrolling="no"></iframe>
+  <div>
+    <iframe style="width: 100%;" :src="url" width="400" height="600" frameborder="0" scrolling="no"></iframe>
+  </div>
+  
 </template>
 
 <script>
