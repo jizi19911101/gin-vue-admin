@@ -57,7 +57,7 @@ import {
 } from '@/api/apiTest' //  此处请自行替换地址
 import infoList from '@/mixins/infoList'
 export default {
-  name: 'monkeyReport',
+  name: 'MonkeyReport',
   mixins: [infoList],
   data() {
     return {

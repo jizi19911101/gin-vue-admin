@@ -37,6 +37,9 @@ service.interceptors.request.use(
         const token = store.getters['user/token']
         const user = store.getters['user/userInfo']
         config.data = JSON.stringify(config.data)
+        if (config.baseURL === "http://120.25.149.119:8082"){
+            return config
+        }
         config.headers = {
             'Content-Type': 'application/json',
             'x-token': token,
@@ -61,6 +64,9 @@ service.interceptors.response.use(
         closeLoading()
         if (response.headers['new-token']) {
             store.commit('user/setToken', response.headers['new-token'])
+        }
+        if (response.data.success === true) {
+            return response.data
         }
         if (response.data.code === 0 || response.headers.success === 'true') {
             if (response.headers.msg) {

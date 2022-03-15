@@ -4,6 +4,7 @@ import (
 	"github.com/jizi19911101/gin-vue-admin/server/api/v1/apicase"
 	"github.com/jizi19911101/gin-vue-admin/server/api/v1/autocode"
 	"github.com/jizi19911101/gin-vue-admin/server/api/v1/example"
+	"github.com/jizi19911101/gin-vue-admin/server/api/v1/monkey"
 	"github.com/jizi19911101/gin-vue-admin/server/api/v1/organization"
 	"github.com/jizi19911101/gin-vue-admin/server/api/v1/sync"
 	"github.com/jizi19911101/gin-vue-admin/server/api/v1/system"
@@ -16,6 +17,7 @@ type ApiGroup struct {
 	SyncGroup         sync.ApiGroup
 	OrganizationGroup organization.ApiGroup
 	ApiCaseGroup      apicase.ApiGroup
+	MonkeyGroup       monkey.ApiGroup
 }
 
 var ApiGroupApp = new(ApiGroup)

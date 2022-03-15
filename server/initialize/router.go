@@ -43,6 +43,7 @@ func Routers() *gin.Engine {
 	organizationRouter := router.RouterGroupApp.Organization
 	syncRouter := router.RouterGroupApp.Sync
 	apiCaseRouter := router.RouterGroupApp.ApiCase
+	monkeyRouter := router.RouterGroupApp.Monkey
 	PublicGroup := Router.Group("")
 	{
 		// 健康监测
@@ -82,6 +83,7 @@ func Routers() *gin.Engine {
 		organizationRouter.InitProjectRouter(PrivateGroup)
 		organizationRouter.InitEnvConfigRouter(PrivateGroup)
 		apiCaseRouter.InitApiCaseRouter(PrivateGroup)
+		monkeyRouter.InitMonkeyRouter(PrivateGroup)
 	}
 
 	InstallPlugin(PublicGroup, PrivateGroup) // 安装插件
