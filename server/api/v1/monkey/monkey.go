@@ -5,11 +5,14 @@ import (
 	"github.com/jizi19911101/gin-vue-admin/server/global"
 	"github.com/jizi19911101/gin-vue-admin/server/model/common/response"
 	monkeyReq "github.com/jizi19911101/gin-vue-admin/server/model/monkey/request"
+	"github.com/jizi19911101/gin-vue-admin/server/service"
 	"go.uber.org/zap"
 )
 
 type MonkeyApi struct {
 }
+
+var monkeyService = service.ServiceGroupApp.MonkeyServiceGroup.MonkeyService
 
 func (monkeyApi *MonkeyApi) StartMonkeyApi(c *gin.Context) {
 	var startMonkeyReq monkeyReq.StartMonkeyReq
@@ -19,6 +22,13 @@ func (monkeyApi *MonkeyApi) StartMonkeyApi(c *gin.Context) {
 		response.FailWithMessage("参数缺失", c)
 		return
 	}
+	err := monkeyService.StartMonkey(startMonkeyReq)
+	if err != nil {
+		response.FailWithMessage(err.Error(), c)
+		return
+
+	}
+
 	response.OkWithMessage("成功发起monkey测试，稍后生成测试报告", c)
 
 }
