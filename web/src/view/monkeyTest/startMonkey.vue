@@ -66,7 +66,9 @@ export default {
         duration: '',
         report: '',
         cleanLog: false,
+        userId: 0
       },
+      uId: 0,
       // options: ["触漫debug", "触漫release", "猫条debug", "猫条release"],
       options: [{ value: "com.mallestudio.gugu.app.debug",  label: "触漫debug" }, { value: "com.mallestudio.gugu.app",  label: "触漫release" }, { value: "cn.dreampix.dreamland.debug",  label: "猫条debug" }, { value: "22",  label: "猫条release" }],
       devices: [],
@@ -88,6 +90,7 @@ export default {
   },
   async created() {
         const userInfo = store.getters['user/userInfo']
+        this.uId = userInfo.userName+"@anonymous.com"
         const res = await getDeviceList({ user_id: userInfo.userName+"@anonymous.com", "present":true })
         if (res.success === true) {
           var len = res.devices.length
@@ -118,7 +121,7 @@ export default {
         if (!valid){
 
         }else{
-            console.log(this.form)
+            this.form.userId = this.uId
             res = await startMonkey(this.form)
             if (res.code === 0) {
               this.$message({
