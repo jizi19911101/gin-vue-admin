@@ -9,6 +9,7 @@ import (
 	"net/http"
 	urls "net/url"
 	"strings"
+	"time"
 
 	monkeyReq "github.com/jizi19911101/gin-vue-admin/server/model/monkey/request"
 )
@@ -118,6 +119,7 @@ func (monkeyService *MonkeyService) StartMonkey(startMonkeyReq monkeyReq.StartMo
 	if !strings.Contains(output, startMonkeyReq.App) {
 		return errors.New("此app不存在，请进行确认")
 	}
+
 	// shell 命令发起monkey测试
 	url = "http://" + atxAgentAddress.(string) + "/shell/background?user_id=" + userId + "&command="
 	command := "CLASSPATH=/sdcard/monkey.jar:/sdcard/framework.jar exec app_process /system/bin tv.panda.test.monkey.Monkey -p " + startMonkeyReq.App + "  --uiautomatordfs  --running-minutes  " + startMonkeyReq.Duration + "  --throttle 500 -v -v "
@@ -143,9 +145,44 @@ func (monkeyService *MonkeyService) StartMonkey(startMonkeyReq monkeyReq.StartMo
 	}
 	pid := bodyMap["pid"]
 	fmt.Println(pid, "pidpidpid")
+
 	// 查询测试进程是否结束
+	i := 0
+
+LOOP:
+	subprocess, err := monkeyService.getSubprocess(atxAgentAddress.(string))
+	if err != nil {
+		return nil
+	}
+
+	for strings.Contains(subprocess, "tv.panda.test.monkey") {
+		time.Sleep(time.Duration(5) * time.Second)
+		i = i + 1
+		fmt.Println(i)
+		goto LOOP
+
+	}
 
 	// 生成测试报告
+	fmt.Println("生成测试报告")
 
 	return nil
+}
+
+func (monkeyService *MonkeyService) getSubprocess(atxAgentAddress string) (string, error) {
+	url := "http://" + atxAgentAddress + "/proc/list"
+
+	resp, err := http.Get(url)
+	if err != nil {
+		return "", err
+	}
+	if resp.Status != "200 OK" {
+		return "", errors.New("查询测试进程失败")
+	}
+
+	body, err := ioutil.ReadAll(resp.Body)
+	if err != nil {
+		return "", err
+	}
+	return string(body), nil
 }
