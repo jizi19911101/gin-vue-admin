@@ -130,12 +130,12 @@ func (monkeyService *MonkeyService) useDevice(startMonkeyReq monkeyReq.StartMonk
 	req.Header.Set("Content-Type", "application/json")
 	client := &http.Client{}
 	resp, err := client.Do(req)
-	defer resp.Body.Close()
-
 	if err != nil {
 		global.GVA_LOG.Error("useDevice发起请求出错", zap.Error(err))
 		return err
 	}
+	defer resp.Body.Close()
+
 	body, err := ioutil.ReadAll(resp.Body)
 	if err != nil {
 		global.GVA_LOG.Error("useDevice读取body出错", zap.Error(err))
@@ -160,12 +160,12 @@ func (monkeyService *MonkeyService) useDevice(startMonkeyReq monkeyReq.StartMonk
 func (monkeyService *MonkeyService) getAtxAndPhoneInfo(startMonkeyReq monkeyReq.StartMonkeyReq) (string, string, error) {
 	url := "http://120.25.149.119:8082/api/v1/user/devices/"
 	resp, err := http.Get(url + startMonkeyReq.Device + "?user_id=" + startMonkeyReq.UserId)
-	defer resp.Body.Close()
-
 	if err != nil {
 		global.GVA_LOG.Error("getAtxAndPhoneInfo发起请求失败", zap.Error(err))
 		return "", "", err
 	}
+
+	defer resp.Body.Close()
 
 	body, err := ioutil.ReadAll(resp.Body)
 	if err != nil {
@@ -225,12 +225,12 @@ func (monkeyService *MonkeyService) startMonkey(atxAgentAddress string, startMon
 	url = url + urls.QueryEscape(command)
 
 	resp, err := http.Get(url)
-	defer resp.Body.Close()
-
 	if err != nil {
 		global.GVA_LOG.Error("startMonkey发起请求失败", zap.Error(err))
 		return err
 	}
+	defer resp.Body.Close()
+
 	body, err := ioutil.ReadAll(resp.Body)
 	if err != nil {
 		global.GVA_LOG.Error("startMonkey读取body失败", zap.Error(err))
