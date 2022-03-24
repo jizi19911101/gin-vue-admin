@@ -12,6 +12,8 @@ import (
 	"text/template"
 	"time"
 
+	"go.uber.org/zap"
+
 	"github.com/jizi19911101/gin-vue-admin/server/global"
 	monkeyReq "github.com/jizi19911101/gin-vue-admin/server/model/monkey/request"
 )
@@ -23,14 +25,16 @@ func (monkeyService *MonkeyService) StartMonkey(startMonkeyReq monkeyReq.StartMo
 	//设备是否占用中
 	err := monkeyService.checkDevice(startMonkeyReq)
 	if err != nil {
-		return errors.New("设备已被占用")
+		global.GVA_LOG.Error("查询设备是否占用时出错", zap.Error(err))
+		return err
 	}
 
 	// 占用设备，
 	// todo defer释放命令
 	err = monkeyService.useDevice(startMonkeyReq)
 	if err != nil {
-		return errors.New("设备占用失败")
+		global.GVA_LOG.Error("占用设备出错", zap.Error(err))
+		return err
 	}
 
 	// todo 是否请除日志
@@ -38,19 +42,22 @@ func (monkeyService *MonkeyService) StartMonkey(startMonkeyReq monkeyReq.StartMo
 	// 获取atxAgentAddress等信息
 	atxAgentAddress, phoneVersion, err := monkeyService.getAtxAndPhoneInfo(startMonkeyReq)
 	if err != nil {
-		return errors.New("获取atxAgentAddress等信息失败")
+		global.GVA_LOG.Error("获取atxAgentAddress等信息出错", zap.Error(err))
+		return err
 	}
 
 	// 测试app是否存在
 	err = monkeyService.checkAppExist(atxAgentAddress, startMonkeyReq)
 	if err != nil {
-		return errors.New("查询测试app过程出错")
+		global.GVA_LOG.Error("查询测试app是否存在时出错", zap.Error(err))
+		return err
 	}
 
 	// shell 命令发起monkey测试
 	err = monkeyService.startMonkey(atxAgentAddress, startMonkeyReq)
 	if err != nil {
-		return errors.New("启动Monkey失败")
+		global.GVA_LOG.Error("发起monkey测试时出错", zap.Error(err))
+		return err
 	}
 	beginTime := time.Now().Format("2006-01-02 15:04:05")
 
@@ -71,6 +78,7 @@ func (monkeyService *MonkeyService) StartMonkey(startMonkeyReq monkeyReq.StartMo
 	// 生成测试报告
 	report, err := monkeyService.generateReport(atxAgentAddress, beginTime, phoneVersion, startMonkeyReq)
 	if err != nil {
+		global.GVA_LOG.Error("生成测试报告时出错", zap.Error(err))
 		return err
 	}
 	fmt.Println(report)
@@ -83,24 +91,29 @@ func (monkeyService *MonkeyService) checkDevice(startMonkeyReq monkeyReq.StartMo
 	userId := startMonkeyReq.UserId
 	device := startMonkeyReq.Device
 	resp, err := http.Get(url + device + "?user_id=" + userId)
-	defer resp.Body.Close()
-
 	if err != nil {
+		global.GVA_LOG.Error("checkDevice请求url出错", zap.Error(err))
 		return err
 	}
+	defer resp.Body.Close()
 
 	body, err := ioutil.ReadAll(resp.Body)
 	if err != nil {
+		global.GVA_LOG.Error("checkDevice读取body出错", zap.Error(err))
 		return err
+
 	}
 	bodyMap := make(map[string]interface{}, 0)
 	err = json.Unmarshal([]byte(string(body)), &bodyMap)
 	if err != nil {
+		global.GVA_LOG.Error("checkDevice反序列化body出错", zap.Error(err))
 		return err
 	}
 	using := bodyMap["device"].(map[string]interface{})["using"]
 	if using.(bool) && bodyMap["device"].(map[string]interface{})["userId"] != userId {
-		return errors.New("设备占用中")
+		err = errors.New("设备占用中")
+		global.GVA_LOG.Error("checkDevice查到设备占用中", zap.Error(err))
+		return err
 	}
 	return nil
 }
@@ -111,6 +124,7 @@ func (monkeyService *MonkeyService) useDevice(startMonkeyReq monkeyReq.StartMonk
 	dataJson := []byte(dataStr)
 	req, err := http.NewRequest("POST", url+"?user_id="+startMonkeyReq.UserId, bytes.NewBuffer(dataJson))
 	if err != nil {
+		global.GVA_LOG.Error("useDevice NewRequest出错", zap.Error(err))
 		return errors.New("设备占用失败")
 	}
 	req.Header.Set("Content-Type", "application/json")
@@ -119,20 +133,26 @@ func (monkeyService *MonkeyService) useDevice(startMonkeyReq monkeyReq.StartMonk
 	defer resp.Body.Close()
 
 	if err != nil {
-		return errors.New("设备占用失败")
+		global.GVA_LOG.Error("useDevice发起请求出错", zap.Error(err))
+		return err
 	}
 	body, err := ioutil.ReadAll(resp.Body)
 	if err != nil {
+		global.GVA_LOG.Error("useDevice读取body出错", zap.Error(err))
 		return err
 	}
 	bodyMap := make(map[string]interface{}, 0)
 	err = json.Unmarshal([]byte(string(body)), &bodyMap)
 	if err != nil {
+		global.GVA_LOG.Error("useDevice反序列化body出错", zap.Error(err))
 		return err
 	}
 	success := bodyMap["success"]
 	if !success.(bool) {
-		return errors.New("设备占用失败")
+		err = errors.New("设备占用失败")
+		global.GVA_LOG.Error("useDevice设备占用失败", zap.Error(err))
+
+		return err
 	}
 	return nil
 }
@@ -143,16 +163,19 @@ func (monkeyService *MonkeyService) getAtxAndPhoneInfo(startMonkeyReq monkeyReq.
 	defer resp.Body.Close()
 
 	if err != nil {
+		global.GVA_LOG.Error("getAtxAndPhoneInfo发起请求失败", zap.Error(err))
 		return "", "", err
 	}
 
 	body, err := ioutil.ReadAll(resp.Body)
 	if err != nil {
+		global.GVA_LOG.Error("getAtxAndPhoneInfo读取body失败", zap.Error(err))
 		return "", "", err
 	}
 	bodyMap := make(map[string]interface{}, 0)
 	err = json.Unmarshal([]byte(string(body)), &bodyMap)
 	if err != nil {
+		global.GVA_LOG.Error("getAtxAndPhoneInfo反序列化body失败", zap.Error(err))
 		return "", "", err
 	}
 	atxAgentAddress := bodyMap["device"].(map[string]interface{})["source"].(map[string]interface{})["atxAgentAddress"].(string)
@@ -165,26 +188,33 @@ func (monkeyService *MonkeyService) checkAppExist(atxAgentAddress string, startM
 	resp, err := http.Get(url)
 
 	if err != nil {
+		global.GVA_LOG.Error("checkAppExist发起请求失败", zap.Error(err))
 		return err
 	}
 
 	body, err := ioutil.ReadAll(resp.Body)
 	if err != nil {
+		global.GVA_LOG.Error("checkAppExist读取body失败", zap.Error(err))
 		return err
 	}
 	bodyMap := make(map[string]interface{}, 0)
 	err = json.Unmarshal([]byte(string(body)), &bodyMap)
 	if err != nil {
+		global.GVA_LOG.Error("checkAppExist反序列化body失败", zap.Error(err))
 		return err
 	}
 	error := bodyMap["error"]
 	if error != nil {
-		return errors.New("查询app包列表失败")
+		err = errors.New("查询app包列表失败")
+		global.GVA_LOG.Error("checkAppExist查询app包列表失败", zap.Error(err))
+		return err
 	}
 
 	output := bodyMap["output"].(string)
 	if !strings.Contains(output, startMonkeyReq.App) {
-		return errors.New("此app不存在，请进行确认")
+		err = errors.New("此app不存在，请进行确认")
+		global.GVA_LOG.Error("checkAppExist查询到app不存在，请进行确认", zap.Error(err))
+		return err
 	}
 	return nil
 }
@@ -198,21 +228,26 @@ func (monkeyService *MonkeyService) startMonkey(atxAgentAddress string, startMon
 	defer resp.Body.Close()
 
 	if err != nil {
+		global.GVA_LOG.Error("startMonkey发起请求失败", zap.Error(err))
 		return err
 	}
 	body, err := ioutil.ReadAll(resp.Body)
 	if err != nil {
+		global.GVA_LOG.Error("startMonkey读取body失败", zap.Error(err))
 		return err
 	}
 	bodyMap := make(map[string]interface{}, 0)
 
 	err = json.Unmarshal([]byte(string(body)), &bodyMap)
 	if err != nil {
+		global.GVA_LOG.Error("startMonkey反序列化body失败", zap.Error(err))
 		return err
 	}
 	success := bodyMap["success"]
 	if !success.(bool) {
-		return errors.New("启动Monkey失败")
+		err = errors.New("启动Monkey失败")
+		global.GVA_LOG.Error("startMonkey启动Monkey失败", zap.Error(err))
+		return err
 	}
 	return nil
 }
@@ -220,17 +255,22 @@ func (monkeyService *MonkeyService) getSubprocess(atxAgentAddress string) (strin
 	url := "http://" + atxAgentAddress + "/proc/list"
 
 	resp, err := http.Get(url)
-	defer resp.Body.Close()
-
 	if err != nil {
+		global.GVA_LOG.Error("getSubprocess请求url失败", zap.Error(err))
 		return "", err
 	}
+
+	defer resp.Body.Close()
+
 	if resp.Status != "200 OK" {
-		return "", errors.New("查询测试进程失败")
+		err = errors.New("查询测试进程失败")
+		global.GVA_LOG.Error("getSubprocess查询测试进程失败", zap.Error(err))
+		return "", err
 	}
 
 	body, err := ioutil.ReadAll(resp.Body)
 	if err != nil {
+		global.GVA_LOG.Error("getSubprocess读取body失败", zap.Error(err))
 		return "", err
 	}
 	return string(body), nil
@@ -240,27 +280,27 @@ func (monkeyService *MonkeyService) generateReport(atxAgentAddress string, begin
 	htmlPath := global.RedirectConfigFile("tpl.html")
 	t, err := template.ParseFiles(htmlPath)
 	if err != nil {
+		global.GVA_LOG.Error("generateReport解析html失败", zap.Error(err))
 		return "", err
 	}
 
 	url := "http://" + atxAgentAddress + "/packages/" + startMonkeyReq.App + "/info"
 	resp, err := http.Get(url)
 	if err != nil {
+		global.GVA_LOG.Error("generateReport请求url失败", zap.Error(err))
 		return "", err
 	}
 	defer resp.Body.Close()
 
-	if err != nil {
-		return "", err
-	}
-
 	body, err := ioutil.ReadAll(resp.Body)
 	if err != nil {
+		global.GVA_LOG.Error("generateReport读取body失败", zap.Error(err))
 		return "", err
 	}
 	bodyMap := make(map[string]interface{}, 0)
 	err = json.Unmarshal([]byte(string(body)), &bodyMap)
 	if err != nil {
+		global.GVA_LOG.Error("generateReport反序列化body失败", zap.Error(err))
 		return "", err
 	}
 	appName := bodyMap["data"].(map[string]interface{})["label"].(string)
@@ -285,6 +325,7 @@ func (monkeyService *MonkeyService) generateReport(atxAgentAddress string, begin
 	var buf bytes.Buffer
 	err = t.Execute(&buf, data)
 	if err != nil {
+		global.GVA_LOG.Error("generateReport渲染模板失败", zap.Error(err))
 		return "", err
 	}
 	return buf.String(), nil
