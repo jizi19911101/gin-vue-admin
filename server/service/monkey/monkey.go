@@ -4,13 +4,14 @@ import (
 	"bytes"
 	"encoding/json"
 	"errors"
-	"fmt"
 	"io/ioutil"
 	"net/http"
 	urls "net/url"
 	"strings"
+	"text/template"
 	"time"
 
+	"github.com/jizi19911101/gin-vue-admin/server/global"
 	monkeyReq "github.com/jizi19911101/gin-vue-admin/server/model/monkey/request"
 )
 
@@ -44,7 +45,6 @@ func (monkeyService *MonkeyService) StartMonkey(startMonkeyReq monkeyReq.StartMo
 	}
 
 	// 占用设备，defer释放命令
-	//url = "http://120.25.149.119:8082/api/v1/user/devices?user_id=admin@anonymous.com"
 	url = "http://120.25.149.119:8082/api/v1/user/devices"
 	dataStr := "{\"udid\":\"" + device + "\"}"
 	dataJson := []byte(dataStr)
@@ -90,11 +90,11 @@ func (monkeyService *MonkeyService) StartMonkey(startMonkeyReq monkeyReq.StartMo
 	if err != nil {
 		return err
 	}
-	atxAgentAddress := bodyMap["device"].(map[string]interface{})["source"].(map[string]interface{})["atxAgentAddress"]
-	fmt.Println(atxAgentAddress, "atxAgentAddressatxAgentAddress")
+	atxAgentAddress := bodyMap["device"].(map[string]interface{})["source"].(map[string]interface{})["atxAgentAddress"].(string)
+	phoneVersion := bodyMap["device"].(map[string]interface{})["properties"].(map[string]interface{})["version"].(string)
 
 	// 测试app是否存在
-	url = "http://" + atxAgentAddress.(string) + "/shell?user_id=" + userId + "&command=pm%20list%20packages%20-3"
+	url = "http://" + atxAgentAddress + "/shell?user_id=" + userId + "&command=pm%20list%20packages%20-3"
 	resp, err = http.Get(url)
 
 	if err != nil {
@@ -121,7 +121,7 @@ func (monkeyService *MonkeyService) StartMonkey(startMonkeyReq monkeyReq.StartMo
 	}
 
 	// shell 命令发起monkey测试
-	url = "http://" + atxAgentAddress.(string) + "/shell/background?user_id=" + userId + "&command="
+	url = "http://" + atxAgentAddress + "/shell/background?user_id=" + userId + "&command="
 	command := "CLASSPATH=/sdcard/monkey.jar:/sdcard/framework.jar exec app_process /system/bin tv.panda.test.monkey.Monkey -p " + startMonkeyReq.App + "  --uiautomatordfs  --running-minutes  " + startMonkeyReq.Duration + "  --throttle 500 -v -v "
 	url = url + urls.QueryEscape(command)
 
@@ -144,28 +144,70 @@ func (monkeyService *MonkeyService) StartMonkey(startMonkeyReq monkeyReq.StartMo
 		return errors.New("启动Monkey失败")
 	}
 	pid := bodyMap["pid"]
-	fmt.Println(pid, "pidpidpid")
 
-	// 查询测试进程是否结束
-	i := 0
+	beginTime := time.Now().Format("2006-01-02 15:04:05")
+
+	// 查询测试进程是否结束,10秒查一次
 
 LOOP:
-	subprocess, err := monkeyService.getSubprocess(atxAgentAddress.(string))
+	subprocess, err := monkeyService.getSubprocess(atxAgentAddress)
 	if err != nil {
 		return nil
 	}
 
 	for strings.Contains(subprocess, "tv.panda.test.monkey") {
-		time.Sleep(time.Duration(5) * time.Second)
-		i = i + 1
-		fmt.Println(i)
+		time.Sleep(time.Duration(10) * time.Second)
 		goto LOOP
 
 	}
 
 	// 生成测试报告
-	fmt.Println("生成测试报告")
+	htmlPath := global.RedirectConfigFile("tpl.html")
+	t, err := template.ParseFiles(htmlPath)
+	if err != nil {
+		return nil
+	}
 
+	url = "http://" + atxAgentAddress + "/packages/" + startMonkeyReq.App + "/info"
+	resp, err = http.Get(url)
+
+	if err != nil {
+		return err
+	}
+
+	body, err = ioutil.ReadAll(resp.Body)
+	if err != nil {
+		return err
+	}
+	bodyMap = make(map[string]interface{}, 0)
+	err = json.Unmarshal([]byte(string(body)), &bodyMap)
+	if err != nil {
+		return err
+	}
+	appName := bodyMap["data"].(map[string]interface{})["label"].(string)
+	appVersion := bodyMap["data"].(map[string]interface{})["versionName"].(string)
+
+	data := struct {
+		AppName      string
+		AppVersion   string
+		Duration     string
+		BeginTime    string
+		PhoneSystem  string
+		PhoneVersion string
+	}{
+		AppName:      appName,
+		AppVersion:   appVersion,
+		Duration:     startMonkeyReq.Duration,
+		BeginTime:    beginTime,
+		PhoneSystem:  "安卓",
+		PhoneVersion: phoneVersion,
+	}
+
+	var buf bytes.Buffer
+	err = t.Execute(&buf, data)
+	if err != nil {
+		return nil
+	}
 	return nil
 }
 

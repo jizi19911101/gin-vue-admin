@@ -1,0 +1,42 @@
+<meta http-equiv="Content-Type"content="text/html;charset=utf-8">
+<html align='left'>
+<h1>安卓自动化遍历测试报告</h1>
+<body>
+<h2>一、应用信息</h2>
+<table border="1" width = "50%" cellspacing='1' cellpadding='1'>
+    <tr>
+        <th>应用名称</th>
+        <th>应用版本</th>
+        <th>遍历时间(分钟)</th>
+        <th>开始时间</th>
+        <th>测试设备</th>
+        <th>系统版本</th>
+    </tr>
+
+    <tr align='center'>
+        <td>{{ .AppName }}</td>
+        <td>{{ .AppVersion }}</td>
+        <td>{{ .Duration }}</td>
+        <td>{{ .BeginTime }}</td>
+        <td>{{ .PhoneSystem }}</td>
+        <td>{{ .PhoneVersion }}</td>
+    </tr>
+</table>
+<h2>二、遍历页面</h2>
+<table border="1" width = "50%" cellspacing='1' cellpadding='1'>
+    <tr>
+        <th>遍历的页面</th>
+    </tr>
+
+{{/*    {% for item in report_info.activity %}*/}}
+{{/*    <tr align='left'>*/}}
+{{/*        <td>{{ item }}</td>*/}}
+{{/*    </tr>*/}}
+{{/*    {% endfor%}*/}}
+</table>
+
+<h2>三、崩溃日志</h2>
+<pre>无</pre>
+<br>
+</body>
+</html>
