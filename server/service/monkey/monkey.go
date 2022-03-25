@@ -61,27 +61,8 @@ func (monkeyService *MonkeyService) StartMonkey(startMonkeyReq monkeyReq.StartMo
 	}
 	beginTime := time.Now().Format("2006-01-02 15:04:05")
 
-	// 查询测试进程是否结束,10秒查一次
-
-	//LOOP:
-	//	subprocess, err := monkeyService.getSubprocess(atxAgentAddress)
-	//	if err != nil {
-	//		return err
-	//	}
-	//
-	//	for strings.Contains(subprocess, "tv.panda.test.monkey") {
-	//		time.Sleep(time.Duration(10) * time.Second)
-	//		goto LOOP
-	//
-	//	}
-
 	// 生成测试报告
-	report, err := monkeyService.generateReport(atxAgentAddress, beginTime, phoneVersion, startMonkeyReq)
-	if err != nil {
-		global.GVA_LOG.Error("生成测试报告时出错", zap.Error(err))
-		return err
-	}
-	fmt.Println(report)
+	go monkeyService.generateReport(atxAgentAddress, beginTime, phoneVersion, startMonkeyReq)
 
 	return nil
 }
@@ -276,32 +257,43 @@ func (monkeyService *MonkeyService) getSubprocess(atxAgentAddress string) (strin
 	return string(body), nil
 }
 
-func (monkeyService *MonkeyService) generateReport(atxAgentAddress string, beginTime string, phoneVersion string, startMonkeyReq monkeyReq.StartMonkeyReq) (string, error) {
+func (monkeyService *MonkeyService) generateReport(atxAgentAddress string, beginTime string, phoneVersion string, startMonkeyReq monkeyReq.StartMonkeyReq) {
+
+	// 查询测试进程是否结束,10秒查一次
+
+LOOP:
+	subprocess, err := monkeyService.getSubprocess(atxAgentAddress)
+	if err != nil {
+		global.GVA_LOG.Error("generateReport getSubprocess失败", zap.Error(err))
+	}
+
+	for strings.Contains(subprocess, "tv.panda.test.monkey") {
+		time.Sleep(time.Duration(10) * time.Second)
+		goto LOOP
+
+	}
+
 	htmlPath := global.RedirectConfigFile("tpl.html")
 	t, err := template.ParseFiles(htmlPath)
 	if err != nil {
 		global.GVA_LOG.Error("generateReport解析html失败", zap.Error(err))
-		return "", err
 	}
 
 	url := "http://" + atxAgentAddress + "/packages/" + startMonkeyReq.App + "/info"
 	resp, err := http.Get(url)
 	if err != nil {
 		global.GVA_LOG.Error("generateReport请求url失败", zap.Error(err))
-		return "", err
 	}
 	defer resp.Body.Close()
 
 	body, err := ioutil.ReadAll(resp.Body)
 	if err != nil {
 		global.GVA_LOG.Error("generateReport读取body失败", zap.Error(err))
-		return "", err
 	}
 	bodyMap := make(map[string]interface{}, 0)
 	err = json.Unmarshal([]byte(string(body)), &bodyMap)
 	if err != nil {
 		global.GVA_LOG.Error("generateReport反序列化body失败", zap.Error(err))
-		return "", err
 	}
 	appName := bodyMap["data"].(map[string]interface{})["label"].(string)
 	appVersion := bodyMap["data"].(map[string]interface{})["versionName"].(string)
@@ -326,7 +318,6 @@ func (monkeyService *MonkeyService) generateReport(atxAgentAddress string, begin
 	err = t.Execute(&buf, data)
 	if err != nil {
 		global.GVA_LOG.Error("generateReport渲染模板失败", zap.Error(err))
-		return "", err
 	}
-	return buf.String(), nil
+	fmt.Print(buf.String(), "rrrrrrrr")
 }
