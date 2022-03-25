@@ -272,7 +272,12 @@ LOOP:
 		goto LOOP
 
 	}
-
+	// 拉取手机的崩溃日志
+	logStr, err := monkeyService.pullCrashLog(atxAgentAddress)
+	if err != nil {
+		global.GVA_LOG.Error("pullCrashLog失败", zap.Error(err))
+	}
+	// 生成测试报告html
 	htmlPath := global.RedirectConfigFile("tpl.html")
 	t, err := template.ParseFiles(htmlPath)
 	if err != nil {
@@ -305,6 +310,7 @@ LOOP:
 		BeginTime    string
 		PhoneSystem  string
 		PhoneVersion string
+		Log          string
 	}{
 		AppName:      appName,
 		AppVersion:   appVersion,
@@ -312,6 +318,7 @@ LOOP:
 		BeginTime:    beginTime,
 		PhoneSystem:  "安卓",
 		PhoneVersion: phoneVersion,
+		Log:          logStr,
 	}
 
 	var buf bytes.Buffer
@@ -320,4 +327,22 @@ LOOP:
 		global.GVA_LOG.Error("generateReport渲染模板失败", zap.Error(err))
 	}
 	fmt.Print(buf.String(), "rrrrrrrr")
+	// 保存报告到数据库
+}
+
+func (monkeyService *MonkeyService) pullCrashLog(atxAgentAddress string) (string, error) {
+	url := "http://" + atxAgentAddress + "/raw/sdcard/crash-dump.log"
+	resp, err := http.Get(url)
+	if err != nil {
+		global.GVA_LOG.Error("pullCrashLog请求url失败", zap.Error(err))
+		return "", err
+	}
+	defer resp.Body.Close()
+
+	body, err := ioutil.ReadAll(resp.Body)
+	if err != nil {
+		global.GVA_LOG.Error("pullCrashLog读取body失败", zap.Error(err))
+		return "", err
+	}
+	return string(body), nil
 }
