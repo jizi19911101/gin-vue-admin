@@ -4,13 +4,14 @@ import (
 	"bytes"
 	"encoding/json"
 	"errors"
-	"fmt"
 	"io/ioutil"
 	"net/http"
 	urls "net/url"
 	"strings"
 	"text/template"
 	"time"
+
+	"github.com/jizi19911101/gin-vue-admin/server/model/monkey"
 
 	"go.uber.org/zap"
 
@@ -326,8 +327,19 @@ LOOP:
 	if err != nil {
 		global.GVA_LOG.Error("generateReport渲染模板失败", zap.Error(err))
 	}
-	fmt.Print(buf.String(), "rrrrrrrr")
+	//fmt.Print(buf.String(), "rrrrrrrr")
+
 	// 保存报告到数据库
+	report := monkey.MonkeyReport{
+		Name:    startMonkeyReq.Report,
+		Content: buf.String(),
+	}
+	err = global.GVA_DB.Create(&report).Error
+
+	if err != nil {
+		global.GVA_LOG.Error("generateReport保存报告失败", zap.Error(err))
+	}
+
 }
 
 func (monkeyService *MonkeyService) pullCrashLog(atxAgentAddress string) (string, error) {
