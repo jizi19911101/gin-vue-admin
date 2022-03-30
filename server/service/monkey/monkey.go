@@ -278,12 +278,6 @@ LOOP:
 		global.GVA_LOG.Error("pullCrashLog失败", zap.Error(err))
 	}
 	// 生成测试报告html
-	//htmlPath := global.RedirectConfigFile("tpl.html")
-	//t, err := template.ParseFiles(htmlPath)
-	//if err != nil {
-	//	global.GVA_LOG.Error("generateReport解析html失败", zap.Error(err))
-	//}
-
 	url := "http://" + atxAgentAddress + "/packages/" + startMonkeyReq.App + "/info"
 	resp, err := http.Get(url)
 	if err != nil {
@@ -302,31 +296,6 @@ LOOP:
 	}
 	appName := bodyMap["data"].(map[string]interface{})["label"].(string)
 	appVersion := bodyMap["data"].(map[string]interface{})["versionName"].(string)
-
-	//data := struct {
-	//	AppName      string
-	//	AppVersion   string
-	//	Duration     string
-	//	BeginTime    string
-	//	PhoneSystem  string
-	//	PhoneVersion string
-	//	Log          string
-	//}{
-	//	AppName:      appName,
-	//	AppVersion:   appVersion,
-	//	Duration:     startMonkeyReq.Duration,
-	//	BeginTime:    beginTime,
-	//	PhoneSystem:  "安卓",
-	//	PhoneVersion: phoneVersion,
-	//	Log:          logStr,
-	//}
-
-	//var buf bytes.Buffer
-	//err = t.Execute(&buf, data)
-	//if err != nil {
-	//	global.GVA_LOG.Error("generateReport渲染模板失败", zap.Error(err))
-	//}
-	//fmt.Print(buf.String(), "rrrrrrrr")
 
 	// 保存报告到数据库
 	report := monkey.MonkeyReport{
@@ -381,5 +350,18 @@ func (monkeyService *MonkeyService) ReportList(info monkeyReq.ReportSearch) (err
 	}
 	err := db.Limit(limit).Offset(offset).Order("ID desc").Find(&reportList).Error
 	return err, reportList, total
+
+}
+
+func (monkeyService *MonkeyService) ReportContent(htmlReq monkeyReq.HtmlReq) (error, monkey.MonkeyReport) {
+	id := htmlReq.ID
+	db := global.GVA_DB.Model(&monkey.MonkeyReport{})
+	reportContent := monkey.MonkeyReport{}
+	err := db.Where("id = ? ", id).Find(&reportContent).Error
+	if err != nil {
+		return err, reportContent
+
+	}
+	return nil, reportContent
 
 }

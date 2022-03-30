@@ -1,6 +1,8 @@
 package monkey
 
 import (
+	"net/http"
+
 	"github.com/gin-gonic/gin"
 	"github.com/jizi19911101/gin-vue-admin/server/global"
 	"github.com/jizi19911101/gin-vue-admin/server/model/common/response"
@@ -80,5 +82,21 @@ func (monkeyApi *MonkeyApi) ReportList(c *gin.Context) {
 // @Success 200 {string} "
 // @Router /monkey/reportContent [get]
 func (monkeyApi *MonkeyApi) ReportContent(c *gin.Context) {
+	var reportListReq monkeyReq.HtmlReq
+	_ = c.ShouldBindQuery(&reportListReq)
+	if err, content := monkeyService.ReportContent(reportListReq); err != nil {
+		global.GVA_LOG.Error("获取报告内容失败", zap.Error(err))
+		response.FailWithMessage("获取报告内容失败", c)
+	} else {
+		c.HTML(http.StatusOK, "report.html", gin.H{
+			"AppName":      content.AppName,
+			"AppVersion":   content.AppVersion,
+			"Duration":     content.Duration,
+			"BeginTime":    content.BeginTime,
+			"PhoneSystem":  content.PhoneSystem,
+			"PhoneVersion": content.PhoneVersion,
+			"Log":          content.Log,
+		})
+	}
 
 }

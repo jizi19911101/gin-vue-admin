@@ -50,7 +50,8 @@
 
 <script>
 import {
-  getMonkeyReportList
+  getMonkeyReportList,
+  
 } from '@/api/monkeyTest' //  此处请自行替换地址
 import infoList from '@/mixins/infoList'
 export default {
@@ -83,7 +84,8 @@ export default {
       this.multipleSelection = val
     },
     viewReport(item){
-      window.open(item.url)
+      console.log(import.meta.env.VITE_BASE_PATH+":"+import.meta.env.VITE_CLI_PORT+import.meta.env.VITE_BASE_API+"/monkey/reportContent?ID="+item.ID)
+      window.open(import.meta.env.VITE_BASE_PATH+":"+import.meta.env.VITE_CLI_PORT+import.meta.env.VITE_BASE_API+"/monkey/reportContent?ID="+item.ID)
     }
   },
 }
