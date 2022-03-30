@@ -24,7 +24,7 @@ export const getModuleList = (params) => {
 // @Produce application/json
 // @Param data query request.PageInfo true "分页获取Report列表"
 // @Success 200 {string} string "{"success":true,"data":{},"msg":"获取成功"}"
-// @Router /apiCase/moduleList [get]
+// @Router /apiCase/reportList [get]
 export const getReportList = (params) => {
     return service({
       url: '/apiCase/reportList',

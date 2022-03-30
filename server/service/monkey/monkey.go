@@ -358,3 +358,23 @@ func (monkeyService *MonkeyService) pullCrashLog(atxAgentAddress string) (string
 	}
 	return string(body), nil
 }
+
+func (monkeyService *MonkeyService) ReportList(info monkeyReq.ReportSearch) (error, interface{}, int64) {
+	limit := info.PageSize
+	offset := info.PageSize * (info.Page - 1)
+
+	db := global.GVA_DB.Model(&monkey.MonkeyReport{})
+	var total int64
+	reportList := make([]monkey.MonkeyReport, 0)
+
+	if info.Name != "" {
+		db.Where("name = ?", info.Name)
+	}
+
+	if err := db.Count(&total).Error; err != nil {
+		return err, nil, 0
+	}
+	err := db.Limit(limit).Offset(offset).Order("ID desc").Find(&reportList).Error
+	return err, reportList, total
+
+}
