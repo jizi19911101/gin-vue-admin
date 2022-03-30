@@ -4,8 +4,14 @@ import "github.com/jizi19911101/gin-vue-admin/server/global"
 
 type MonkeyReport struct {
 	global.GVA_MODEL
-	Name    string
-	Content string ` gorm:"type:mediumtext"`
+	Name         string
+	AppName      string
+	AppVersion   string
+	Duration     string
+	BeginTime    string
+	PhoneSystem  string
+	PhoneVersion string
+	Log          string ` gorm:"type:text"`
 	//OrganizationID uint
 }
 

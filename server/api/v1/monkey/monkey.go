@@ -41,9 +41,9 @@ func (monkeyApi *MonkeyApi) StartMonkeyApi(c *gin.Context) {
 // @Security ApiKeyAuth
 // @accept application/json
 // @Produce application/json
-// @Param data body apicaseReq.ReportSearch true "获取报告列表"
+// @Param data body monkeyReq.ReportSearch true "获取报告列表"
 // @Success 200 {string} string "{"success":true,"data":{},"msg":"获取报告列表成功!"}"
-// @Router /apiCase/reportList [get]
+// @Router /monkey/reportList [get]
 func (monkeyApi *MonkeyApi) ReportList(c *gin.Context) {
 	var reportListReq monkeyReq.ReportSearch
 	_ = c.ShouldBindQuery(&reportListReq)
@@ -67,5 +67,18 @@ func (monkeyApi *MonkeyApi) ReportList(c *gin.Context) {
 			PageSize: reportListReq.PageSize,
 		}, "获取报告列表成功!", c)
 	}
+
+}
+
+// ReportList 获取报告内容
+// @Tags ReportList
+// @Summary 获取报告内容
+// @Security ApiKeyAuth
+// @accept application/json
+// @Produce application/json
+// @Param data body monkeyReq.ReportSearch true "获取报告内容"
+// @Success 200 {string} "
+// @Router /monkey/reportContent [get]
+func (monkeyApi *MonkeyApi) ReportContent(c *gin.Context) {
 
 }
