@@ -73,11 +73,16 @@ func (monkeyService *MonkeyService) checkDevice(startMonkeyReq monkeyReq.StartMo
 	device := startMonkeyReq.Device
 	resp, err := http.Get(url + device + "?user_id=" + userId)
 
-	if err != nil || resp.Status != "200 OK" {
+	if err != nil {
 		global.GVA_LOG.Error("checkDevice请求url出错", zap.Error(err))
 		return err
 	}
 	defer resp.Body.Close()
+
+	if resp.StatusCode < 200 || resp.StatusCode >= 300 {
+		global.GVA_LOG.Error("checkDevice http resp statusCode is "+string(resp.StatusCode), zap.Error(err))
+		return errors.New("checkDevice wrong resp statusCode")
+	}
 
 	body, err := ioutil.ReadAll(resp.Body)
 	if err != nil {
@@ -112,11 +117,16 @@ func (monkeyService *MonkeyService) useDevice(startMonkeyReq monkeyReq.StartMonk
 	req.Header.Set("Content-Type", "application/json")
 	client := &http.Client{}
 	resp, err := client.Do(req)
-	if err != nil || resp.Status != "200 OK" {
+	if err != nil {
 		global.GVA_LOG.Error("useDevice发起请求出错", zap.Error(err))
 		return err
 	}
 	defer resp.Body.Close()
+
+	if resp.StatusCode < 200 || resp.StatusCode >= 300 {
+		global.GVA_LOG.Error("useDevice http resp statusCode is "+string(resp.StatusCode), zap.Error(err))
+		return errors.New("useDevice wrong resp statusCode")
+	}
 
 	body, err := ioutil.ReadAll(resp.Body)
 	if err != nil {
@@ -142,12 +152,17 @@ func (monkeyService *MonkeyService) useDevice(startMonkeyReq monkeyReq.StartMonk
 func (monkeyService *MonkeyService) getAtxAndPhoneInfo(startMonkeyReq monkeyReq.StartMonkeyReq) (string, string, error) {
 	url := "http://120.25.149.119:8082/api/v1/user/devices/"
 	resp, err := http.Get(url + startMonkeyReq.Device + "?user_id=" + startMonkeyReq.UserId)
-	if err != nil || resp.Status != "200 OK" {
+	if err != nil {
 		global.GVA_LOG.Error("getAtxAndPhoneInfo发起请求失败", zap.Error(err))
 		return "", "", err
 	}
 
 	defer resp.Body.Close()
+
+	if resp.StatusCode < 200 || resp.StatusCode >= 300 {
+		global.GVA_LOG.Error("getAtxAndPhoneInfo http resp statusCode is "+string(resp.StatusCode), zap.Error(err))
+		return "", "", errors.New("getAtxAndPhoneInfo wrong resp statusCode")
+	}
 
 	body, err := ioutil.ReadAll(resp.Body)
 	if err != nil {
@@ -169,9 +184,14 @@ func (monkeyService *MonkeyService) checkAppExist(atxAgentAddress string, startM
 	url := "http://" + atxAgentAddress + "/shell?user_id=" + startMonkeyReq.UserId + "&command=pm%20list%20packages%20-3"
 	resp, err := http.Get(url)
 
-	if err != nil || resp.Status != "200 OK" {
+	if err != nil {
 		global.GVA_LOG.Error("checkAppExist发起请求失败", zap.Error(err))
 		return err
+	}
+
+	if resp.StatusCode < 200 || resp.StatusCode >= 300 {
+		global.GVA_LOG.Error("checkAppExist http resp statusCode is "+string(resp.StatusCode), zap.Error(err))
+		return errors.New("checkAppExist wrong resp statusCode")
 	}
 
 	body, err := ioutil.ReadAll(resp.Body)
@@ -207,11 +227,16 @@ func (monkeyService *MonkeyService) startMonkey(atxAgentAddress string, startMon
 	url = url + urls.QueryEscape(command)
 
 	resp, err := http.Get(url)
-	if err != nil || resp.Status != "200 OK" {
+	if err != nil {
 		global.GVA_LOG.Error("startMonkey发起请求失败", zap.Error(err))
 		return err
 	}
 	defer resp.Body.Close()
+
+	if resp.StatusCode < 200 || resp.StatusCode >= 300 {
+		global.GVA_LOG.Error("startMonkey http resp statusCode is "+string(resp.StatusCode), zap.Error(err))
+		return errors.New("startMonkey wrong resp statusCode")
+	}
 
 	body, err := ioutil.ReadAll(resp.Body)
 	if err != nil {
@@ -237,14 +262,19 @@ func (monkeyService *MonkeyService) getSubprocess(atxAgentAddress string) (strin
 	url := "http://" + atxAgentAddress + "/proc/list"
 
 	resp, err := http.Get(url)
-	if err != nil || resp.Status != "200 OK" {
+	if err != nil {
 		global.GVA_LOG.Error("getSubprocess请求url失败", zap.Error(err))
 		return "", err
 	}
 
 	defer resp.Body.Close()
 
-	if resp.Status != "200 OK" {
+	if resp.StatusCode < 200 || resp.StatusCode >= 300 {
+		global.GVA_LOG.Error("getSubprocess http resp statusCode is "+string(resp.StatusCode), zap.Error(err))
+		return "", errors.New("getSubprocess wrong resp statusCode")
+	}
+
+	if resp.StatusCode != 200 {
 		err = errors.New("查询测试进程失败")
 		global.GVA_LOG.Error("getSubprocess查询测试进程失败", zap.Error(err))
 		return "", err
@@ -281,10 +311,14 @@ LOOP:
 	// 生成测试报告html
 	url := "http://" + atxAgentAddress + "/packages/" + startMonkeyReq.App + "/info"
 	resp, err := http.Get(url)
-	if err != nil || resp.Status != "200 OK" {
+	if err != nil {
 		global.GVA_LOG.Error("generateReport请求url失败", zap.Error(err))
 	}
 	defer resp.Body.Close()
+
+	if resp.StatusCode < 200 || resp.StatusCode >= 300 {
+		global.GVA_LOG.Error("generateReport http resp statusCode is "+string(resp.StatusCode), zap.Error(err))
+	}
 
 	body, err := ioutil.ReadAll(resp.Body)
 	if err != nil {
@@ -320,11 +354,17 @@ LOOP:
 func (monkeyService *MonkeyService) pullCrashLog(atxAgentAddress string) (string, error) {
 	url := "http://" + atxAgentAddress + "/raw/sdcard/crash-dump.log"
 	resp, err := http.Get(url)
-	if err != nil || resp.Status != "200 OK" {
+	if err != nil {
 		global.GVA_LOG.Error("pullCrashLog请求url失败", zap.Error(err))
 		return "", err
 	}
+
 	defer resp.Body.Close()
+
+	if resp.StatusCode < 200 || resp.StatusCode >= 300 {
+		global.GVA_LOG.Error("pullCrashLog http resp statusCode is "+string(resp.StatusCode), zap.Error(err))
+		return "", errors.New("pullCrashLog wrong resp statusCode")
+	}
 
 	body, err := ioutil.ReadAll(resp.Body)
 	if err != nil {
