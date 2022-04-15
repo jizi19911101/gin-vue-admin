@@ -16,8 +16,6 @@ LABEL MAINTAINER="SliverHorn@sliver_horn@qq.com"
 
 WORKDIR /go/src/github.com/jizi19911101/gin-vue-admin/server
 
-COPY --from=0 /go/src/github.com/jizi19911101/gin-vue-admin/server ./
-COPY ./config.docker.yaml ./config.yaml
 RUN mv /etc/apk/repositories /etc/apk/repositories_bak
 RUN touch /etc/apk/repositories
 RUN echo 'http://mirrors.aliyun.com/alpine/v3.12/main/'  >> /etc/apk/repositories
@@ -30,6 +28,10 @@ RUN mkdir ~/.ssh \
     && chmod 600  ~/.ssh/id_rsa   \
     && touch ~/.ssh/id_rsa.pub  \
     && chmod 644 ~/.ssh/id_rsa.pub
+
+
+COPY --from=0 /go/src/github.com/jizi19911101/gin-vue-admin/server ./
+COPY ./config.docker.yaml ./config.yaml
 
 
 EXPOSE 8888
