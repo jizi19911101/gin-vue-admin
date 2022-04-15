@@ -61,7 +61,7 @@ func (monkeyApi *MonkeyApi) ReportList(c *gin.Context) {
 		global.GVA_LOG.Error("获取报告列表失败", zap.Error(err))
 		response.FailWithMessage("获取报告列表失败", c)
 	} else {
-		reportListRes := make([]monkeyRes.ReportRes, 0)
+		reportListRes := make([]monkeyRes.ReportRes, 0, len(reportList))
 		for i := range reportList {
 			reportListRes = append(reportListRes, monkeyRes.ReportRes{
 				ID:        reportList[i].ID,
