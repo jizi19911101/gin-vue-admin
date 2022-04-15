@@ -91,7 +91,7 @@ func (monkeyService *MonkeyService) checkDevice(startMonkeyReq monkeyReq.StartMo
 
 	}
 	bodyMap := make(map[string]interface{}, 0)
-	err = json.Unmarshal([]byte(string(body)), &bodyMap)
+	err = json.Unmarshal(body, &bodyMap)
 	if err != nil {
 		global.GVA_LOG.Error("checkDevice反序列化body出错", zap.Error(err))
 		return err
@@ -134,7 +134,7 @@ func (monkeyService *MonkeyService) useDevice(startMonkeyReq monkeyReq.StartMonk
 		return err
 	}
 	bodyMap := make(map[string]interface{}, 0)
-	err = json.Unmarshal([]byte(string(body)), &bodyMap)
+	err = json.Unmarshal(body, &bodyMap)
 	if err != nil {
 		global.GVA_LOG.Error("useDevice反序列化body出错", zap.Error(err))
 		return err
@@ -170,7 +170,7 @@ func (monkeyService *MonkeyService) getAtxAndPhoneInfo(startMonkeyReq monkeyReq.
 		return "", "", err
 	}
 	bodyMap := make(map[string]interface{}, 0)
-	err = json.Unmarshal([]byte(string(body)), &bodyMap)
+	err = json.Unmarshal(body, &bodyMap)
 	if err != nil {
 		global.GVA_LOG.Error("getAtxAndPhoneInfo反序列化body失败", zap.Error(err))
 		return "", "", err
@@ -200,7 +200,7 @@ func (monkeyService *MonkeyService) checkAppExist(atxAgentAddress string, startM
 		return err
 	}
 	bodyMap := make(map[string]interface{}, 0)
-	err = json.Unmarshal([]byte(string(body)), &bodyMap)
+	err = json.Unmarshal(body, &bodyMap)
 	if err != nil {
 		global.GVA_LOG.Error("checkAppExist反序列化body失败", zap.Error(err))
 		return err
@@ -245,7 +245,7 @@ func (monkeyService *MonkeyService) startMonkey(atxAgentAddress string, startMon
 	}
 	bodyMap := make(map[string]interface{}, 0)
 
-	err = json.Unmarshal([]byte(string(body)), &bodyMap)
+	err = json.Unmarshal(body, &bodyMap)
 	if err != nil {
 		global.GVA_LOG.Error("startMonkey反序列化body失败", zap.Error(err))
 		return err
@@ -325,7 +325,7 @@ LOOP:
 		global.GVA_LOG.Error("generateReport读取body失败", zap.Error(err))
 	}
 	bodyMap := make(map[string]interface{}, 0)
-	err = json.Unmarshal([]byte(string(body)), &bodyMap)
+	err = json.Unmarshal(body, &bodyMap)
 	if err != nil {
 		global.GVA_LOG.Error("generateReport反序列化body失败", zap.Error(err))
 	}
