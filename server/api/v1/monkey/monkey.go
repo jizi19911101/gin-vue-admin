@@ -6,7 +6,6 @@ import (
 	"github.com/gin-gonic/gin"
 	"github.com/jizi19911101/gin-vue-admin/server/global"
 	"github.com/jizi19911101/gin-vue-admin/server/model/common/response"
-	"github.com/jizi19911101/gin-vue-admin/server/model/monkey"
 	monkeyReq "github.com/jizi19911101/gin-vue-admin/server/model/monkey/request"
 	monkeyRes "github.com/jizi19911101/gin-vue-admin/server/model/monkey/response"
 	"github.com/jizi19911101/gin-vue-admin/server/service"
@@ -18,6 +17,15 @@ type MonkeyApi struct {
 
 var monkeyService = service.ServiceGroupApp.MonkeyServiceGroup.MonkeyService
 
+// StartMonkey 启动monkey测试
+// @Tags StartMonkey
+// @Summary 启动monkey测试
+// @Security ApiKeyAuth
+// @accept application/json
+// @Produce application/json
+// @Param data body monkeyReq.StartMonkeyReq true "启动monkey测试"
+// @Success 200 {string} string "{"success":true,"data":{},"msg":"成功发起monkey测试，稍后生成测试报告"}"
+// @Router /monkey/startMonkey [get]
 func (monkeyApi *MonkeyApi) StartMonkeyApi(c *gin.Context) {
 	var startMonkeyReq monkeyReq.StartMonkeyReq
 	_ = c.ShouldBindJSON(&startMonkeyReq)
@@ -49,11 +57,10 @@ func (monkeyApi *MonkeyApi) StartMonkeyApi(c *gin.Context) {
 func (monkeyApi *MonkeyApi) ReportList(c *gin.Context) {
 	var reportListReq monkeyReq.ReportSearch
 	_ = c.ShouldBindQuery(&reportListReq)
-	if err, list, total := monkeyService.ReportList(reportListReq); err != nil {
+	if err, reportList, total := monkeyService.ReportList(reportListReq); err != nil {
 		global.GVA_LOG.Error("获取报告列表失败", zap.Error(err))
 		response.FailWithMessage("获取报告列表失败", c)
 	} else {
-		reportList := list.([]monkey.MonkeyReport)
 		reportListRes := make([]monkeyRes.ReportRes, 0)
 		for i := range reportList {
 			reportListRes = append(reportListRes, monkeyRes.ReportRes{

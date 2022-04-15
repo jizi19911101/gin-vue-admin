@@ -333,7 +333,7 @@ func (monkeyService *MonkeyService) pullCrashLog(atxAgentAddress string) (string
 	return string(body), nil
 }
 
-func (monkeyService *MonkeyService) ReportList(info monkeyReq.ReportSearch) (error, interface{}, int64) {
+func (monkeyService *MonkeyService) ReportList(info monkeyReq.ReportSearch) (error, []monkey.MonkeyReport, int64) {
 	limit := info.PageSize
 	offset := info.PageSize * (info.Page - 1)
 
