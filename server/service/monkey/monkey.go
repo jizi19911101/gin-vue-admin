@@ -72,7 +72,8 @@ func (monkeyService *MonkeyService) checkDevice(startMonkeyReq monkeyReq.StartMo
 	userId := startMonkeyReq.UserId
 	device := startMonkeyReq.Device
 	resp, err := http.Get(url + device + "?user_id=" + userId)
-	if err != nil {
+
+	if err != nil || resp.Status != "200 OK" {
 		global.GVA_LOG.Error("checkDevice请求url出错", zap.Error(err))
 		return err
 	}
@@ -111,7 +112,7 @@ func (monkeyService *MonkeyService) useDevice(startMonkeyReq monkeyReq.StartMonk
 	req.Header.Set("Content-Type", "application/json")
 	client := &http.Client{}
 	resp, err := client.Do(req)
-	if err != nil {
+	if err != nil || resp.Status != "200 OK" {
 		global.GVA_LOG.Error("useDevice发起请求出错", zap.Error(err))
 		return err
 	}
@@ -141,7 +142,7 @@ func (monkeyService *MonkeyService) useDevice(startMonkeyReq monkeyReq.StartMonk
 func (monkeyService *MonkeyService) getAtxAndPhoneInfo(startMonkeyReq monkeyReq.StartMonkeyReq) (string, string, error) {
 	url := "http://120.25.149.119:8082/api/v1/user/devices/"
 	resp, err := http.Get(url + startMonkeyReq.Device + "?user_id=" + startMonkeyReq.UserId)
-	if err != nil {
+	if err != nil || resp.Status != "200 OK" {
 		global.GVA_LOG.Error("getAtxAndPhoneInfo发起请求失败", zap.Error(err))
 		return "", "", err
 	}
@@ -168,7 +169,7 @@ func (monkeyService *MonkeyService) checkAppExist(atxAgentAddress string, startM
 	url := "http://" + atxAgentAddress + "/shell?user_id=" + startMonkeyReq.UserId + "&command=pm%20list%20packages%20-3"
 	resp, err := http.Get(url)
 
-	if err != nil {
+	if err != nil || resp.Status != "200 OK" {
 		global.GVA_LOG.Error("checkAppExist发起请求失败", zap.Error(err))
 		return err
 	}
@@ -206,7 +207,7 @@ func (monkeyService *MonkeyService) startMonkey(atxAgentAddress string, startMon
 	url = url + urls.QueryEscape(command)
 
 	resp, err := http.Get(url)
-	if err != nil {
+	if err != nil || resp.Status != "200 OK" {
 		global.GVA_LOG.Error("startMonkey发起请求失败", zap.Error(err))
 		return err
 	}
@@ -236,7 +237,7 @@ func (monkeyService *MonkeyService) getSubprocess(atxAgentAddress string) (strin
 	url := "http://" + atxAgentAddress + "/proc/list"
 
 	resp, err := http.Get(url)
-	if err != nil {
+	if err != nil || resp.Status != "200 OK" {
 		global.GVA_LOG.Error("getSubprocess请求url失败", zap.Error(err))
 		return "", err
 	}
@@ -280,7 +281,7 @@ LOOP:
 	// 生成测试报告html
 	url := "http://" + atxAgentAddress + "/packages/" + startMonkeyReq.App + "/info"
 	resp, err := http.Get(url)
-	if err != nil {
+	if err != nil || resp.Status != "200 OK" {
 		global.GVA_LOG.Error("generateReport请求url失败", zap.Error(err))
 	}
 	defer resp.Body.Close()
@@ -319,7 +320,7 @@ LOOP:
 func (monkeyService *MonkeyService) pullCrashLog(atxAgentAddress string) (string, error) {
 	url := "http://" + atxAgentAddress + "/raw/sdcard/crash-dump.log"
 	resp, err := http.Get(url)
-	if err != nil {
+	if err != nil || resp.Status != "200 OK" {
 		global.GVA_LOG.Error("pullCrashLog请求url失败", zap.Error(err))
 		return "", err
 	}
