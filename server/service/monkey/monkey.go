@@ -422,6 +422,10 @@ func (monkeyService *MonkeyService) pullCrashLog(atxAgentAddress string) (string
 
 	defer resp.Body.Close()
 
+	if resp.StatusCode == 404 {
+		return "", nil
+	}
+
 	if resp.StatusCode < 200 || resp.StatusCode >= 300 {
 		global.GVA_LOG.Error("pullCrashLog http resp statusCode is "+string(resp.StatusCode), zap.Error(err))
 		return "", errors.New("pullCrashLog wrong resp statusCode")
