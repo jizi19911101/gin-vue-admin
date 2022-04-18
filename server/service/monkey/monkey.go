@@ -374,23 +374,30 @@ LOOP:
 		global.GVA_LOG.Error("generateReport http resp statusCode is "+string(resp.StatusCode), zap.Error(err))
 	}
 
-	body, err := ioutil.ReadAll(resp.Body)
+	respBody, err := ioutil.ReadAll(resp.Body)
 	if err != nil {
 		global.GVA_LOG.Error("generateReport读取body失败", zap.Error(err))
 	}
-	bodyMap := make(map[string]interface{}, 0)
-	err = json.Unmarshal(body, &bodyMap)
+
+	type App struct {
+		Label       string
+		VersionName string
+	}
+	type body struct {
+		Data App
+	}
+
+	var bodyJson body
+	err = json.Unmarshal(respBody, &bodyJson)
 	if err != nil {
 		global.GVA_LOG.Error("generateReport反序列化body失败", zap.Error(err))
 	}
-	appName := bodyMap["data"].(map[string]interface{})["label"].(string)
-	appVersion := bodyMap["data"].(map[string]interface{})["versionName"].(string)
 
 	// 保存报告到数据库
 	report := monkey.MonkeyReport{
 		Name:         startMonkeyReq.Report,
-		AppName:      appName,
-		AppVersion:   appVersion,
+		AppName:      bodyJson.Data.Label,
+		AppVersion:   bodyJson.Data.VersionName,
 		Duration:     startMonkeyReq.Duration,
 		BeginTime:    beginTime,
 		PhoneSystem:  "安卓",
