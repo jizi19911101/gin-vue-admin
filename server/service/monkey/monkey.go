@@ -4,6 +4,7 @@ import (
 	"bytes"
 	"encoding/json"
 	"errors"
+	"fmt"
 	"io/ioutil"
 	"net/http"
 	urls "net/url"
@@ -169,6 +170,7 @@ func (monkeyService *MonkeyService) useDevice(startMonkeyReq monkeyReq.StartMonk
 }
 
 func (monkeyService *MonkeyService) getAtxAndPhoneInfo(startMonkeyReq monkeyReq.StartMonkeyReq) (string, string, error) {
+	// 发送获取信息请求
 	atxHost := global.GVA_CONFIG.Atx.Host
 	url := atxHost + "/api/v1/user/devices/"
 	resp, err := http.Get(url + startMonkeyReq.Device + "?user_id=" + startMonkeyReq.UserId)
@@ -184,19 +186,39 @@ func (monkeyService *MonkeyService) getAtxAndPhoneInfo(startMonkeyReq monkeyReq.
 		return "", "", errors.New("getAtxAndPhoneInfo wrong resp statusCode")
 	}
 
-	body, err := ioutil.ReadAll(resp.Body)
+	// 读取接口返回
+	respBody, err := ioutil.ReadAll(resp.Body)
 	if err != nil {
 		global.GVA_LOG.Error("getAtxAndPhoneInfo读取body失败", zap.Error(err))
 		return "", "", err
 	}
-	bodyMap := make(map[string]interface{}, 0)
-	err = json.Unmarshal(body, &bodyMap)
+	// 序列化body
+	type Source struct {
+		AtxAgentAddress string
+	}
+	type property struct {
+		Version string
+	}
+
+	type Device struct {
+		Source     Source
+		Properties property
+	}
+	type body struct {
+		Success bool
+		Device  Device
+	}
+	var bodyJson body
+	err = json.Unmarshal(respBody, &bodyJson)
 	if err != nil {
 		global.GVA_LOG.Error("getAtxAndPhoneInfo反序列化body失败", zap.Error(err))
 		return "", "", err
 	}
-	atxAgentAddress := bodyMap["device"].(map[string]interface{})["source"].(map[string]interface{})["atxAgentAddress"].(string)
-	phoneVersion := bodyMap["device"].(map[string]interface{})["properties"].(map[string]interface{})["version"].(string)
+	// 返回信息
+	atxAgentAddress := bodyJson.Device.Source.AtxAgentAddress
+	phoneVersion := bodyJson.Device.Properties.Version
+	fmt.Println("atxAgentAddress+phoneVersion:", atxAgentAddress, phoneVersion)
+
 	return atxAgentAddress, phoneVersion, nil
 }
 
