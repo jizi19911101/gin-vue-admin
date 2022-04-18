@@ -25,5 +25,7 @@ func main() {
 		db, _ := global.GVA_DB.DB()
 		defer db.Close()
 	}
+
+	initialize.RegisterMonkeyWorker()
 	core.RunWindowsServer()
 }
