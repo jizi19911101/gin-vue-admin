@@ -118,6 +118,7 @@ func (monkeyService *MonkeyService) checkDevice(startMonkeyReq monkeyReq.StartMo
 }
 
 func (monkeyService *MonkeyService) useDevice(startMonkeyReq monkeyReq.StartMonkeyReq) error {
+	// 发起占用设备请求
 	atxHost := global.GVA_CONFIG.Atx.Host
 	url := atxHost + "/api/v1/user/devices"
 	dataStr := "{\"udid\":\"" + startMonkeyReq.Device + "\"}"
@@ -128,6 +129,7 @@ func (monkeyService *MonkeyService) useDevice(startMonkeyReq monkeyReq.StartMonk
 		return errors.New("设备占用失败")
 	}
 	req.Header.Set("Content-Type", "application/json")
+
 	client := &http.Client{}
 	resp, err := client.Do(req)
 	if err != nil {
@@ -140,20 +142,24 @@ func (monkeyService *MonkeyService) useDevice(startMonkeyReq monkeyReq.StartMonk
 		global.GVA_LOG.Error("useDevice http resp statusCode is "+string(resp.StatusCode), zap.Error(err))
 		return errors.New("useDevice wrong resp statusCode")
 	}
-
-	body, err := ioutil.ReadAll(resp.Body)
+	// 读取接口返回
+	respBody, err := ioutil.ReadAll(resp.Body)
 	if err != nil {
 		global.GVA_LOG.Error("useDevice读取body出错", zap.Error(err))
 		return err
 	}
-	bodyMap := make(map[string]interface{}, 0)
-	err = json.Unmarshal(body, &bodyMap)
+	// 序列化接口
+	type body struct {
+		Success bool
+	}
+	var bodyJson body
+	err = json.Unmarshal(respBody, &bodyJson)
 	if err != nil {
 		global.GVA_LOG.Error("useDevice反序列化body出错", zap.Error(err))
 		return err
 	}
-	success := bodyMap["success"]
-	if !success.(bool) {
+	// 判断设备是否占用成功
+	if !bodyJson.Success {
 		err = errors.New("设备占用失败")
 		global.GVA_LOG.Error("useDevice设备占用失败", zap.Error(err))
 
