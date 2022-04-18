@@ -4,7 +4,6 @@ import (
 	"bytes"
 	"encoding/json"
 	"errors"
-	"fmt"
 	"io/ioutil"
 	"net/http"
 	urls "net/url"
@@ -38,13 +37,20 @@ func (monkeyService *MonkeyService) StartMonkey(startMonkeyReq monkeyReq.StartMo
 		return err
 	}
 
-	// todo 是否请除日志
-
 	// 获取atxAgentAddress等信息
 	atxAgentAddress, phoneVersion, err := monkeyService.getAtxAndPhoneInfo(startMonkeyReq)
 	if err != nil {
 		global.GVA_LOG.Error("获取atxAgentAddress等信息出错", zap.Error(err))
 		return err
+	}
+
+	// 请除日志
+	if *startMonkeyReq.CleanLog {
+		err := monkeyService.cleanLog(atxAgentAddress, startMonkeyReq)
+		if err != nil {
+			global.GVA_LOG.Error("清除日志出错", zap.Error(err))
+			return err
+		}
 	}
 
 	// 测试app是否存在
@@ -217,7 +223,6 @@ func (monkeyService *MonkeyService) getAtxAndPhoneInfo(startMonkeyReq monkeyReq.
 	// 返回信息
 	atxAgentAddress := bodyJson.Device.Source.AtxAgentAddress
 	phoneVersion := bodyJson.Device.Properties.Version
-	fmt.Println("atxAgentAddress+phoneVersion:", atxAgentAddress, phoneVersion)
 
 	return atxAgentAddress, phoneVersion, nil
 }
@@ -423,7 +428,7 @@ func (monkeyService *MonkeyService) pullCrashLog(atxAgentAddress string) (string
 	defer resp.Body.Close()
 
 	if resp.StatusCode == 404 {
-		return "无崩溃报告", nil
+		return "无崩溃日志", nil
 	}
 
 	if resp.StatusCode < 200 || resp.StatusCode >= 300 {
@@ -470,4 +475,59 @@ func (monkeyService *MonkeyService) ReportContent(htmlReq monkeyReq.HtmlReq) (er
 	}
 	return nil, reportContent
 
+}
+
+func (monkeyService *MonkeyService) cleanLog(atxAgentAddress string, startMonkeyReq monkeyReq.StartMonkeyReq) error {
+	// 查询日志文件是否存在
+	url := "http://" + atxAgentAddress + "/finfo/sdcard/crash-dump.log"
+	resp, err := http.Get(url)
+	if err != nil {
+		global.GVA_LOG.Error("cleanLog发起请求失败(查询日志文件)", zap.Error(err))
+		return err
+	}
+
+	// 如果找不到文件，直接返回
+	if resp.StatusCode == 404 {
+		return nil
+	}
+
+	// 发起清理日志请求
+	url = "http://" + atxAgentAddress + "/shell/background?user_id=" + startMonkeyReq.UserId + "&command="
+	command := "rm /sdcard/crash-dump.log"
+	url = url + urls.QueryEscape(command)
+
+	resp, err = http.Get(url)
+	if err != nil {
+		global.GVA_LOG.Error("cleanLog发起请求失败(清理日志文件)", zap.Error(err))
+		return err
+	}
+	defer resp.Body.Close()
+
+	if resp.StatusCode < 200 || resp.StatusCode >= 300 {
+		global.GVA_LOG.Error("cleanLog http resp statusCode is "+string(resp.StatusCode), zap.Error(err))
+		return errors.New("cleanLog wrong resp statusCode")
+	}
+	//  读取接口返回
+	respBody, err := ioutil.ReadAll(resp.Body)
+	if err != nil {
+		global.GVA_LOG.Error("cleanLog读取body失败", zap.Error(err))
+		return err
+	}
+	// 序列化body
+	type body struct {
+		Success bool
+	}
+	var bodyJson body
+	err = json.Unmarshal(respBody, &bodyJson)
+	if err != nil {
+		global.GVA_LOG.Error("cleanLog反序列化body失败", zap.Error(err))
+		return err
+	}
+	// 判断结果
+	if !bodyJson.Success {
+		err = errors.New("cleanLog清理日志文件失败")
+		global.GVA_LOG.Error("cleanLog清理日志文件失败", zap.Error(err))
+		return err
+	}
+	return nil
 }
