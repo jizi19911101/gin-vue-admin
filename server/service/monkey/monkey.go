@@ -223,6 +223,7 @@ func (monkeyService *MonkeyService) getAtxAndPhoneInfo(startMonkeyReq monkeyReq.
 }
 
 func (monkeyService *MonkeyService) checkAppExist(atxAgentAddress string, startMonkeyReq monkeyReq.StartMonkeyReq) error {
+	// 发起查询APP请求
 	url := "http://" + atxAgentAddress + "/shell?user_id=" + startMonkeyReq.UserId + "&command=pm%20list%20packages%20-3"
 	resp, err := http.Get(url)
 
@@ -235,27 +236,34 @@ func (monkeyService *MonkeyService) checkAppExist(atxAgentAddress string, startM
 		global.GVA_LOG.Error("checkAppExist http resp statusCode is "+string(resp.StatusCode), zap.Error(err))
 		return errors.New("checkAppExist wrong resp statusCode")
 	}
-
-	body, err := ioutil.ReadAll(resp.Body)
+	// 读取接口返回
+	respBody, err := ioutil.ReadAll(resp.Body)
 	if err != nil {
 		global.GVA_LOG.Error("checkAppExist读取body失败", zap.Error(err))
 		return err
 	}
-	bodyMap := make(map[string]interface{}, 0)
-	err = json.Unmarshal(body, &bodyMap)
+
+	// 序列化body
+	type body struct {
+		Error    interface{}
+		ExitCode int
+		Output   string
+	}
+	var bodyJson body
+	err = json.Unmarshal(respBody, &bodyJson)
 	if err != nil {
 		global.GVA_LOG.Error("checkAppExist反序列化body失败", zap.Error(err))
 		return err
 	}
-	error := bodyMap["error"]
-	if error != nil {
+
+	// 判断结果
+	if bodyJson.Error != nil {
 		err = errors.New("查询app包列表失败")
 		global.GVA_LOG.Error("checkAppExist查询app包列表失败", zap.Error(err))
 		return err
 	}
 
-	output := bodyMap["output"].(string)
-	if !strings.Contains(output, startMonkeyReq.App) {
+	if !strings.Contains(bodyJson.Output, startMonkeyReq.App) {
 		err = errors.New("此app不存在，请进行确认")
 		global.GVA_LOG.Error("checkAppExist查询到app不存在，请进行确认", zap.Error(err))
 		return err
