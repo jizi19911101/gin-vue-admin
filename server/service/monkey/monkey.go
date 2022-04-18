@@ -272,6 +272,7 @@ func (monkeyService *MonkeyService) checkAppExist(atxAgentAddress string, startM
 }
 
 func (monkeyService *MonkeyService) startMonkey(atxAgentAddress string, startMonkeyReq monkeyReq.StartMonkeyReq) error {
+	// 发起启动monkey请求
 	url := "http://" + atxAgentAddress + "/shell/background?user_id=" + startMonkeyReq.UserId + "&command="
 	command := "CLASSPATH=/sdcard/monkey.jar:/sdcard/framework.jar exec app_process /system/bin tv.panda.test.monkey.Monkey -p " + startMonkeyReq.App + "  --uiautomatordfs  --running-minutes  " + startMonkeyReq.Duration + "  --throttle 500 -v -v "
 	url = url + urls.QueryEscape(command)
@@ -287,21 +288,24 @@ func (monkeyService *MonkeyService) startMonkey(atxAgentAddress string, startMon
 		global.GVA_LOG.Error("startMonkey http resp statusCode is "+string(resp.StatusCode), zap.Error(err))
 		return errors.New("startMonkey wrong resp statusCode")
 	}
-
-	body, err := ioutil.ReadAll(resp.Body)
+	//  读取接口返回
+	respBody, err := ioutil.ReadAll(resp.Body)
 	if err != nil {
 		global.GVA_LOG.Error("startMonkey读取body失败", zap.Error(err))
 		return err
 	}
-	bodyMap := make(map[string]interface{}, 0)
-
-	err = json.Unmarshal(body, &bodyMap)
+	// 序列化body
+	type body struct {
+		Success bool
+	}
+	var bodyJson body
+	err = json.Unmarshal(respBody, &bodyJson)
 	if err != nil {
 		global.GVA_LOG.Error("startMonkey反序列化body失败", zap.Error(err))
 		return err
 	}
-	success := bodyMap["success"]
-	if !success.(bool) {
+	// 判断结果
+	if !bodyJson.Success {
 		err = errors.New("启动Monkey失败")
 		global.GVA_LOG.Error("startMonkey启动Monkey失败", zap.Error(err))
 		return err
