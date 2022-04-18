@@ -29,8 +29,7 @@ func (monkeyService *MonkeyService) StartMonkey(startMonkeyReq monkeyReq.StartMo
 		return err
 	}
 
-	// 占用设备，
-	// todo defer释放命令
+	// 占用设备
 	err = monkeyService.useDevice(startMonkeyReq)
 	if err != nil {
 		global.GVA_LOG.Error("占用设备出错", zap.Error(err))
@@ -398,6 +397,12 @@ LOOP:
 		global.GVA_LOG.Error("generateReport反序列化body失败", zap.Error(err))
 	}
 
+	// 释放设备
+	err = monkeyService.releaseDevice(startMonkeyReq)
+	if err != nil {
+		global.GVA_LOG.Error("generateReport释放设备失败", zap.Error(err))
+	}
+
 	// 保存报告到数据库
 	report := monkey.MonkeyReport{
 		Name:         startMonkeyReq.Report,
@@ -527,6 +532,55 @@ func (monkeyService *MonkeyService) cleanLog(atxAgentAddress string, startMonkey
 	if !bodyJson.Success {
 		err = errors.New("cleanLog清理日志文件失败")
 		global.GVA_LOG.Error("cleanLog清理日志文件失败", zap.Error(err))
+		return err
+	}
+	return nil
+}
+
+func (monkeyService *MonkeyService) releaseDevice(startMonkeyReq monkeyReq.StartMonkeyReq) error {
+	// 发起释放设备请求
+	atxHost := global.GVA_CONFIG.Atx.Host
+	url := atxHost + "/api/v1/user/devices/" + startMonkeyReq.Device + "?user_id=" + startMonkeyReq.UserId
+	req, err := http.NewRequest("DELETE", url, nil)
+	if err != nil {
+		global.GVA_LOG.Error("releaseDevice NewRequest出错", zap.Error(err))
+		return errors.New("设备释放失败")
+	}
+
+	client := &http.Client{}
+	resp, err := client.Do(req)
+	if err != nil {
+		global.GVA_LOG.Error("releaseDevice 请求url出错", zap.Error(err))
+		return errors.New("设备释放失败")
+	}
+
+	defer resp.Body.Close()
+
+	if resp.StatusCode < 200 || resp.StatusCode >= 300 {
+		global.GVA_LOG.Error("releaseDevice http resp statusCode is "+string(resp.StatusCode), zap.Error(err))
+		return errors.New("releaseDevice wrong resp statusCode")
+	}
+	// 读取接口返回
+	respBody, err := ioutil.ReadAll(resp.Body)
+	if err != nil {
+		global.GVA_LOG.Error("releaseDevice读取body出错", zap.Error(err))
+		return err
+	}
+	// 序列化接口
+	type body struct {
+		Success bool
+	}
+	var bodyJson body
+	err = json.Unmarshal(respBody, &bodyJson)
+	if err != nil {
+		global.GVA_LOG.Error("releaseDevice反序列化body出错", zap.Error(err))
+		return err
+	}
+	// 判断设备是否释放成功
+	if !bodyJson.Success {
+		err = errors.New("设备释放失败")
+		global.GVA_LOG.Error("releaseDevice设备释放失败", zap.Error(err))
+
 		return err
 	}
 	return nil
