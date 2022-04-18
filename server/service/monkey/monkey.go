@@ -423,7 +423,7 @@ func (monkeyService *MonkeyService) pullCrashLog(atxAgentAddress string) (string
 	defer resp.Body.Close()
 
 	if resp.StatusCode == 404 {
-		return "", nil
+		return "无崩溃报告", nil
 	}
 
 	if resp.StatusCode < 200 || resp.StatusCode >= 300 {
