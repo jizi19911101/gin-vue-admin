@@ -24,4 +24,6 @@ type Server struct {
 	Jenkins Jenkins `mapstructure:"jenkins" json:"jenkins" yaml:"jenkins"`
 	// gitlab
 	Gitlab Gitlab `mapstructure:"gitlab" json:"gitlab" yaml:"gitlab"`
+	// atx-server
+	Atx Atx `mapstructure:"atx" json:"atx" yaml:"atx"`
 }

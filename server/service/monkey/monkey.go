@@ -68,7 +68,8 @@ func (monkeyService *MonkeyService) StartMonkey(startMonkeyReq monkeyReq.StartMo
 }
 
 func (monkeyService *MonkeyService) checkDevice(startMonkeyReq monkeyReq.StartMonkeyReq) error {
-	url := "http://120.25.149.119:8082/api/v1/devices/"
+	atxHost := global.GVA_CONFIG.Atx.Host
+	url := atxHost + "/api/v1/devices/"
 	userId := startMonkeyReq.UserId
 	device := startMonkeyReq.Device
 	resp, err := http.Get(url + device + "?user_id=" + userId)
@@ -106,7 +107,8 @@ func (monkeyService *MonkeyService) checkDevice(startMonkeyReq monkeyReq.StartMo
 }
 
 func (monkeyService *MonkeyService) useDevice(startMonkeyReq monkeyReq.StartMonkeyReq) error {
-	url := "http://120.25.149.119:8082/api/v1/user/devices"
+	atxHost := global.GVA_CONFIG.Atx.Host
+	url := atxHost + "/api/v1/user/devices"
 	dataStr := "{\"udid\":\"" + startMonkeyReq.Device + "\"}"
 	dataJson := []byte(dataStr)
 	req, err := http.NewRequest("POST", url+"?user_id="+startMonkeyReq.UserId, bytes.NewBuffer(dataJson))
@@ -150,7 +152,8 @@ func (monkeyService *MonkeyService) useDevice(startMonkeyReq monkeyReq.StartMonk
 }
 
 func (monkeyService *MonkeyService) getAtxAndPhoneInfo(startMonkeyReq monkeyReq.StartMonkeyReq) (string, string, error) {
-	url := "http://120.25.149.119:8082/api/v1/user/devices/"
+	atxHost := global.GVA_CONFIG.Atx.Host
+	url := atxHost + "/api/v1/user/devices/"
 	resp, err := http.Get(url + startMonkeyReq.Device + "?user_id=" + startMonkeyReq.UserId)
 	if err != nil {
 		global.GVA_LOG.Error("getAtxAndPhoneInfo发起请求失败", zap.Error(err))
