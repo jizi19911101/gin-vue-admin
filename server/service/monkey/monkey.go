@@ -585,3 +585,22 @@ func (monkeyService *MonkeyService) releaseDevice(startMonkeyReq monkeyReq.Start
 	}
 	return nil
 }
+
+func (monkeyService *MonkeyService) CreateMonkeyTask(taskReq monkeyReq.TaskReq) error {
+	task := monkey.Task{
+		Device:   taskReq.Device,
+		Duration: taskReq.Duration,
+		App:      taskReq.App,
+		Report:   taskReq.Report,
+		CleanLog: taskReq.CleanLog,
+		UserId:   taskReq.UserId,
+		Status:   "新建",
+	}
+	err := global.GVA_DB.Create(&task).Error
+
+	if err != nil {
+		global.GVA_LOG.Error("保存monkey任务失败", zap.Error(err))
+		return err
+	}
+	return nil
+}

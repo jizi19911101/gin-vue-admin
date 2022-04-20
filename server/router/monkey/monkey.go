@@ -15,6 +15,7 @@ func (s *MonkeyRouter) InitMonkeyRouter(Router *gin.RouterGroup) {
 		monkeyRouter.POST("startMonkey", monkeyApi.StartMonkeyApi)
 		monkeyRouter.GET("reportList", monkeyApi.ReportList)
 		monkeyRouter.GET("reportContent", monkeyApi.ReportContent)
+		monkeyRouter.POST("createMonkeyTask", monkeyApi.CreateMonkeyTask)
 
 	}
 }

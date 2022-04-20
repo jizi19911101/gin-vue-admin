@@ -107,3 +107,30 @@ func (monkeyApi *MonkeyApi) ReportContent(c *gin.Context) {
 	}
 
 }
+
+// CreateMonkeyTask 创建monkey任务
+// @Tags CreateMonkeyTask
+// @Summary 创建monkey任务
+// @Security ApiKeyAuth
+// @accept application/json
+// @Produce application/json
+// @Param data body monkeyReq.taskReq true "创建monkey任务"
+// @Success 200 {string} "
+// @Router /monkey/createMonkeyTask [get]
+func (monkeyApi *MonkeyApi) CreateMonkeyTask(c *gin.Context) {
+	var taskReq monkeyReq.TaskReq
+	_ = c.ShouldBindJSON(&taskReq)
+	if err := global.Validate.Struct(&taskReq); err != nil {
+		global.GVA_LOG.Error("参数缺失", zap.Error(err))
+		response.FailWithMessage("参数缺失", c)
+		return
+	}
+	if err := monkeyService.CreateMonkeyTask(taskReq); err != nil {
+		global.GVA_LOG.Error("创建monkey任务失败", zap.Error(err))
+		response.FailWithMessage("创建monkey任务失败", c)
+		return
+	} else {
+		response.OkWithMessage("创建monkey任务成功！", c)
+	}
+
+}
