@@ -27,6 +27,8 @@ services:
     restart: always
     ports:
       - '8888:8888'
+    volumes:
+      - /root/.ssh:/root/.ssh
     depends_on:
       - mysql
       - redis

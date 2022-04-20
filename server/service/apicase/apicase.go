@@ -16,26 +16,25 @@ func (apiCaseService *ApiCaseService) RunApiCase(runApiCaseReq apicaseReq.RunApi
 	user := global.GVA_CONFIG.Jenkins.User
 	token := global.GVA_CONFIG.Jenkins.Token
 	global.GVA_LOG.Debug("jenkins用户：" + user + token)
-	env := runApiCaseReq.Env
-	module := runApiCaseReq.Module
-	api := runApiCaseReq.Api
-	caseName := runApiCaseReq.Case
 	url := "http://jk-dev.chumanyun.com/job/qa-p0接口自动化测试/buildWithParameters"
-	data := "envir=" + env
-	if len(module) != 0 {
-		data = data + "&module=" + module
+	data := "envir=" + runApiCaseReq.Env
+	if len(runApiCaseReq.Module) != 0 {
+		data = data + "&module=" + runApiCaseReq.Module
 	}
-	if len(api) != 0 {
-		data = data + "&api=" + "test_" + api + ".py"
+	if len(runApiCaseReq.Api) != 0 {
+		data = data + "&api=" + "test_" + runApiCaseReq.Api + ".py"
 	}
-	if len(caseName) != 0 {
+	if len(runApiCaseReq.Case) != 0 {
 		var testcase = &apicase.ApiCase{}
 		db := global.GVA_DB.Model(&apicase.ApiCase{})
-		db.Select("class").Where("name = ? AND api = ? ", caseName, api).Find(&testcase)
+		db.Select("class").Where("name = ? AND api = ? ", runApiCaseReq.Case, runApiCaseReq.Api).Find(&testcase)
 		if len(testcase.Class) != 0 {
-			data = data + "&class=" + testcase.Class + "&case=" + caseName
+			data = data + "&class=" + testcase.Class + "&case=" + runApiCaseReq.Case
 		}
 
+	}
+	if len(runApiCaseReq.Description) != 0 {
+		data = data + "&report_desc=" + runApiCaseReq.Description
 	}
 	global.GVA_LOG.Debug("调接口自动化job的data参数：" + data)
 
@@ -108,6 +107,10 @@ func (apiCaseService *ApiCaseService) ApiCaseList(info apicaseReq.ApiCaseSearch)
 		db.Where("name = ? ", info.Name)
 
 	}
+	if info.Title != "" {
+		db.Where("title LIKE ? ", "%"+info.Title+"%")
+
+	}
 
 	if err := db.Count(&total).Error; err != nil {
 		return err, nil, 0
@@ -132,7 +135,7 @@ func (apiCaseService *ApiCaseService) ReportList(info apicaseReq.ReportSearch) (
 	if err := db.Count(&total).Error; err != nil {
 		return err, nil, 0
 	}
-	err := db.Limit(limit).Offset(offset).Find(&reportList).Error
+	err := db.Limit(limit).Offset(offset).Order("ID desc").Find(&reportList).Error
 	return err, reportList, total
 
 }

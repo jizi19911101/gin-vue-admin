@@ -2,6 +2,9 @@
   <div>
     <div class="gva-search-box">
       <el-form :inline="true" :model="searchInfo" class="demo-form-inline">
+        <el-form-item label="所属模块">
+          <el-input v-model="searchInfo.module" placeholder="搜索条件" />
+        </el-form-item>
         <el-form-item label="接口名称">
           <el-input v-model="searchInfo.name" placeholder="搜索条件" />
         </el-form-item>
@@ -54,6 +57,9 @@
                 :disabled="item.disabled"></el-option>
               </el-select>
             </el-form-item>
+            <el-form-item label="测试报告描述:" prop="description">
+              <el-input v-model="formData.description"  placeholder="请输入" />
+            </el-form-item>
             <el-form-item label="测试模块:" prop="module">
               <el-input v-model="formData.module" readonly placeholder="请输入" />
             </el-form-item>
@@ -89,6 +95,7 @@ export default {
       multipleSelection: [],
       formData: {
         env:'',
+        description:'',
         module: '',
         api: '',
       },
@@ -133,7 +140,8 @@ export default {
       this.$refs.formData.resetFields();
       this.formData = {
         module: '',
-        api:''
+        api:'',
+        description:''
       }
     },
     async runCase(){

@@ -134,6 +134,7 @@ func (apiCaseApi *ApiCaseApi) CaseList(c *gin.Context) {
 			apiCaseListRes = append(apiCaseListRes, apicaseRes.ApiCaseRes{
 				ID:             apiCaseList[i].ID,
 				Name:           apiCaseList[i].Name,
+				Title:          apiCaseList[i].Title,
 				OrganizationID: apiCaseList[i].ID,
 				Module:         apiCaseList[i].Module,
 				Api:            apiCaseList[i].Api,
@@ -172,7 +173,10 @@ func (apiCaseApi *ApiCaseApi) ReportList(c *gin.Context) {
 				ID:             reportList[i].ID,
 				Name:           reportList[i].Name,
 				Url:            reportList[i].Url,
+				Env:            reportList[i].Env,
+				Description:    reportList[i].Description,
 				OrganizationID: reportList[i].OrganizationID,
+				CreatedAt:      reportList[i].CreatedAt,
 			})
 		}
 		response.OkWithDetailed(response.PageResult{

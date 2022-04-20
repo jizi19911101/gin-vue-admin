@@ -1,4 +1,5 @@
 import { createRouter, createWebHashHistory } from 'vue-router'
+import Devices from '@/view/monkeyTest/devices.vue'
 
 const routes = [{
   path: '/',
@@ -13,7 +14,7 @@ const routes = [{
   path: '/login',
   name: 'Login',
   component: () => import('@/view/login/index.vue')
-}
+},
 ]
 
 const router = createRouter({

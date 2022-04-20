@@ -2,8 +2,17 @@
   <div>
     <div class="gva-search-box">
       <el-form :inline="true" :model="searchInfo" class="demo-form-inline">
+        <el-form-item label="所属模块">
+          <el-input v-model="searchInfo.module" placeholder="搜索条件" />
+        </el-form-item>
+        <el-form-item label="所属接口">
+          <el-input v-model="searchInfo.api" placeholder="搜索条件" />
+        </el-form-item>
         <el-form-item label="用例名称">
           <el-input v-model="searchInfo.name" placeholder="搜索条件" />
+        </el-form-item>
+        <el-form-item label="用例描述">
+          <el-input v-model="searchInfo.title" placeholder="搜索条件" />
         </el-form-item>
         <el-form-item>
           <el-button size="mini" type="primary" icon="el-icon-search" @click="onSubmit">查询</el-button>
@@ -22,9 +31,10 @@
         @selection-change="handleSelectionChange"
         >
         <el-table-column type="selection" width="55" />
-        <el-table-column align="left" label="所属模块" prop="module" width="200" />
+        <el-table-column align="left" label="所属模块" prop="module" width="150" />
         <el-table-column align="left" label="所属接口" prop="api" width="250" />
         <el-table-column align="left" label="用例名称" prop="name" width="250" />
+        <el-table-column align="left" label="用例描述" prop="title" width="250" />
         <!-- <el-table-column align="left" label="日期" width="180">
             <template #default="scope">{{ formatDate(scope.row.CreatedAt) }}</template>
         </el-table-column> -->
@@ -54,6 +64,9 @@
                 :disabled="item.disabled"></el-option>
               </el-select>
             </el-form-item>
+            <el-form-item label="测试报告描述:" prop="description">
+              <el-input v-model="formData.description"  placeholder="请输入" />
+            </el-form-item>
             <el-form-item label="测试模块:" prop="module">
               <el-input v-model="formData.module" readonly placeholder="请输入" />
             </el-form-item>
@@ -62,6 +75,9 @@
             </el-form-item>
             <el-form-item label="测试用例:" prop="case">
               <el-input v-model="formData.case" readonly placeholder="请输入" />
+            </el-form-item>
+            <el-form-item label="用例描述:" prop="case">
+              <el-input v-model="formData.title" readonly placeholder="请输入" />
             </el-form-item>
           </el-form>
           <template #footer>
@@ -95,6 +111,8 @@ export default {
         module: '',
         api: '',
         case: '',
+        title: '',
+        description: ''
       },
       envOptions: ["demo","api2","api"],
       rules: {
@@ -128,6 +146,7 @@ export default {
         this.formData.case =  row.name
         this.formData.api =  row.api
         this.formData.module =  row.module
+        this.formData.title =  row.title
       
     },
     closeDialog() {
@@ -136,7 +155,9 @@ export default {
       this.formData = {
         module: '',
         api:'',
-        case:''
+        case:'',
+        title:'',
+        description:''
       }
     },
     async runCase(){

@@ -23,9 +23,6 @@
         >
         <el-table-column type="selection" width="55" />
         <el-table-column align="left" label="报告名称" prop="name" width="200" />
-        <el-table-column align="left" label="报告地址" prop="url" width="300" />
-        <el-table-column align="left" label="测试环境" prop="env" width="100" />
-        <el-table-column align="left" label="报告描述" prop="description" width="250" />
         <el-table-column align="left" label="日期" prop="createdAt" width="180">
             <template #default="scope">{{ formatDate(scope.row.createdAt) }}</template>
         </el-table-column>
@@ -53,15 +50,16 @@
 
 <script>
 import {
-  getReportList
-} from '@/api/apiTest' //  此处请自行替换地址
+  getMonkeyReportList,
+  
+} from '@/api/monkeyTest' //  此处请自行替换地址
 import infoList from '@/mixins/infoList'
 export default {
-  name: 'Report',
+  name: 'MonkeyReport',
   mixins: [infoList],
   data() {
     return {
-      listApi: getReportList,
+      listApi: getMonkeyReportList,
       multipleSelection: [],
       formData: {
         name: '',
@@ -86,7 +84,8 @@ export default {
       this.multipleSelection = val
     },
     viewReport(item){
-      window.open(item.url)
+      console.log(import.meta.env.VITE_BASE_PATH+":"+import.meta.env.VITE_CLI_PORT+import.meta.env.VITE_BASE_API+"/monkey/reportContent?ID="+item.ID)
+      window.open(import.meta.env.VITE_BASE_PATH+":"+import.meta.env.VITE_CLI_PORT+import.meta.env.VITE_BASE_API+"/monkey/reportContent?ID="+item.ID)
     }
   },
 }

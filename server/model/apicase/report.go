@@ -6,6 +6,8 @@ type Report struct {
 	global.GVA_MODEL
 	Name           string
 	Url            string
+	Env            string
+	Description    string
 	OrganizationID uint
 }
 

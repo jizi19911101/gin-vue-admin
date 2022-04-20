@@ -8,6 +8,7 @@ type RunApiCaseReq struct {
 	Api            string `json:"api" form:"api"  `
 	Case           string `json:"case" form:"case"  `
 	Env            string `json:"env" form:"env"  validate:"required"`
+	Description    string `json:"description" form:"description"  `
 }
 
 type ApiCaseSearch struct {
@@ -16,4 +17,5 @@ type ApiCaseSearch struct {
 	Module         string `json:"module" form:"module"  `
 	Api            string `json:"api" form:"api"  `
 	Name           string `json:"name" form:"name"  `
+	Title          string `json:"title" form:"title"  `
 }

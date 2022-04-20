@@ -53,6 +53,9 @@
                 :disabled="item.disabled"></el-option>
               </el-select>
             </el-form-item>
+            <el-form-item label="测试报告描述:" prop="description">
+              <el-input v-model="formData.description"  placeholder="请输入" />
+            </el-form-item>
             <el-form-item label="测试模块:" prop="module">
               <el-input v-model="formData.module" readonly placeholder="请输入" />
             </el-form-item>
@@ -86,6 +89,8 @@ export default {
       formData: {
         env: '',
         module: '',
+        description: '',
+        
       },
       envOptions: ["demo","api2","api"],
       rules: {
@@ -125,6 +130,7 @@ export default {
       this.$refs.formData.resetFields();
       this.formData = {
         module: '',
+        description: '',
       }
     },
     async runCase(){

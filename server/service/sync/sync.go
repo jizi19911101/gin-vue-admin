@@ -1,7 +1,6 @@
 package sync
 
 import (
-	"bufio"
 	"errors"
 	"io/ioutil"
 	"os"
@@ -120,9 +119,18 @@ func (syncService *SyncService) ParseApiTestcaseModule(tmpDir string) (err error
 
 // ApiTestcaseCode 解析接口自动化代码接口
 func (syncService *SyncService) ParseApiTestcaseApi(tmpDir string) error {
+	// 检查数据库是否存在模块已删但对应api未删的
+	db := global.GVA_DB.Model(&apicase.Api{})
+	delIds := make([]uint, 0)
+	db.Raw("select id from api where module in (select name from module where deleted_at is not null )").Scan(&delIds)
+
+	if len(delIds) != 0 {
+		db.Delete(&apicase.Api{}, delIds)
+	}
+
 	//取出模块
 	moduleList := make([]apicase.Module, 0)
-	db := global.GVA_DB.Model(&apicase.Module{})
+	db = global.GVA_DB.Model(&apicase.Module{})
 	db.Find(&moduleList)
 
 	//模块为 0，结束
@@ -210,9 +218,17 @@ func (syncService *SyncService) ParseApiTestcaseApi(tmpDir string) error {
 }
 
 func (syncService *SyncService) ParseApiTestcase(tmpDir string) error {
+	// 检查数据库是否存在接口已删但对应用例未删的
+	db := global.GVA_DB.Model(&apicase.ApiCase{})
+	delIds := make([]uint, 0)
+	db.Raw("select id from apicase where api in (select name from api where deleted_at is not null )").Scan(&delIds)
+
+	if len(delIds) != 0 {
+		db.Delete(&apicase.Api{}, delIds)
+	}
 	// 取出所有接口
 	apiList := make([]apicase.Api, 0)
-	db := global.GVA_DB.Model(&apicase.Api{})
+	db = global.GVA_DB.Model(&apicase.Api{})
 	db.Find(&apiList)
 
 	// 接口数量为0结束
@@ -242,11 +258,12 @@ func (syncService *SyncService) ParseApiTestcase(tmpDir string) error {
 
 		parseCaseMap := make(map[string]apicase.ApiCase, 0)
 		for _, v := range parseCaseList {
-			parseCaseMap[v] = apicase.ApiCase{
-				Name:   v,
+			parseCaseMap[v["name"]] = apicase.ApiCase{
+				Name:   v["name"],
 				Module: api.Module,
 				Api:    api.Name,
 				Class:  className,
+				Title:  v["title"],
 			}
 		}
 
@@ -309,31 +326,33 @@ func (syncService *SyncService) SyncApiTestReport(report apicase.Report) error {
 	return err
 }
 
-func parseCase(apiFile string) (string, []string, error) {
-	var className string
-	parseCaseList := make([]string, 0)
-
-	file, err := os.Open(apiFile)
+func parseCase(apiFile string) (string, []map[string]string, error) {
+	file, err := ioutil.ReadFile(apiFile)
 	if err != nil {
 		global.GVA_LOG.Error("打开接口文件出错", zap.Error(err))
 		return "", nil, err
 	}
-	defer file.Close()
 
-	scanner := bufio.NewScanner(file)
-	for scanner.Scan() {
-		reg := regexp.MustCompile("class(.*?):")
-		result := reg.FindStringSubmatch(scanner.Text())
-		if len(result) != 0 {
-			className = strings.Trim(result[1], " ")
-		}
+	reg := regexp.MustCompile("class(.*?):")
+	classResult := reg.FindStringSubmatch(string(file))
+	var className string
+	if len(classResult) != 0 {
+		className = strings.Trim(classResult[1], " ")
+	}
 
-		reg = regexp.MustCompile(`^def(.*?)\(`)
-		result = reg.FindStringSubmatch(strings.TrimSpace(scanner.Text()))
-		if len(result) != 0 {
-			parseCaseList = append(parseCaseList, strings.Trim(result[1], " "))
+	//reg = regexp.MustCompile(`@allure.title\((.*?)\)(\s*)def(.*?)\(`)
+	//reg = regexp.MustCompile(`@allure.title\((.*?)\)([\s\S]*?)def(.*?)\(`)
+	reg = regexp.MustCompile(`@allure.title\((.*?)\)([^#]*?)def(.*?)\(`)
+	caseResult := reg.FindAllStringSubmatch(string(file), -1)
+	parseCaseList := make([]map[string]string, 0)
+	if len(caseResult) != 0 {
+		for _, v := range caseResult {
+			title := strings.Trim(v[1], "'")
+			name := strings.Trim(v[3], " ")
+			parseCaseList = append(parseCaseList, map[string]string{"name": name, "title": title})
 		}
 
 	}
+
 	return className, parseCaseList, nil
 }

@@ -1,2 +1,0 @@
-[github.com/jizi29922202/gin-vue-admin/server]2022/02/09 - 15:05:43.318	[31merror[0m	/Users/chenmenghua/Documents/gin-vue-admin/server/api/v1/organization/organization.go:100	参数缺失	{"error": "Key: 'OrganizationReq.Name' Error:Field validation for 'Name' failed on the 'required' tag"}
-[github.com/jizi29922202/gin-vue-admin/server]2022/02/09 - 15:09:45.422	[31merror[0m	/Users/chenmenghua/Documents/gin-vue-admin/server/api/v1/organization/organization.go:126	查询失败!	{"error": "record not found"}

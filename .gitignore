@@ -27,4 +27,6 @@ yarn-error.log*
 /server/gva
 /server/latest_log
 /server/server
+/server/apitest/*/log/
 *.iml
+*.log
